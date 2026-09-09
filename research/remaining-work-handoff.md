@@ -78,8 +78,8 @@ See [BC tenure model](../forestry-game/BC-TENURE.md). This is an external eviden
 
 - Repository created: private `ahzs645/forest-commons`. Pages Actions configured; deployment verification is recorded in the repository README.
 - The root Pages workflow now builds from the `forestry-game/` subdirectory.
-- Enable Pages through Actions and verify the real repository base path.
-- Verify deployed assets, workers, maps, campaign settlement and reload over public HTTPS.
+- Completed: Pages through Actions at `https://projects.ahmadjalil.com/forest-commons/`; HTTPS and repository-path assets verified.
+- Published map and study worker verified. Broader deployed campaign settlement/reload acceptance remains.
 - Publish only the intended application artifacts; keep room data, credentials and backups out of the repository/site.
 
 **Live classroom**
