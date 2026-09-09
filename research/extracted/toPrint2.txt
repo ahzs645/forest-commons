@@ -1,0 +1,2 @@
+ppt/slides/slide1.xml
+Cartes des compagnies 1-2-3-4-5 Compagnie 1 Compagnie  2 Compagnie  3 Compagnie  4 Compagnie  5 Les zones en verts sont les secteurs d’approvisionnement et les cercles rouges sont les usines de ces compagnies. 77  300 (m 3 ) 301  300 (m 3 ) 232  100 (m 3 ) 89  300 (m 3 ) 94  770 (m 3 ) 3  780 ( kSEK ) 14  860 ( kSEK ) 10  340 ( kSEK ) 4  960 ( kSEK ) 4  740 ( kSEK ) 70,3 (km) 56,8 (km) 68,5 (km) 68,5 (km) 49,7 (km) Volume (m 3 ) Coût individuel ( kSEK ) Distance moyenne (km)

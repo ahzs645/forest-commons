@@ -1,0 +1,682 @@
+{
+  "note": "Candidates require review: dynamic expressions may contain identifiers, authored content, class conditions or unit labels. This is not a percent-complete metric.",
+  "totals": {
+    "staticText": 22,
+    "attributes": 12,
+    "dynamicCandidates": 307
+  },
+  "files": [
+    {
+      "file": "BidCompositionDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "`${f((inputs[p.id]??0)/(lot.volume*lot.mix[p.id]))} ${game.region.currency}/${tr(\"standing m³\")}`",
+        "\"status\""
+      ]
+    },
+    {
+      "file": "Classroom.tsx",
+      "staticText": [
+        "h"
+      ],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"alert\"",
+        "\"notice\"",
+        "\"instructor\"",
+        "\"primary\"",
+        "\"button-row\"",
+        "\"purchase\"",
+        "\"ready\"",
+        "'transport'",
+        "'harvest-royalty'",
+        "\"resource-grid\"",
+        "\"private\"",
+        "\"number\"",
+        "\"production\"",
+        "\"transport\"",
+        "\"checkbox\"",
+        "`${tr(\"Contract\")} ${o.offtake}`"
+      ]
+    },
+    {
+      "file": "CohortMonitor.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"alert\"",
+        "\"notice\"",
+        "\"status\"",
+        "`${tr(\"Turn\")} ${data.week} / ${data.weeks}`",
+        "` · ${tr(\"last action\")}: ${tr(data.lastAction.role)} ${tr(data.lastAction.action)}`"
+      ]
+    },
+    {
+      "file": "CollaborationLab.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"muted\"",
+        "\"notice\""
+      ]
+    },
+    {
+      "file": "CommonValueExperiment.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"alert\"",
+        "\"table-wrap\"",
+        "`${f(row.overpaymentRate*100)}%`",
+        "\"status\""
+      ]
+    },
+    {
+      "file": "CrewTimeline.tsx",
+      "staticText": [
+        "h ·",
+        "h"
+      ],
+      "attributes": [
+        "aria-label: Interactive crew schedule by turn. Filled blue cells are saved future queues, green cells are recorded or current queues, outlined cells repeat the preceding plan."
+      ],
+      "dynamicCandidates": [
+        "\"W\"",
+        "\"T\"",
+        "'carry previous queue'",
+        "`${q.map(o=>`${o.stand}: ${o.hours}h`).join(', ')}`",
+        "'rest'",
+        "`${count}h`",
+        "'Rest'",
+        "' · recorded'",
+        "' · current'",
+        "'No saved override: this crew will carry its previous queue.'",
+        "'Saved future override.'",
+        "'Recorded/current orders are shown below. Edit current orders in the production queue editor.'",
+        "'final'",
+        "\"button-row\"",
+        "' · not secured'",
+        "\"number\"",
+        "\"muted\"",
+        "\"alert\"",
+        "\"table-wrap\"",
+        "\"col\""
+      ]
+    },
+    {
+      "file": "Debrief.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"results-overview\"",
+        "'s'",
+        "\"results-metrics\"",
+        "`${number(summary.servicePercent)}% (${summary.hits}/${summary.checks})`",
+        "`${number(summary.emissionsPerDelivered)} kg CO₂/m³`",
+        "\"soft-card\"",
+        "\"status\"",
+        "\"results-week\"",
+        "\"alert\""
+      ]
+    },
+    {
+      "file": "DeliverabilityDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"status\""
+      ]
+    },
+    {
+      "file": "DisclosureDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"debrief\"",
+        "\"number\"",
+        "\"sharing\"",
+        "\"instructor\"",
+        "\"agreed\"",
+        "\"proposed\""
+      ]
+    },
+    {
+      "file": "DispatchBenchmark.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"alert\"",
+        "\"muted\""
+      ]
+    },
+    {
+      "file": "DisruptionDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"available immediately\"",
+        "`available in ${e.repairWeeks} week(s)`",
+        "\"button-row\"",
+        "\"Upcoming closure\"",
+        "\"Normal service restored\""
+      ]
+    },
+    {
+      "file": "DraftOptions.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"standard\""
+      ]
+    },
+    {
+      "file": "EightCompanyExercise.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"table-wrap\"",
+        "\"status\"",
+        "\"alert\""
+      ]
+    },
+    {
+      "file": "HarvestPlanning.tsx",
+      "staticText": [
+        "km / 1,000 m³"
+      ],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"alert\"",
+        "\"No route\"",
+        "`${s.relocationKm.toFixed(1)} / ${s.relocationHours!.toFixed(1)}`",
+        "\"Closed\"",
+        "\"Choose mill\"",
+        "\"weeks\"",
+        "\"turns\"",
+        "\"notice\"",
+        "\"table-wrap\"",
+        "`${m.utilization.toFixed(1)}%`"
+      ]
+    },
+    {
+      "file": "InventoryCharts.tsx",
+      "staticText": [
+        "T"
+      ],
+      "attributes": [
+        "aria-label: Inventory transition weeks; circles are downgrades and crosses are expiry; full values in table"
+      ],
+      "dynamicCandidates": [
+        "\"img\"",
+        "\"Inventory transition weeks; circles are downgrades and crosses are expiry; full values in table\"",
+        "\"#bb402d\"",
+        "\"muted\"",
+        "\"table-wrap\""
+      ]
+    },
+    {
+      "file": "LotProfitability.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"status\"",
+        "\"table-wrap\""
+      ]
+    },
+    {
+      "file": "MapRolePanel.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "'purchase'",
+        "'production'",
+        "\"notice\"",
+        "\"status\"",
+        "\"table-wrap\"",
+        "\"forecast-grid\"",
+        "'T'",
+        "'W'",
+        "'frozen'",
+        "'thaw'",
+        "'wet'",
+        "'auction'",
+        "'hours'",
+        "`${o.hours} h`",
+        "`${o.loads} ${tr(\"loads\")} → ${o.mill}`",
+        "'crew'",
+        "'truck'",
+        "'transport'",
+        "\"number\"",
+        "' m³'"
+      ]
+    },
+    {
+      "file": "MapWorkspace.tsx",
+      "staticText": [
+        "h",
+        "km/h",
+        "/ m³"
+      ],
+      "attributes": [
+        "aria-label: Selected map feature",
+        "aria-label: Search map entities",
+        "placeholder: Name or ID…",
+        "aria-label: Selected crew assignments"
+      ],
+      "dynamicCandidates": [
+        "\"entity-results\"",
+        "\"stand\"",
+        "\"eyebrow\"",
+        "\"muted\"",
+        "\"Secured timber\"",
+        "\"open\"",
+        "\"closed\"",
+        "\"facts\"",
+        "\"number\"",
+        "\"primary wide\"",
+        "\"Selected crew assignments\"",
+        "\"private\"",
+        "'auction'",
+        "\"wide\"",
+        "\"road\"",
+        "'season complete'",
+        "`closed · ${closure.title}`",
+        "'open'",
+        "'closed by seasonal bearing restriction'",
+        "\"mill\"",
+        "\"crew\"",
+        "\"truck\"",
+        "\"notice\"",
+        "\"status\""
+      ]
+    },
+    {
+      "file": "MillProcessingDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "'empty'",
+        "\"status\""
+      ]
+    },
+    {
+      "file": "NegotiationOffers.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"notice\"",
+        "\"status\"",
+        "\"table-wrap\"",
+        "\"proposed\"",
+        "\"button-row\""
+      ]
+    },
+    {
+      "file": "NetworkDispatchLab.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"status\"",
+        "\"alert\"",
+        "\"muted\"",
+        "'fr'",
+        "`${tr(\"Authored regional transfer example:\")} ${run.network.cargo.length}. ${tr(\"Network teaching assumptions\")}`",
+        "\"metric-grid\"",
+        "\"table-wrap\"",
+        "\"button-row\"",
+        "\"proportional\"",
+        "\"equal\"",
+        "\"proposed\""
+      ]
+    },
+    {
+      "file": "OfftakeDesk.tsx",
+      "staticText": [
+        "/m³"
+      ],
+      "attributes": [],
+      "dynamicCandidates": [
+        "` · ${tr(\"Deadline\")} ${o.deadline}`",
+        "\"form-grid\"",
+        "\"number\"",
+        "\"resource-grid\"",
+        "\"status\""
+      ]
+    },
+    {
+      "file": "OperationalSymbols.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "'Unavailable'",
+        "'Scheduled'",
+        "'Idle'"
+      ]
+    },
+    {
+      "file": "OperationsCharts.tsx",
+      "staticText": [
+        "h"
+      ],
+      "attributes": [
+        "title: Cumulative delivery commitments"
+      ],
+      "dynamicCandidates": [
+        "\"T\"",
+        "\"W\"",
+        "\"status\"",
+        "' Targets for this future period are default assumptions.'",
+        "`${f(p.delivered/p.target*100)}% · ${status}`",
+        "'No commitment'",
+        "` · week ${latest.week}`",
+        "` · ${c.travel.toFixed(1)} h ${c.kind==='crew'?'relocating':'travelling'}`",
+        "'crew'",
+        "'relocating'",
+        "'travelling'"
+      ]
+    },
+    {
+      "file": "PlanningDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"at-least\"",
+        "\"metric-grid\"",
+        "\"muted\"",
+        "\"notice\""
+      ]
+    },
+    {
+      "file": "PreSeasonDesk.tsx",
+      "staticText": [
+        "h ·"
+      ],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"form-row\"",
+        "\"crew\"",
+        "\"truck\"",
+        "\"alert\""
+      ]
+    },
+    {
+      "file": "ProcurementCharts.tsx",
+      "staticText": [],
+      "attributes": [
+        "title: Owned eligible timber by terrain bearing class",
+        "title: Scenario road network by bearing class",
+        "title: Declared road composition"
+      ],
+      "dynamicCandidates": []
+    },
+    {
+      "file": "ProcurementLab.tsx",
+      "staticText": [
+        "Downside weight"
+      ],
+      "attributes": [],
+      "dynamicCandidates": []
+    },
+    {
+      "file": "ProcurementStudy.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"status\"",
+        "\"alert\"",
+        "\"table-wrap\"",
+        "\"chart-scroll\"",
+        "\"img\"",
+        "\"d3-legend\""
+      ]
+    },
+    {
+      "file": "ProductionCharts.tsx",
+      "staticText": [
+        "W"
+      ],
+      "attributes": [
+        "aria-label: Stacked actual production by roadside road class",
+        "title: Weekly harvest and deliveries"
+      ],
+      "dynamicCandidates": [
+        "\"chart-scroll\"",
+        "\"img\"",
+        "\"Stacked actual production by roadside road class\"",
+        "\"polite\"",
+        "`Week ${week}: ${keys.map(k=>`${k} ${f(values.find(v=>v.week===week)?.[k]??0)} m³`).join(' · ')}`",
+        "'Select a point to inspect production volumes.'",
+        "\"d3-legend\"",
+        "\"table-wrap\""
+      ]
+    },
+    {
+      "file": "ReciprocalDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"status\"",
+        "'string'",
+        "\"alert\"",
+        "`${company} ${tr(\"accepted\")}`",
+        "`${tr(\"Company\")} ${company}: ${tr(\"accept terms\")}`"
+      ]
+    },
+    {
+      "file": "RegionalApp.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"rail-scrim\"",
+        "\"Classroom\"",
+        "\"week-badge\"",
+        "`${tr(periodLabel)} ${game.week} / ${r.weeks}${(r.turnDurationWeeks??1)!==1?` · ${r.turnDurationWeeks} ${tr(\"weeks/turn\")}`:\"\"}`",
+        "` · ${r.turnDurationWeeks} ${tr(\"weeks/turn\")}`",
+        "\"toolbar-month\"",
+        "\"toolbar-stat\"",
+        "\"toolbar-actions\"",
+        "\"primary\"",
+        "\"save-actions\"",
+        "\"icon-action\"",
+        "\"Overview\"",
+        "\"page-heading\"",
+        "\"notice\"",
+        "\"status\"",
+        "\"metric-grid\"",
+        "\"Forest & timber\"",
+        "\"split\"",
+        "\"panel map-panel\"",
+        "\"panel\"",
+        "\"eyebrow\"",
+        "\"muted\"",
+        "\"facts\"",
+        "\"assortment-bar\"",
+        "\"private\"",
+        "\"primary wide\"",
+        "\"auction\"",
+        "\"number\"",
+        "`${tr(\"Upgrade access\")} · ${money(e.km * r.economy.roadUpgradePerKm)}`",
+        "\"section-heading\"",
+        "\"button-row\"",
+        "\"table-wrap\"",
+        "`${tr(\"Auction\")} ${tr(periodLabel).toLowerCase()} ${s.auctionWeek}`",
+        "\"protected\"",
+        "\"Planning desk\"",
+        "\"Production\"",
+        "\"Transport\"",
+        "\"Reports\"",
+        "\"Commitments\"",
+        "\"Stewardship\"",
+        "\"range\"",
+        "\"resource-grid\"",
+        "`${fmt(path.km)} ${tr(\"km loaded\")} · ${path.hours.toFixed(1)} ${tr(\"h one way\")}`",
+        "\"Collaboration\"",
+        "\"two-cols\"",
+        "\"Scenario studio\"",
+        "\"form-row\"",
+        "\"form-grid\"",
+        "\"checkbox\"",
+        "\"upfront\"",
+        "\"harvest-royalty\"",
+        "\"file\"",
+        "\".json\"",
+        "\"check-label\"",
+        "\"guide\"",
+        "\"new\"",
+        "`${tr(\"Run\")} ${tr(periodLabel).toLowerCase()} ${game.week}?`"
+      ]
+    },
+    {
+      "file": "RegionalCalibration.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"status\"",
+        "\"alert\"",
+        "'reviewed'",
+        "\"reviewed\"",
+        "\"_blank\"",
+        "\"noreferrer\""
+      ]
+    },
+    {
+      "file": "ReservationDesk.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "'offtake'",
+        "\"status\""
+      ]
+    },
+    {
+      "file": "RollingOptimizer.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "'fr'",
+        "'tours'",
+        "'turns'",
+        "\"status\"",
+        "\"alert\"",
+        "'semaines écoulées'",
+        "'elapsed weeks'",
+        "\"table-wrap\"",
+        "' · trésorerie maximale'",
+        "' · highest cash'",
+        "`Acheter ${c.purchases.join(\", \")} et appliquer le plan`",
+        "`Buy ${c.purchases.join(\", \")} and apply plan`"
+      ]
+    },
+    {
+      "file": "SeasonBuilder.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "'quebec-lac-saint-jean'",
+        "`${tr(\"annual year\")} ${game.stewardship.year}, ${tr(\"budget\")} ${game.region.currency} ${Math.round(game.stewardship.cash).toLocaleString()}`",
+        "`${tr(\"current operating forest, budget\")} ${game.region.currency} ${Math.round(game.cash).toLocaleString()}`",
+        "\"alert\""
+      ]
+    },
+    {
+      "file": "SessionClock.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "`${tr(\"Session time\")}: ${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, \"0\")}`",
+        "\"button-row\"",
+        "\"number\""
+      ]
+    },
+    {
+      "file": "StewardshipLab.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"primary\"",
+        "\"notice\"",
+        "`${(stewardshipHabitat(region, s).managed! * 100).toFixed(1)}%`",
+        "\"table-wrap\"",
+        "\"alert\""
+      ]
+    },
+    {
+      "file": "TeachingPackets.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "'fr'",
+        "'entreprises'",
+        "'companies'"
+      ]
+    },
+    {
+      "file": "TeamComparison.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"alert\"",
+        "'annual-season'",
+        "`${row.year} / `",
+        "`${row.metrics.serviceHits}/${row.metrics.serviceChecks} (${Math.round(100*row.metrics.serviceHits/row.metrics.serviceChecks)}%)`",
+        "`${row.currency} ${number(row.metrics.partnerSavings)}`",
+        "`${row.metrics.companySavings.count} ${tr(\"companies\")}: ${Object.entries(row.metrics.companySavings.shares).map(([c,v])=>`C${c} ${number(v)}`).join('; ')}`"
+      ]
+    },
+    {
+      "file": "TransportObligationsLab.tsx",
+      "staticText": [
+        ", B",
+        "; B:",
+        ", uB",
+        ", vA",
+        ", vB",
+        ", μA",
+        ", μB"
+      ],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"alert\"",
+        "\"table-wrap\"",
+        "\"status\""
+      ]
+    },
+    {
+      "file": "TurnDurationMode.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "\"status\"",
+        "\"alert\""
+      ]
+    },
+    {
+      "file": "charts/TimeSeries.tsx",
+      "staticText": [],
+      "attributes": [],
+      "dynamicCandidates": [
+        "` (${tr('dashed')})`"
+      ]
+    },
+    {
+      "file": "maps/LazyMap.tsx",
+      "staticText": [
+        "Loading regional map…"
+      ],
+      "attributes": [],
+      "dynamicCandidates": []
+    },
+    {
+      "file": "maps/OperationsMap.tsx",
+      "staticText": [
+        "Truck"
+      ],
+      "attributes": [],
+      "dynamicCandidates": [
+        "`${tr(\"Turn\")} ${replay+1} · ${tr(\"actual routes\")}`",
+        "\"map-error\""
+      ]
+    }
+  ]
+}

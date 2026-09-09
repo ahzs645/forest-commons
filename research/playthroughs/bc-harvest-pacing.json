@@ -1,0 +1,41 @@
+{
+  "assumptions": "Same default BC weekly scenario and opening affordable private acquisitions. Penalty-aware capped dispatch. Uniform crew-hour scaling after drafting; no future truth used. Bounded policy demonstration, not optimization or calibration.",
+  "results": [
+    {
+      "crewHourScale": 1,
+      "delivered": 28778.82400234017,
+      "harvest": 39843.00000000001,
+      "waste": 11054.785098301674,
+      "cash": 1302150.0906807815,
+      "serviceHits": 12,
+      "serviceChecks": 30
+    },
+    {
+      "crewHourScale": 0.75,
+      "delivered": 27971.04717550651,
+      "harvest": 39843,
+      "waste": 10638.071382121725,
+      "cash": 1186748.4356240295,
+      "serviceHits": 11,
+      "serviceChecks": 30
+    },
+    {
+      "crewHourScale": 0.5,
+      "delivered": 30371.405343633996,
+      "harvest": 38808.0889124371,
+      "waste": 4794.060933143257,
+      "cash": 1498501.2403990126,
+      "serviceHits": 11,
+      "serviceChecks": 30
+    },
+    {
+      "crewHourScale": 0.25,
+      "delivered": 19885.793824569722,
+      "harvest": 25418.717384773838,
+      "waste": 882.5118034629871,
+      "cash": 711012.7536712387,
+      "serviceHits": 4,
+      "serviceChecks": 30
+    }
+  ]
+}

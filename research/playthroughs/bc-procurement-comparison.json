@@ -1,0 +1,36 @@
+{
+  "region": "bc-prince-george-fsr-teaching",
+  "assumptions": "Default weekly scenario and draft settings. Uses visible opening price and volume only. Buys only upfront-affordable private lots; no auctions or recovery actions. Not an optimal policy or calibrated operational forecast.",
+  "results": [
+    {
+      "policy": "Draft existing rights only",
+      "purchases": [],
+      "unaffordable": [],
+      "delivered": 20253.945813750128,
+      "harvest": 23454.899999999998,
+      "waste": 3200.954186249874,
+      "cash": 1134451.323050893,
+      "serviceChecks": 30,
+      "serviceHits": 7
+    },
+    {
+      "policy": "Buy affordable private lots by asking price per standing m³, then draft",
+      "purchases": [
+        "BC13",
+        "BC16",
+        "BC11",
+        "BC14",
+        "BC17",
+        "BC12",
+        "BC15"
+      ],
+      "unaffordable": [],
+      "delivered": 26546.462322612966,
+      "harvest": 39843.00000000001,
+      "waste": 13287.14677802888,
+      "cash": 1035888.7895367133,
+      "serviceChecks": 30,
+      "serviceHits": 12
+    }
+  ]
+}

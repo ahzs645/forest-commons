@@ -1,0 +1,499 @@
+{
+  "kind": "Programmatic role playthrough via RoomStore; no browser interaction",
+  "week": 5,
+  "cash": 1487223.4362549724,
+  "history": [
+    {
+      "week": 1,
+      "harvested": {
+        "soft-pulp": 1469.6911863665164,
+        "hard-pulp": 881.8147118199097,
+        "poplar": 858.5052668531007,
+        "soft-saw": 3040.127021127949,
+        "hard-saw": 1098.3177456651051
+      },
+      "delivered": {
+        "soft-saw": 2861.5995610617015,
+        "hard-saw": 945.3998902654254,
+        "soft-pulp": 308.99981710904234,
+        "hard-pulp": 185.3998902654254,
+        "poplar": 160
+      }
+    },
+    {
+      "week": 2,
+      "harvested": {
+        "soft-pulp": 1952.0012783027048,
+        "hard-pulp": 1171.2007669816228,
+        "poplar": 1162.968710698873,
+        "soft-saw": 3996.900309046467,
+        "hard-saw": 1476.9353264838558
+      },
+      "delivered": {
+        "soft-saw": 3960,
+        "hard-saw": 1320,
+        "poplar": 240,
+        "soft-pulp": 520,
+        "hard-pulp": 280
+      }
+    },
+    {
+      "week": 3,
+      "harvested": {
+        "soft-pulp": 1952.8,
+        "hard-pulp": 1171.68,
+        "poplar": 1163.5200000000002,
+        "soft-saw": 3998.4,
+        "hard-saw": 1477.6
+      },
+      "delivered": {
+        "soft-saw": 3578.4004389382985,
+        "hard-saw": 1360,
+        "poplar": 240,
+        "soft-pulp": 560,
+        "hard-pulp": 360
+      }
+    },
+    {
+      "week": 4,
+      "harvested": {
+        "soft-pulp": 853.364,
+        "hard-pulp": 512.0184,
+        "poplar": 430.3056,
+        "soft-saw": 1887.9456,
+        "hard-saw": 583.1864
+      },
+      "delivered": {
+        "soft-saw": 100,
+        "hard-saw": 586.1682707866914,
+        "hard-pulp": 633.2296571449829,
+        "soft-pulp": 1040,
+        "poplar": 160
+      }
+    }
+  ],
+  "log": [
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 2
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 3
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 4
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 5
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 6
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 7
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 8
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 1,
+      "revision": 9
+    },
+    {
+      "check": "Instructor cannot advance without readiness",
+      "rejected": "Purchase, production and transport roles must mark their plans ready."
+    },
+    {
+      "check": "Production cannot alter private bids",
+      "rejected": "Plan contains fields owned by another role."
+    },
+    {
+      "check": "Company cannot advance clock",
+      "rejected": "This role cannot perform that action."
+    },
+    {
+      "role": "production",
+      "action": "ready",
+      "week": 1,
+      "revision": 10
+    },
+    {
+      "check": "Stale revision rejected",
+      "rejected": "Room changed. Refresh before submitting your decision."
+    },
+    {
+      "volumeSavings": {
+        "1": 307.9010047913075,
+        "2": 1320.7887423131579,
+        "3": -77.19463272928442,
+        "4": 952.0056841761088,
+        "5": 486.49920144871066
+      }
+    },
+    {
+      "check": "Negative volume allocation cannot become agreement",
+      "rejected": "Every company must receive nonnegative savings."
+    },
+    {
+      "role": "instructor",
+      "action": "proposal",
+      "week": 1,
+      "revision": 11
+    },
+    {
+      "role": "company1",
+      "action": "respond",
+      "week": 1,
+      "revision": 12
+    },
+    {
+      "role": "company2",
+      "action": "respond",
+      "week": 1,
+      "revision": 13
+    },
+    {
+      "role": "company3",
+      "action": "respond",
+      "week": 1,
+      "revision": 14
+    },
+    {
+      "role": "company4",
+      "action": "respond",
+      "week": 1,
+      "revision": 15
+    },
+    {
+      "role": "company5",
+      "action": "respond",
+      "week": 1,
+      "revision": 16
+    },
+    {
+      "role": "purchase",
+      "action": "plan",
+      "week": 1,
+      "revision": 17
+    },
+    {
+      "role": "production",
+      "action": "draft",
+      "week": 1,
+      "revision": 18
+    },
+    {
+      "role": "transport",
+      "action": "draft",
+      "week": 1,
+      "revision": 19
+    },
+    {
+      "role": "purchase",
+      "action": "ready",
+      "week": 1,
+      "revision": 20
+    },
+    {
+      "role": "production",
+      "action": "ready",
+      "week": 1,
+      "revision": 21
+    },
+    {
+      "role": "transport",
+      "action": "ready",
+      "week": 1,
+      "revision": 22
+    },
+    {
+      "role": "instructor",
+      "action": "advance",
+      "week": 2,
+      "revision": 23
+    },
+    {
+      "outcome": 1,
+      "harvested": {
+        "soft-pulp": 1469.6911863665164,
+        "hard-pulp": 881.8147118199097,
+        "poplar": 858.5052668531007,
+        "soft-saw": 3040.127021127949,
+        "hard-saw": 1098.3177456651051
+      },
+      "delivered": {
+        "soft-saw": 2861.5995610617015,
+        "hard-saw": 945.3998902654254,
+        "soft-pulp": 308.99981710904234,
+        "hard-pulp": 185.3998902654254,
+        "poplar": 160
+      },
+      "cash": 838034.582976069,
+      "messages": [
+        "Crew 4: terrain closed at Q04 (thaw).",
+        "Crew 6: no open road to Q06.",
+        "Truck 2: closed road for Q04 → Roberval training mill.",
+        "Truck 2: no delivery for Q04 / hard-saw; check stock, demand and time.",
+        "Truck 5: closed road for Q06 → Norbord training mill.",
+        "Truck 5: no delivery for Q06 / poplar; check stock, demand and time.",
+        "Truck 5: closed road for Q04 → La Doré training mill.",
+        "Truck 5: no delivery for Q04 / soft-saw; check stock, demand and time.",
+        "Truck 9: closed road for Q06 → Dolbeau sawmill.",
+        "Truck 9: no delivery for Q06 / soft-saw; check stock, demand and time.",
+        "Truck 10: closed road for Q06 → Dolbeau pulp mill.",
+        "Truck 10: no delivery for Q06 / soft-pulp; check stock, demand and time.",
+        "Truck 10: closed road for Q06 → Dolbeau pulp mill.",
+        "Truck 10: no delivery for Q06 / hard-pulp; check stock, demand and time.",
+        "Won Q21 for 47200. Available next week; refusal window lasts one week."
+      ]
+    },
+    {
+      "check": "Reconnect persisted role state",
+      "week": 1
+    },
+    {
+      "role": "production",
+      "action": "draft",
+      "week": 2,
+      "revision": 24
+    },
+    {
+      "role": "transport",
+      "action": "draft",
+      "week": 2,
+      "revision": 25
+    },
+    {
+      "role": "purchase",
+      "action": "ready",
+      "week": 2,
+      "revision": 26
+    },
+    {
+      "role": "production",
+      "action": "ready",
+      "week": 2,
+      "revision": 27
+    },
+    {
+      "role": "transport",
+      "action": "ready",
+      "week": 2,
+      "revision": 28
+    },
+    {
+      "role": "instructor",
+      "action": "advance",
+      "week": 3,
+      "revision": 29
+    },
+    {
+      "outcome": 2,
+      "harvested": {
+        "soft-pulp": 1952.0012783027048,
+        "hard-pulp": 1171.2007669816228,
+        "poplar": 1162.968710698873,
+        "soft-saw": 3996.900309046467,
+        "hard-saw": 1476.9353264838558
+      },
+      "delivered": {
+        "soft-saw": 3960,
+        "hard-saw": 1320,
+        "poplar": 240,
+        "soft-pulp": 520,
+        "hard-pulp": 280
+      },
+      "cash": 1189049.2332735627,
+      "messages": []
+    },
+    {
+      "check": "Reconnect persisted role state",
+      "week": 2
+    },
+    {
+      "role": "purchase",
+      "action": "plan",
+      "week": 3,
+      "revision": 30
+    },
+    {
+      "role": "production",
+      "action": "draft",
+      "week": 3,
+      "revision": 31
+    },
+    {
+      "role": "transport",
+      "action": "draft",
+      "week": 3,
+      "revision": 32
+    },
+    {
+      "role": "purchase",
+      "action": "ready",
+      "week": 3,
+      "revision": 33
+    },
+    {
+      "role": "production",
+      "action": "ready",
+      "week": 3,
+      "revision": 34
+    },
+    {
+      "role": "transport",
+      "action": "ready",
+      "week": 3,
+      "revision": 35
+    },
+    {
+      "role": "instructor",
+      "action": "advance",
+      "week": 4,
+      "revision": 36
+    },
+    {
+      "outcome": 3,
+      "harvested": {
+        "soft-pulp": 1952.8,
+        "hard-pulp": 1171.68,
+        "poplar": 1163.5200000000002,
+        "soft-saw": 3998.4,
+        "hard-saw": 1477.6
+      },
+      "delivered": {
+        "soft-saw": 3578.4004389382985,
+        "hard-saw": 1360,
+        "poplar": 240,
+        "soft-pulp": 560,
+        "hard-pulp": 360
+      },
+      "cash": 1511234.9210684546,
+      "messages": [
+        "Q22: rival bid 63571 won."
+      ]
+    },
+    {
+      "check": "Reconnect persisted role state",
+      "week": 3
+    },
+    {
+      "role": "production",
+      "action": "draft",
+      "week": 4,
+      "revision": 37
+    },
+    {
+      "role": "transport",
+      "action": "draft",
+      "week": 4,
+      "revision": 38
+    },
+    {
+      "role": "purchase",
+      "action": "ready",
+      "week": 4,
+      "revision": 39
+    },
+    {
+      "role": "production",
+      "action": "ready",
+      "week": 4,
+      "revision": 40
+    },
+    {
+      "role": "transport",
+      "action": "ready",
+      "week": 4,
+      "revision": 41
+    },
+    {
+      "role": "instructor",
+      "action": "advance",
+      "week": 5,
+      "revision": 42
+    },
+    {
+      "outcome": 4,
+      "harvested": {
+        "soft-pulp": 853.364,
+        "hard-pulp": 512.0184,
+        "poplar": 430.3056,
+        "soft-saw": 1887.9456,
+        "hard-saw": 583.1864
+      },
+      "delivered": {
+        "soft-saw": 100,
+        "hard-saw": 586.1682707866914,
+        "hard-pulp": 633.2296571449829,
+        "soft-pulp": 1040,
+        "poplar": 160
+      },
+      "cash": 1487223.4362549724,
+      "messages": [
+        "Crew 1: terrain closed at Q01 (thaw).",
+        "Crew 7: terrain closed at Q07 (thaw).",
+        "Crew 8: terrain closed at Q08 (thaw).",
+        "Crew 10: terrain closed at Q10 (thaw).",
+        "Truck 2: closed road for Q01 → Girardville training mill.",
+        "Truck 2: no delivery for Q01 / hard-saw; check stock, demand and time.",
+        "Truck 3: closed road for Q10 → Roberval training mill.",
+        "Truck 3: no delivery for Q10 / hard-saw; check stock, demand and time.",
+        "Truck 3: closed road for Q07 → Dolbeau pulp mill.",
+        "Truck 3: no delivery for Q07 / soft-pulp; check stock, demand and time.",
+        "Truck 4: closed road for Q07 → Dolbeau pulp mill.",
+        "Truck 4: no delivery for Q07 / hard-pulp; check stock, demand and time.",
+        "Truck 5: closed road for Q07 → Norbord training mill.",
+        "Truck 5: no delivery for Q07 / poplar; check stock, demand and time.",
+        "Truck 5: closed road for Q07 → Girardville training mill.",
+        "Truck 5: no delivery for Q07 / hard-saw; check stock, demand and time.",
+        "Truck 6: closed road for Q01 → Dolbeau pulp mill.",
+        "Truck 6: no delivery for Q01 / soft-pulp; check stock, demand and time.",
+        "Truck 7: closed road for Q01 → Dolbeau pulp mill.",
+        "Truck 7: no delivery for Q01 / soft-pulp; check stock, demand and time.",
+        "Truck 7: closed road for Q01 → Dolbeau pulp mill.",
+        "Truck 7: no delivery for Q01 / hard-pulp; check stock, demand and time.",
+        "Truck 7: closed road for Q01 → Norbord training mill.",
+        "Truck 7: no delivery for Q01 / poplar; check stock, demand and time.",
+        "Truck 8: closed road for Q01 → Norbord training mill.",
+        "Truck 8: no delivery for Q01 / poplar; check stock, demand and time."
+      ]
+    },
+    {
+      "check": "Reconnect persisted role state",
+      "week": 4
+    },
+    {
+      "role": "instructor",
+      "action": "invite",
+      "week": 5,
+      "revision": 43
+    },
+    {
+      "check": "Replaced role credential rejected",
+      "rejected": "Room credential is invalid or has been replaced."
+    }
+  ]
+}

@@ -1,0 +1,556 @@
+[
+  {
+    "case": "flat market comparator",
+    "applications": 13,
+    "delivered": 29964.528105132238,
+    "cash": 1201744.6204689795,
+    "stumpage": 258954.47464253203,
+    "postHarvest": 73586.8182896769,
+    "production": 879721.8432651256,
+    "haul": 39791.72706650513,
+    "bctsAwards": [
+      "BC18",
+      "BC19",
+      "BC20",
+      "BC21",
+      "BC22"
+    ],
+    "lockedRates": {
+      "BC21": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      },
+      "BC22": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      },
+      "BC18": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      },
+      "BC19": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      },
+      "BC20": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      }
+    },
+    "outstandingProvisions": 0,
+    "weekly": [
+      {
+        "week": 1,
+        "cash": 664565.1614914,
+        "delivered": 2984.668616310492,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 1,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 2,
+        "cash": 658831.2884586429,
+        "delivered": 2112.425920677646,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 2,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 3,
+        "cash": 634071.3994713698,
+        "delivered": 2407.3245398098397,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 3,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 4,
+        "cash": 753977.6895348559,
+        "delivered": 3801.666434957408,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 4,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 5,
+        "cash": 1025169.3964154236,
+        "delivered": 5615.207686433762,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 5,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 6,
+        "cash": 948307.806072717,
+        "delivered": 120.393,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 6,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 7,
+        "cash": 882662.8895133915,
+        "delivered": 0,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 7,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": []
+        }
+      },
+      {
+        "week": 8,
+        "cash": 830021.798570838,
+        "delivered": 2243.2192582976877,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 8,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": []
+        }
+      },
+      {
+        "week": 9,
+        "cash": 1046883.9508430607,
+        "delivered": 4916.920753584229,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 9,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": []
+        }
+      },
+      {
+        "week": 10,
+        "cash": 1226814.5562450716,
+        "delivered": 3155.5380618056956,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 10,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": []
+        }
+      },
+      {
+        "week": 11,
+        "cash": 1335011.2019048028,
+        "delivered": 1955.8006399164572,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 11,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": []
+        }
+      },
+      {
+        "week": 12,
+        "cash": 1201744.6204689795,
+        "delivered": 651.3631933390197,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 12,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": []
+        }
+      }
+    ]
+  },
+  {
+    "case": "authored fuel and timber cycle",
+    "applications": 13,
+    "delivered": 29505.478708411112,
+    "cash": 1179307.5659609362,
+    "stumpage": 243628.9652958962,
+    "postHarvest": 73586.8182896769,
+    "production": 897760.2916176779,
+    "haul": 39644.85451221166,
+    "bctsAwards": [
+      "BC18",
+      "BC19",
+      "BC20",
+      "BC21",
+      "BC22"
+    ],
+    "lockedRates": {
+      "BC21": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      },
+      "BC22": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      },
+      "BC18": {
+        "soft-saw": 12,
+        "soft-pulp": 3,
+        "hard-saw": 8,
+        "hard-pulp": 2,
+        "poplar": 2
+      },
+      "BC19": {
+        "soft-saw": 8.934,
+        "soft-pulp": 2.2335,
+        "hard-saw": 5.9559999999999995,
+        "hard-pulp": 1.4889999999999999,
+        "poplar": 1.4889999999999999
+      },
+      "BC20": {
+        "soft-saw": 8.934,
+        "soft-pulp": 2.2335,
+        "hard-saw": 5.9559999999999995,
+        "hard-pulp": 1.4889999999999999,
+        "poplar": 1.4889999999999999
+      }
+    },
+    "outstandingProvisions": 0,
+    "weekly": [
+      {
+        "week": 1,
+        "cash": 664565.1614914,
+        "delivered": 2984.668616310492,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 1,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 2,
+        "cash": 658831.2884586429,
+        "delivered": 2112.425920677646,
+        "market": {
+          "fuel": 1,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 2,
+          "bidIndex": 1,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": []
+        }
+      },
+      {
+        "week": 3,
+        "cash": 627395.3664700516,
+        "delivered": 2407.3245398098397,
+        "market": {
+          "fuel": 1.35,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 3,
+          "bidIndex": 0.895,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": [
+            "Delivered fuel becomes more expensive"
+          ]
+        }
+      },
+      {
+        "week": 4,
+        "cash": 741283.129289862,
+        "delivered": 3801.666434957408,
+        "market": {
+          "fuel": 1.35,
+          "lumber": 1,
+          "demand": 1,
+          "physicalWeek": 4,
+          "bidIndex": 0.895,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": [
+            "Delivered fuel becomes more expensive"
+          ]
+        }
+      },
+      {
+        "week": 5,
+        "cash": 918493.7831423011,
+        "delivered": 5116.158289712636,
+        "market": {
+          "fuel": 1.35,
+          "lumber": 0.85,
+          "demand": 0.9,
+          "physicalWeek": 5,
+          "bidIndex": 0.66,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken"
+          ]
+        }
+      },
+      {
+        "week": 6,
+        "cash": 838032.9396421142,
+        "delivered": 120.393,
+        "market": {
+          "fuel": 1.35,
+          "lumber": 0.85,
+          "demand": 0.9,
+          "physicalWeek": 6,
+          "bidIndex": 0.66,
+          "stumpageMultiplier": 1,
+          "lastResetWeek": 1,
+          "rateSignalWeek": 1,
+          "nextResetWeek": 7,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken"
+          ]
+        }
+      },
+      {
+        "week": 7,
+        "cash": 772007.6460137725,
+        "delivered": 0,
+        "market": {
+          "fuel": 1.35,
+          "lumber": 0.85,
+          "demand": 0.9,
+          "physicalWeek": 7,
+          "bidIndex": 0.66,
+          "stumpageMultiplier": 0.7444999999999999,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken"
+          ]
+        }
+      },
+      {
+        "week": 8,
+        "cash": 695744.6499602101,
+        "delivered": 2108.8039200528024,
+        "market": {
+          "fuel": 1.35,
+          "lumber": 0.85,
+          "demand": 0.9,
+          "physicalWeek": 8,
+          "bidIndex": 0.66,
+          "stumpageMultiplier": 0.7444999999999999,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken"
+          ]
+        }
+      },
+      {
+        "week": 9,
+        "cash": 974728.5765711938,
+        "delivered": 5131.336091829115,
+        "market": {
+          "fuel": 0.9,
+          "lumber": 1.1,
+          "demand": 1.05,
+          "physicalWeek": 9,
+          "bidIndex": 1.1850000000000003,
+          "stumpageMultiplier": 0.7444999999999999,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken",
+            "Fuel eases and timber demand recovers"
+          ]
+        }
+      },
+      {
+        "week": 10,
+        "cash": 1197771.6644116302,
+        "delivered": 3262.3121347995343,
+        "market": {
+          "fuel": 0.9,
+          "lumber": 1.1,
+          "demand": 1.05,
+          "physicalWeek": 10,
+          "bidIndex": 1.1850000000000003,
+          "stumpageMultiplier": 0.7444999999999999,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken",
+            "Fuel eases and timber demand recovers"
+          ]
+        }
+      },
+      {
+        "week": 11,
+        "cash": 1312182.7468831579,
+        "delivered": 1809.0265669226185,
+        "market": {
+          "fuel": 0.9,
+          "lumber": 1.1,
+          "demand": 1.05,
+          "physicalWeek": 11,
+          "bidIndex": 1.1850000000000003,
+          "stumpageMultiplier": 0.7444999999999999,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken",
+            "Fuel eases and timber demand recovers"
+          ]
+        }
+      },
+      {
+        "week": 12,
+        "cash": 1179307.5659609362,
+        "delivered": 651.3631933390197,
+        "market": {
+          "fuel": 0.9,
+          "lumber": 1.1,
+          "demand": 1.05,
+          "physicalWeek": 12,
+          "bidIndex": 1.1850000000000003,
+          "stumpageMultiplier": 0.7444999999999999,
+          "lastResetWeek": 7,
+          "rateSignalWeek": 5,
+          "nextResetWeek": 20,
+          "events": [
+            "Delivered fuel becomes more expensive",
+            "Lumber prices and mill intake weaken",
+            "Fuel eases and timber demand recovers"
+          ]
+        }
+      }
+    ]
+  }
+]

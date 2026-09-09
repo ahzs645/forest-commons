@@ -1,0 +1,41 @@
+import NetworkDispatchLab from "./NetworkDispatchLab";
+import ProcurementLab from "./ProcurementLab";
+import ProcurementStudy from "./ProcurementStudy";
+import EightCompanyExercise from "./EightCompanyExercise";
+import PlanningDesk from "./PlanningDesk";
+import DispatchBenchmark from "./DispatchBenchmark";
+import ProcurementCharts from "./ProcurementCharts";
+import DraftOptions from "./DraftOptions";
+import BuckingDesk from "./BuckingDesk";
+import {describe,it,expect,vi,afterEach} from 'vitest';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {LanguageProvider,translate} from './i18n';
+import {advancedMessage} from './advanced-runtime';
+import CommonValueExperiment from './CommonValueExperiment';
+import TransportObligationsLab from './TransportObligationsLab';
+import ReciprocalDesk from './ReciprocalDesk';
+import LotProfitability from './LotProfitability';
+import BidCompositionDesk from './BidCompositionDesk';
+import DeliverabilityDesk from './DeliverabilityDesk';
+import {createGame} from './simulation/engine';
+import {quebec} from './scenarios/quebec';
+afterEach(()=>vi.unstubAllGlobals());
+describe('French advanced educational interfaces',()=>{
+ it('renders French explanatory text and empty states across six modules',()=>{
+  vi.stubGlobal('localStorage',{getItem:(key:string)=>key==='forest-language'?'fr':null,setItem:()=>{}});
+  const game=createGame(quebec),lot=game.region.stands.find(s=>s.supply==='auction')!;
+  const html=renderToStaticMarkup(<LanguageProvider><CommonValueExperiment/><TransportObligationsLab/><ReciprocalDesk game={game} onChange={()=>{}}/><LotProfitability game={game}/><BidCompositionDesk game={game} standId={lot.id} onChange={()=>{}}/><DeliverabilityDesk game={game}/></LanguageProvider>);
+  for(const phrase of ['signal privé différent','obligations fixes','conditions figées','Aucune transaction de trésorerie','contribution monétaire','heures et du stock partagés'])expect(html.includes(phrase),phrase).toBe(true);
+  expect(html).not.toContain('This separate teaching model');expect(html).not.toContain('No experiment has run');expect(html).not.toContain('No reciprocal agreements are authored');
+ });
+ it('renders translated planning, procurement, disclosure and recovery without changing option IDs',()=>{
+  vi.stubGlobal('localStorage',{getItem:(key:string)=>key==='forest-language'?'fr':null,setItem:()=>{}});
+  const game=createGame(quebec),lot=game.region.stands.find(s=>s.supply==='auction')!;
+  const html=renderToStaticMarkup(<LanguageProvider><NetworkDispatchLab game={game}/><ProcurementLab game={game} standId={lot.id} onBid={()=>{}}/><ProcurementStudy game={game} standId={lot.id} onBid={()=>{}}/><EightCompanyExercise/><PlanningDesk game={game} onNavigate={()=>{}}/><DispatchBenchmark game={game} onChange={()=>{}}/><ProcurementCharts game={game} standId={lot.id}/><DraftOptions game={game} onDraft={()=>{}}/><BuckingDesk game={game} standId={lot.id}/></LanguageProvider>);
+  for(const phrase of ['réseau routier régional','première évaluation','mêmes tirages','accord avant divulgation','Quelles sont les conséquences','référence limitée','classes de terrain','pénalités évitées','courbes de récupération'])expect(html.includes(phrase),phrase).toBe(true);
+  expect(html).toContain('value="normal" selected=""');expect(html).toContain('value="equal"');
+  expect(html).not.toContain('Grand coalition savings:');expect(html).not.toContain('Initially only standalone costs');
+ });
+ it('translates known runtime diagnostics without altering authored identifiers',()=>{const tr=(text:string)=>translate(text,'fr');expect(advancedMessage('Pair-Q1: no balanced pair dispatched; check matching stock above reserves, both routes, demand and remaining truck hours. Neither leg was sent alone.',tr)).toMatch(/Pair-Q1\s*: aucune paire équilibrée/);expect(tr('This auction is not open for bids.')).toBe('Cette enchère n’est pas ouverte aux offres.');});
+ it('explains negative dual costs and preserves numeric machine exports',()=>{const key='A negative net cost means the received transfer exceeds that company’s physical freight bill. This can be valid for one nonunique shadow-price allocation, but is not automatically fair. Compare equal-savings or negotiated transfers before accepting an agreement.';expect(translate(key,'fr')).toContain('sans être automatiquement équitable');expect(translate(key,'en')).toBe(key);});
+});

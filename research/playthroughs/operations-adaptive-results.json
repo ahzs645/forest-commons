@@ -1,0 +1,902 @@
+{
+  "kind": "Programmatic simulation API playthrough, not browser playtesting",
+  "strategy": "Adaptive service, forecast-only decisions, monthly targets from four-week rehearsal",
+  "weekly": [
+    {
+      "week": 1,
+      "decisions": [
+        "Buy Q18 for 70650, positive forecast access and best appraised upside under 20% cash.",
+        "Set monthly targets from four-week forecast rehearsal, rounded to 10 m³.",
+        "Bid 49560 for Q21; 5% above asking, no rival information."
+      ],
+      "forecastDelivery": 5920,
+      "harvested": 9744.323369408912,
+      "delivered": 5920,
+      "waste": 0,
+      "cash": 891191.3728351926,
+      "hits": 0,
+      "checks": 0,
+      "messages": [
+        "Q21: rival bid 51431 won."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 3360,
+          "hard-saw": 2400,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 2240,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 640,
+          "hard-pulp": 320,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 760,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1280,
+          "hard-pulp": 720,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 2,
+      "decisions": [],
+      "forecastDelivery": 6600,
+      "harvested": 9764,
+      "delivered": 6600,
+      "waste": 0,
+      "cash": 1263380.931103798,
+      "hits": 0,
+      "checks": 0,
+      "messages": [],
+      "targets": {
+        "M1": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 3360,
+          "hard-saw": 2400,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 2240,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 640,
+          "hard-pulp": 320,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 760,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1280,
+          "hard-pulp": 720,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 3,
+      "decisions": [
+        "Bid 61898 for Q22; 5% above asking, no rival information."
+      ],
+      "forecastDelivery": 6140,
+      "harvested": 9764,
+      "delivered": 6140,
+      "waste": 0,
+      "cash": 1498390.9351123413,
+      "hits": 0,
+      "checks": 0,
+      "messages": [
+        "Won Q22 for 61898. Available next week; refusal window lasts one week."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 3360,
+          "hard-saw": 2400,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 2240,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 640,
+          "hard-pulp": 320,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 760,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1280,
+          "hard-pulp": 720,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 4,
+      "decisions": [],
+      "forecastDelivery": 5212,
+      "harvested": 9174.720000000001,
+      "delivered": 5212,
+      "waste": 0,
+      "cash": 1645216.946055698,
+      "hits": 4,
+      "checks": 10,
+      "messages": [],
+      "targets": {
+        "M1": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 3360,
+          "hard-saw": 2400,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3500,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 2240,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 640,
+          "hard-pulp": 320,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 760,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1280,
+          "hard-pulp": 720,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 5,
+      "decisions": [
+        "wait spring-washout",
+        "Set monthly targets from four-week forecast rehearsal, rounded to 10 m³.",
+        "Bid 75600 for Q23; 5% above asking, no rival information."
+      ],
+      "forecastDelivery": 7464.535488744365,
+      "harvested": 4974.779323657856,
+      "delivered": 7340.92981694014,
+      "waste": 1226.7719473557013,
+      "cash": 2179812.460424708,
+      "hits": 0,
+      "checks": 0,
+      "messages": [
+        "Spring access washout: road access-Q04 unavailable through week 7, unless recovery finishes earlier.",
+        "Q03: final harvest complete; 10% standing retention.",
+        "Crew 4: terrain closed at Q04 (thaw).",
+        "Q07: final harvest complete; 10% standing retention.",
+        "Q23: rival bid 84488 won."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 1220,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 2220,
+          "hard-saw": 360,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3850,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 1210,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 1060,
+          "hard-pulp": 640,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 350,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 590,
+          "hard-pulp": 190,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 6,
+      "decisions": [
+        "wait spring-washout"
+      ],
+      "forecastDelivery": 4132.759784697638,
+      "harvested": 2549.423011147927,
+      "delivered": 4132.759784697638,
+      "waste": 1229.4400000000003,
+      "cash": 2351878.854007353,
+      "hits": 0,
+      "checks": 0,
+      "messages": [
+        "Spring access washout: road access-Q04 unavailable through week 7, unless recovery finishes earlier.",
+        "Q02: final harvest complete; 10% standing retention."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 1220,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 2220,
+          "hard-saw": 360,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3850,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 1210,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 1060,
+          "hard-pulp": 640,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 350,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 590,
+          "hard-pulp": 190,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 7,
+      "decisions": [
+        "wait spring-washout",
+        "repair truck-service"
+      ],
+      "forecastDelivery": 4090.1581939638727,
+      "harvested": 3696.636113420652,
+      "delivered": 1840,
+      "waste": 718.2256465287455,
+      "cash": 2385565.0584453493,
+      "hits": 0,
+      "checks": 0,
+      "messages": [
+        "Spring access washout: road access-Q04 unavailable through week 7, unless recovery finishes earlier.",
+        "Truck 3 transmission failure: truck T3 unavailable through week 8, unless recovery finishes earlier.",
+        "Crew 1: terrain closed at Q01 (thaw).",
+        "Crew 7: terrain closed at Q08 (thaw).",
+        "Crew 8: terrain closed at Q22 (thaw).",
+        "Crew 9: terrain closed at Q10 (thaw).",
+        "Truck 1: closed road for Q01 → Dolbeau sawmill.",
+        "Truck 1: no delivery for Q01 / soft-saw; check stock, demand and time.",
+        "Truck 2: no delivery for Q08 / soft-saw; check stock, demand and time.",
+        "Truck 2: closed road for Q10 → La Doré training mill.",
+        "Truck 2: no delivery for Q10 / soft-saw; check stock, demand and time.",
+        "Truck 4: closed road for Q22 → Dolbeau sawmill.",
+        "Truck 4: no delivery for Q22 / soft-saw; check stock, demand and time.",
+        "Truck 4: closed road for Q01 → Girardville training mill.",
+        "Truck 4: no delivery for Q01 / hard-saw; check stock, demand and time.",
+        "Truck 5: closed road for Q22 → Girardville training mill.",
+        "Truck 5: no delivery for Q22 / hard-saw; check stock, demand and time.",
+        "Truck 5: closed road for Q10 → Roberval training mill.",
+        "Truck 5: no delivery for Q10 / hard-saw; check stock, demand and time.",
+        "Truck 7: closed road for Q01 → Dolbeau pulp mill.",
+        "Truck 7: no delivery for Q01 / hard-pulp; check stock, demand and time.",
+        "Truck 8: closed road for Q01 → Dolbeau pulp mill.",
+        "Truck 8: no delivery for Q01 / hard-pulp; check stock, demand and time.",
+        "Truck 8: closed road for Q01 → Dolbeau pulp mill.",
+        "Truck 8: no delivery for Q01 / soft-pulp; check stock, demand and time.",
+        "Truck 8: closed road for Q01 → Norbord training mill.",
+        "Truck 8: no delivery for Q01 / poplar; check stock, demand and time.",
+        "Truck 10: closed road for Q22 → Dolbeau pulp mill.",
+        "Truck 10: no delivery for Q22 / soft-pulp; check stock, demand and time.",
+        "Truck 10: closed road for Q22 → Dolbeau pulp mill.",
+        "Truck 10: no delivery for Q22 / hard-pulp; check stock, demand and time.",
+        "Truck 10: closed road for Q22 → Norbord training mill.",
+        "Truck 10: no delivery for Q22 / poplar; check stock, demand and time."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 1220,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 2220,
+          "hard-saw": 360,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3850,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 1210,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 1060,
+          "hard-pulp": 640,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 350,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 590,
+          "hard-pulp": 190,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 8,
+      "decisions": [],
+      "forecastDelivery": 5569.208640243803,
+      "harvested": 4353.535665634617,
+      "delivered": 5569.208640243803,
+      "waste": 1677.5247970964203,
+      "cash": 2734258.6069338135,
+      "hits": 1,
+      "checks": 10,
+      "messages": [
+        "Q09: final harvest complete; 10% standing retention.",
+        "Q04: final harvest complete; 10% standing retention.",
+        "Truck 8: no delivery for Q06 / soft-saw; check stock, demand and time."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 1220,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 2220,
+          "hard-saw": 360,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 3850,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 1210,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 1060,
+          "hard-pulp": 640,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 350,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 590,
+          "hard-pulp": 190,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 9,
+      "decisions": [
+        "Set monthly targets from four-week forecast rehearsal, rounded to 10 m³."
+      ],
+      "forecastDelivery": 5525.550559502233,
+      "harvested": 4419.65716470601,
+      "delivered": 5525.550559502233,
+      "waste": 1050.3332916534698,
+      "cash": 3012385.884290074,
+      "hits": 0,
+      "checks": 0,
+      "messages": [
+        "Q08: final harvest complete; 10% standing retention.",
+        "Q10: final harvest complete; 10% standing retention.",
+        "Q05: final harvest complete; 10% standing retention.",
+        "Q06: final harvest complete; 10% standing retention.",
+        "Truck 10: no delivery for Q04 / hard-pulp; check stock, demand and time."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 1080,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 0,
+          "hard-saw": 730,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 2550,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 740,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 930,
+          "hard-pulp": 980,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 250,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1580,
+          "hard-pulp": 330,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 10,
+      "decisions": [
+        "wait mill-stop"
+      ],
+      "forecastDelivery": 4782.171804727145,
+      "harvested": 2080.1881480671786,
+      "delivered": 4782.171804727145,
+      "waste": 251.42400000000004,
+      "cash": 3250778.002340671,
+      "hits": 0,
+      "checks": 0,
+      "messages": [
+        "Dolbeau intake shutdown: mill M1 unavailable through week 10, unless recovery finishes earlier.",
+        "Q01: final harvest complete; 10% standing retention.",
+        "Truck 10: no delivery for Q10 / hard-pulp; check stock, demand and time."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 1080,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 0,
+          "hard-saw": 730,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 2550,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 740,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 930,
+          "hard-pulp": 980,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 250,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1580,
+          "hard-pulp": 330,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 11,
+      "decisions": [],
+      "forecastDelivery": 2007.4436481819992,
+      "harvested": 1644.689963819982,
+      "delivered": 2007.4436481819992,
+      "waste": 68.34138487454011,
+      "cash": 3340163.0723595205,
+      "hits": 0,
+      "checks": 0,
+      "messages": [],
+      "targets": {
+        "M1": {
+          "soft-saw": 1080,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 0,
+          "hard-saw": 730,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 2550,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 740,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 930,
+          "hard-pulp": 980,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 250,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1580,
+          "hard-pulp": 330,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    },
+    {
+      "week": 12,
+      "decisions": [],
+      "forecastDelivery": 938.7080134642639,
+      "harvested": 886.995557243388,
+      "delivered": 938.7080134642639,
+      "waste": 57.92587892491386,
+      "cash": 3373839.1957353284,
+      "hits": 3,
+      "checks": 9,
+      "messages": [
+        "Campaign complete. Remaining timber and roadside stock are retained in the mass-balance report; terminal carrying charges have been settled."
+      ],
+      "targets": {
+        "M1": {
+          "soft-saw": 1080,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M2": {
+          "soft-saw": 0,
+          "hard-saw": 730,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0
+        },
+        "M3": {
+          "soft-saw": 2550,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "hard-saw": 0
+        },
+        "M4": {
+          "hard-saw": 740,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "poplar": 0,
+          "soft-saw": 0
+        },
+        "M5": {
+          "soft-pulp": 930,
+          "hard-pulp": 980,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M6": {
+          "poplar": 250,
+          "soft-pulp": 0,
+          "hard-pulp": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        },
+        "M7": {
+          "soft-pulp": 1580,
+          "hard-pulp": 330,
+          "poplar": 0,
+          "soft-saw": 0,
+          "hard-saw": 0
+        }
+      }
+    }
+  ],
+  "objectives": [
+    {
+      "id": "supply",
+      "title": "Keep the chain moving",
+      "description": "Deliver 50,000 m³ of the assortments mills actually accept across the season.",
+      "metric": "delivered",
+      "direction": "at-least",
+      "target": 50000,
+      "unit": "m³",
+      "value": 56008.772267757224,
+      "met": true,
+      "final": true
+    },
+    {
+      "id": "service",
+      "title": "Deliver on your promises",
+      "description": "Meet at least 60% of nonzero monthly assortment commitments within the agreed tolerance.",
+      "metric": "service",
+      "direction": "at-least",
+      "target": 60,
+      "unit": "%",
+      "value": 27.586206896551722,
+      "met": false,
+      "final": true
+    },
+    {
+      "id": "freshness",
+      "title": "Protect timber value",
+      "description": "Keep expired inventory below 8% of harvested volume. Downgrades still lose value even when they do not become waste.",
+      "metric": "waste",
+      "direction": "at-most",
+      "target": 8,
+      "unit": "%",
+      "value": 9.959862487080567,
+      "met": false,
+      "final": true
+    },
+    {
+      "id": "viability",
+      "title": "A viable operation",
+      "description": "Finish with nonnegative profit after acquisition, operation and terminal charges.",
+      "metric": "profit",
+      "direction": "at-least",
+      "target": 0,
+      "unit": "CAD",
+      "value": 2723839.1957353284,
+      "met": true,
+      "final": true
+    }
+  ],
+  "final": {
+    "cash": 3373839.1957353284,
+    "delivered": 56008.772267757224,
+    "harvested": 63052.94831710654,
+    "waste": 6279.986946433792,
+    "hits": 8,
+    "checks": 29
+  }
+}

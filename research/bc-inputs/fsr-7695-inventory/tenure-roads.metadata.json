@@ -1,0 +1,777 @@
+{
+  "author": "d0716cb8-7eb5-4d43-9f57-6022096fd79f",
+  "author_email": null,
+  "creator_user_id": "d0716cb8-7eb5-4d43-9f57-6022096fd79f",
+  "download_audience": "Public",
+  "id": "9e5bfa62-2339-445e-bf67-81657180c682",
+  "isopen": false,
+  "license_id": "2",
+  "license_title": "Open Government Licence - British Columbia",
+  "license_url": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+  "lineage_statement": "Base information originates from 1:20,000 and TRIM and 1:20,000 Cadastral.",
+  "maintainer": null,
+  "maintainer_email": null,
+  "metadata_created": "2014-12-10T23:49:07.737212",
+  "metadata_modified": "2026-09-05T12:41:39.109743",
+  "metadata_visibility": "Public",
+  "name": "forest-tenure-road-segment-lines",
+  "notes": "Uniquely identifies all road segments within a road section",
+  "num_resources": 4,
+  "num_tags": 5,
+  "organization": {
+    "id": "32cf90fc-9350-4ab6-995f-11a66125b5a1",
+    "name": "forest-tenures",
+    "title": "Forest Tenures Branch",
+    "type": "organization",
+    "description": "Custodian: Doug Kelly\n\nDelegate: Ivan Eggers",
+    "image_url": "",
+    "created": "2014-12-10T15:05:02.728167",
+    "is_organization": true,
+    "approval_status": "approved",
+    "state": "active"
+  },
+  "owner_org": "32cf90fc-9350-4ab6-995f-11a66125b5a1",
+  "private": false,
+  "publish_state": "PUBLISHED",
+  "purpose": "To support harvesting approval process, monitor forest tenures and support Integrated Land and Resource Registry application",
+  "record_create_date": "2008-04-18",
+  "record_last_modified": "2026-09-05",
+  "record_publish_date": "2011-03-09",
+  "replacement_record": "",
+  "resource_status": "onGoing",
+  "retention_expiry_date": "",
+  "security_class": "PUBLIC",
+  "source_data_path": "",
+  "state": "active",
+  "title": "Forest Tenure Road Segment Lines",
+  "type": "bcdc_dataset",
+  "url": null,
+  "version": null,
+  "view_audience": "Public",
+  "contacts": [
+    {
+      "displayed": [
+        "displayed"
+      ],
+      "email": "foresttenuresbranch@gov.bc.ca",
+      "name": "Forest Tenures Branch",
+      "org": "32cf90fc-9350-4ab6-995f-11a66125b5a1",
+      "role": "pointOfContact"
+    },
+    {
+      "displayed": [],
+      "email": "Lindsay.Scott@gov.bc.ca",
+      "name": "Lindsay Scott",
+      "org": "32cf90fc-9350-4ab6-995f-11a66125b5a1",
+      "role": "businessExpert"
+    }
+  ],
+  "dates": [
+    {
+      "date": "2008-04-18",
+      "type": "Created"
+    }
+  ],
+  "more_info": [
+    {
+      "description": "",
+      "url": ""
+    }
+  ],
+  "resources": [
+    {
+      "bcdc_type": "geographic",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2019-05-07T22:02:29.154000",
+      "datastore_active": false,
+      "description": "The Distribution Service allows for data to be downloaded in various file formats from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+      "format": "multiple",
+      "hash": "",
+      "id": "722b3f16-ca9c-4beb-bbbd-22cca4597b63",
+      "iso_topic_category": [
+        "boundaries"
+      ],
+      "last_modified": "2026-09-05T09:51:11",
+      "metadata_modified": "2026-09-05T12:41:38.323673",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "BC Geographic Warehouse Custom Download",
+      "object_name": "WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW",
+      "object_short_name": "FTN_RD_SGM",
+      "object_table_comments": "Uniquely identifies all road segments within a road section.",
+      "ofi": "True",
+      "package_id": "9e5bfa62-2339-445e-bf67-81657180c682",
+      "position": 0,
+      "projection_name": "epsg3005",
+      "resource_access_method": "indirect access",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "asNeeded",
+      "size": null,
+      "spatial_datatype": "SDO_GEOMETRY",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download this dataset. For more information on using the distribution order form see [How to download data using the Catalogue or iMapBC](https://bcgov.github.io/data-publication/pages/dps_data_distribution_w.html). If the data is visible through public WMS, click the <b>Preview</b> button on the toolbar.",
+      "url": "",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number.",
+          "column_name": "FOREST_FILE_ID",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "FFID"
+        },
+        {
+          "column_comments": "Identifies one section of a road within a road permit.",
+          "column_name": "ROAD_SECTION_ID",
+          "data_precision": "30",
+          "data_type": "VARCHAR2",
+          "short_name": "RD_SECT_ID"
+        },
+        {
+          "column_comments": "The start station of the road segment.",
+          "column_name": "START_STATION",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "START_STTN"
+        },
+        {
+          "column_comments": "The end station of the road segment.",
+          "column_name": "END_STATION",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "END_STTN"
+        },
+        {
+          "column_comments": "Unique identifying set of characters to be stamped or  marked on the end of each log to associate the log withthe specific authority to harvest and move timber.",
+          "column_name": "TIMBER_MARK",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "TIMBER_MK"
+        },
+        {
+          "column_comments": "Identifies the owner of a Forest Service Road. Valid values include \"BCTS\", and \"Forest Services\".",
+          "column_name": "ROAD_RESPONSIBILITY_TYPE_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "RD_RESP_CD"
+        },
+        {
+          "column_comments": "Date the Road Section feature was retired.",
+          "column_name": "RETIREMENT_DATE",
+          "data_precision": "7",
+          "data_type": "DATE",
+          "short_name": "RETIRE_DT"
+        },
+        {
+          "column_comments": "Spatial feature length in metres. This value is calculated.",
+          "column_name": "FEATURE_LENGTH",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LNGTH"
+        },
+        {
+          "column_comments": "Unique identifier for a spatial feature class.",
+          "column_name": "FEATURE_CLASS_SKEY",
+          "data_precision": "10",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_CLASS"
+        },
+        {
+          "column_comments": "The current status of the forest land use, eg., Pending - Planned, Harvesting - Suspended, Active. This is a subset of Timber_Status_Code.",
+          "column_name": "FILE_STATUS_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "FILE_ST_CD"
+        },
+        {
+          "column_comments": "The code to indicate the type of file, and often synonymous with a tenure or a project.",
+          "column_name": "FILE_TYPE_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "FILE_TP_CD"
+        },
+        {
+          "column_comments": "Description of the file type.",
+          "column_name": "FILE_TYPE_DESCRIPTION",
+          "data_precision": "120",
+          "data_type": "VARCHAR2",
+          "short_name": "FIL_TP_DSC"
+        },
+        {
+          "column_comments": "The code of the district in which the road section is located.",
+          "column_name": "GEOGRAPHIC_DISTRICT_CODE",
+          "data_precision": "6",
+          "data_type": "VARCHAR2",
+          "short_name": "GEO_DST_CD"
+        },
+        {
+          "column_comments": "The name of the district in which the road section is located.",
+          "column_name": "GEOGRAPHIC_DISTRICT_NAME",
+          "data_precision": "100",
+          "data_type": "VARCHAR2",
+          "short_name": "GEO_DST_NM"
+        },
+        {
+          "column_comments": "Sequentially assigned number to identify a ministry client.",
+          "column_name": "CLIENT_NUMBER",
+          "data_precision": "8",
+          "data_type": "VARCHAR2",
+          "short_name": "CLIENT_NUM"
+        },
+        {
+          "column_comments": "The name of the Ministry Client - Company or Individual. Entered as: the full corporate name if a Corporation; the full registered name if a Partnership; the legal name if an Individual.",
+          "column_name": "CLIENT_NAME",
+          "data_precision": "91",
+          "data_type": "VARCHAR2",
+          "short_name": "CLIENT_NM"
+        },
+        {
+          "column_comments": "The life cycle state of the item.  One of Pending, Active or Retired.",
+          "column_name": "LIFE_CYCLE_STATUS_CODE",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "LIFE_ST_CD"
+        },
+        {
+          "column_comments": "The default label to be used when displaying the feature on a map.  Consists of the FOREST_FILE_ID ,ROAD_SECTION_ID, and START_STATION.",
+          "column_name": "MAP_LABEL",
+          "data_precision": "50",
+          "data_type": "VARCHAR2",
+          "short_name": "MAP_LABEL"
+        },
+        {
+          "column_name": "FEATURE_LENGTH_M",
+          "data_precision": "19",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LEN"
+        },
+        {
+          "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+          "column_name": "GEOMETRY",
+          "data_precision": "64",
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "GEOMETRY"
+        },
+        {
+          "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+          "column_name": "OBJECTID",
+          "data_precision": "38",
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": "4000",
+          "data_type": "BLOB"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW",
+          "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=2868,2869,2870,2871&scale=100000.0&center=-13917711.2585,6523069.06698",
+          "preview_image_url": "",
+          "preview_latitude": "50.441381",
+          "preview_longitude": "-125.02492743",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW/ows?",
+          "preview_zoom_level": "14"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "webservice",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2015-12-14T10:55:46.164000",
+      "datastore_active": false,
+      "description": "Web Mapping Service (WMS) allows for data to be fed out via a service from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+      "format": "wms",
+      "hash": "",
+      "id": "a97228b2-a55d-497d-9a0e-a0c0bcc4d309",
+      "iso_topic_category": [
+        "boundaries"
+      ],
+      "last_modified": "2026-09-05T09:51:11",
+      "metadata_modified": "2026-09-05T12:41:38.717061",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "WMS getCapabilities request",
+      "object_name": "WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW",
+      "object_short_name": "FTN_RD_SGM",
+      "object_table_comments": "Uniquely identifies all road segments within a road section.",
+      "package_id": "9e5bfa62-2339-445e-bf67-81657180c682",
+      "position": 1,
+      "projection_name": "epsg4326",
+      "resource_access_method": "service",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "daily",
+      "size": null,
+      "spatial_datatype": "",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to see or copy the WMS call. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+      "url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW/ows?service=WMS&request=GetCapabilities",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number.",
+          "column_name": "FOREST_FILE_ID",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "FFID"
+        },
+        {
+          "column_comments": "Identifies one section of a road within a road permit.",
+          "column_name": "ROAD_SECTION_ID",
+          "data_precision": "30",
+          "data_type": "VARCHAR2",
+          "short_name": "RD_SECT_ID"
+        },
+        {
+          "column_comments": "The start station of the road segment.",
+          "column_name": "START_STATION",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "START_STTN"
+        },
+        {
+          "column_comments": "The end station of the road segment.",
+          "column_name": "END_STATION",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "END_STTN"
+        },
+        {
+          "column_comments": "Unique identifying set of characters to be stamped or  marked on the end of each log to associate the log withthe specific authority to harvest and move timber.",
+          "column_name": "TIMBER_MARK",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "TIMBER_MK"
+        },
+        {
+          "column_comments": "Identifies the owner of a Forest Service Road. Valid values include \"BCTS\", and \"Forest Services\".",
+          "column_name": "ROAD_RESPONSIBILITY_TYPE_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "RD_RESP_CD"
+        },
+        {
+          "column_comments": "Date the Road Section feature was retired.",
+          "column_name": "RETIREMENT_DATE",
+          "data_precision": "7",
+          "data_type": "DATE",
+          "short_name": "RETIRE_DT"
+        },
+        {
+          "column_comments": "Spatial feature length in metres. This value is calculated.",
+          "column_name": "FEATURE_LENGTH",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LNGTH"
+        },
+        {
+          "column_comments": "Unique identifier for a spatial feature class.",
+          "column_name": "FEATURE_CLASS_SKEY",
+          "data_precision": "10",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_CLASS"
+        },
+        {
+          "column_comments": "The current status of the forest land use, eg., Pending - Planned, Harvesting - Suspended, Active. This is a subset of Timber_Status_Code.",
+          "column_name": "FILE_STATUS_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "FILE_ST_CD"
+        },
+        {
+          "column_comments": "The code to indicate the type of file, and often synonymous with a tenure or a project.",
+          "column_name": "FILE_TYPE_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "FILE_TP_CD"
+        },
+        {
+          "column_comments": "Description of the file type.",
+          "column_name": "FILE_TYPE_DESCRIPTION",
+          "data_precision": "120",
+          "data_type": "VARCHAR2",
+          "short_name": "FIL_TP_DSC"
+        },
+        {
+          "column_comments": "The code of the district in which the road section is located.",
+          "column_name": "GEOGRAPHIC_DISTRICT_CODE",
+          "data_precision": "6",
+          "data_type": "VARCHAR2",
+          "short_name": "GEO_DST_CD"
+        },
+        {
+          "column_comments": "The name of the district in which the road section is located.",
+          "column_name": "GEOGRAPHIC_DISTRICT_NAME",
+          "data_precision": "100",
+          "data_type": "VARCHAR2",
+          "short_name": "GEO_DST_NM"
+        },
+        {
+          "column_comments": "Sequentially assigned number to identify a ministry client.",
+          "column_name": "CLIENT_NUMBER",
+          "data_precision": "8",
+          "data_type": "VARCHAR2",
+          "short_name": "CLIENT_NUM"
+        },
+        {
+          "column_comments": "The name of the Ministry Client - Company or Individual. Entered as: the full corporate name if a Corporation; the full registered name if a Partnership; the legal name if an Individual.",
+          "column_name": "CLIENT_NAME",
+          "data_precision": "91",
+          "data_type": "VARCHAR2",
+          "short_name": "CLIENT_NM"
+        },
+        {
+          "column_comments": "The life cycle state of the item.  One of Pending, Active or Retired.",
+          "column_name": "LIFE_CYCLE_STATUS_CODE",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "LIFE_ST_CD"
+        },
+        {
+          "column_comments": "The default label to be used when displaying the feature on a map.  Consists of the FOREST_FILE_ID ,ROAD_SECTION_ID, and START_STATION.",
+          "column_name": "MAP_LABEL",
+          "data_precision": "50",
+          "data_type": "VARCHAR2",
+          "short_name": "MAP_LABEL"
+        },
+        {
+          "column_name": "FEATURE_LENGTH_M",
+          "data_precision": "19",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LEN"
+        },
+        {
+          "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+          "column_name": "GEOMETRY",
+          "data_precision": "64",
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "GEOMETRY"
+        },
+        {
+          "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+          "column_name": "OBJECTID",
+          "data_precision": "38",
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": "4000",
+          "data_type": "BLOB"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW",
+          "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=2868,2869,2870,2871&scale=100000.0&center=-13917711.2585,6523069.06698",
+          "preview_image_url": "",
+          "preview_latitude": "50.441381",
+          "preview_longitude": "-125.02492743",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW/ows?",
+          "preview_zoom_level": "14"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "webservice",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2017-10-30T20:13:18.627000",
+      "datastore_active": false,
+      "description": "KML Ground Overlays can be used to display geographic data in mapping applications, including Google Earth. Data is served via WMS from the B.C. Geographic Warehouse (BCGW), a central government repository.",
+      "format": "kml",
+      "hash": "",
+      "id": "7ef64052-65e0-4bf2-95e3-3be60ec7d7d9",
+      "iso_topic_category": [
+        "boundaries"
+      ],
+      "last_modified": "2026-09-05T09:51:11",
+      "metadata_modified": "2026-09-05T12:41:39.114811",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "Download KML Ground Overlay file",
+      "object_name": "WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW",
+      "object_short_name": "FTN_RD_SGM",
+      "object_table_comments": "Uniquely identifies all road segments within a road section.",
+      "package_id": "9e5bfa62-2339-445e-bf67-81657180c682",
+      "position": 2,
+      "projection_name": "epsg4326",
+      "resource_access_method": "service",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "daily",
+      "size": 0,
+      "spatial_datatype": "",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download the KML Ground Overlay file. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+      "url": "https://openmaps.gov.bc.ca/kml/geo/layers/WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW_loader.kml",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "File identification assigned to Provincial Forest Use files. Assigned file number. Usually the Licence, Tenure or Private Mark number.",
+          "column_name": "FOREST_FILE_ID",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "FFID"
+        },
+        {
+          "column_comments": "Identifies one section of a road within a road permit.",
+          "column_name": "ROAD_SECTION_ID",
+          "data_precision": "30",
+          "data_type": "VARCHAR2",
+          "short_name": "RD_SECT_ID"
+        },
+        {
+          "column_comments": "The start station of the road segment.",
+          "column_name": "START_STATION",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "START_STTN"
+        },
+        {
+          "column_comments": "The end station of the road segment.",
+          "column_name": "END_STATION",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "END_STTN"
+        },
+        {
+          "column_comments": "Unique identifying set of characters to be stamped or  marked on the end of each log to associate the log withthe specific authority to harvest and move timber.",
+          "column_name": "TIMBER_MARK",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "TIMBER_MK"
+        },
+        {
+          "column_comments": "Identifies the owner of a Forest Service Road. Valid values include \"BCTS\", and \"Forest Services\".",
+          "column_name": "ROAD_RESPONSIBILITY_TYPE_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "RD_RESP_CD"
+        },
+        {
+          "column_comments": "Date the Road Section feature was retired.",
+          "column_name": "RETIREMENT_DATE",
+          "data_precision": "7",
+          "data_type": "DATE",
+          "short_name": "RETIRE_DT"
+        },
+        {
+          "column_comments": "Spatial feature length in metres. This value is calculated.",
+          "column_name": "FEATURE_LENGTH",
+          "data_precision": "11",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LNGTH"
+        },
+        {
+          "column_comments": "Unique identifier for a spatial feature class.",
+          "column_name": "FEATURE_CLASS_SKEY",
+          "data_precision": "10",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_CLASS"
+        },
+        {
+          "column_comments": "The current status of the forest land use, eg., Pending - Planned, Harvesting - Suspended, Active. This is a subset of Timber_Status_Code.",
+          "column_name": "FILE_STATUS_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "FILE_ST_CD"
+        },
+        {
+          "column_comments": "The code to indicate the type of file, and often synonymous with a tenure or a project.",
+          "column_name": "FILE_TYPE_CODE",
+          "data_precision": "3",
+          "data_type": "VARCHAR2",
+          "short_name": "FILE_TP_CD"
+        },
+        {
+          "column_comments": "Description of the file type.",
+          "column_name": "FILE_TYPE_DESCRIPTION",
+          "data_precision": "120",
+          "data_type": "VARCHAR2",
+          "short_name": "FIL_TP_DSC"
+        },
+        {
+          "column_comments": "The code of the district in which the road section is located.",
+          "column_name": "GEOGRAPHIC_DISTRICT_CODE",
+          "data_precision": "6",
+          "data_type": "VARCHAR2",
+          "short_name": "GEO_DST_CD"
+        },
+        {
+          "column_comments": "The name of the district in which the road section is located.",
+          "column_name": "GEOGRAPHIC_DISTRICT_NAME",
+          "data_precision": "100",
+          "data_type": "VARCHAR2",
+          "short_name": "GEO_DST_NM"
+        },
+        {
+          "column_comments": "Sequentially assigned number to identify a ministry client.",
+          "column_name": "CLIENT_NUMBER",
+          "data_precision": "8",
+          "data_type": "VARCHAR2",
+          "short_name": "CLIENT_NUM"
+        },
+        {
+          "column_comments": "The name of the Ministry Client - Company or Individual. Entered as: the full corporate name if a Corporation; the full registered name if a Partnership; the legal name if an Individual.",
+          "column_name": "CLIENT_NAME",
+          "data_precision": "91",
+          "data_type": "VARCHAR2",
+          "short_name": "CLIENT_NM"
+        },
+        {
+          "column_comments": "The life cycle state of the item.  One of Pending, Active or Retired.",
+          "column_name": "LIFE_CYCLE_STATUS_CODE",
+          "data_precision": "10",
+          "data_type": "VARCHAR2",
+          "short_name": "LIFE_ST_CD"
+        },
+        {
+          "column_comments": "The default label to be used when displaying the feature on a map.  Consists of the FOREST_FILE_ID ,ROAD_SECTION_ID, and START_STATION.",
+          "column_name": "MAP_LABEL",
+          "data_precision": "50",
+          "data_type": "VARCHAR2",
+          "short_name": "MAP_LABEL"
+        },
+        {
+          "column_name": "FEATURE_LENGTH_M",
+          "data_precision": "19",
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LEN"
+        },
+        {
+          "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+          "column_name": "GEOMETRY",
+          "data_precision": "64",
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "GEOMETRY"
+        },
+        {
+          "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+          "column_name": "OBJECTID",
+          "data_precision": "38",
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": "4000",
+          "data_type": "BLOB"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW",
+          "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=2868,2869,2870,2871&scale=100000.0&center=-13917711.2585,6523069.06698",
+          "preview_image_url": "",
+          "preview_latitude": "50.441381",
+          "preview_longitude": "-125.02492743",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW/ows?",
+          "preview_zoom_level": "14"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "webservice",
+      "cache_last_updated": null,
+      "cache_url": "null",
+      "created": "2022-12-23T18:05:28.017861",
+      "datastore_active": "false",
+      "description": "",
+      "details": [],
+      "format": "other",
+      "geographic_extent": [],
+      "hash": "",
+      "id": "3d6638fb-6f2d-4fd8-86d1-a17a76b4aee7",
+      "isUrl": "true",
+      "iso_topic_category": [],
+      "metadata_modified": "2024-12-13T13:48:52.558216",
+      "mimetype": "null",
+      "mimetype_inner": "null",
+      "name": "ArcGIS Online View",
+      "package_id": "9e5bfa62-2339-445e-bf67-81657180c682",
+      "position": 3,
+      "preview_info": [],
+      "projection_name": "epsg3005",
+      "resource_access_method": "direct access",
+      "resource_storage_location": "esri arcgis online",
+      "resource_type": "data",
+      "resource_update_cycle": "weekly",
+      "size": null,
+      "spatial_datatype": "",
+      "state": "active",
+      "url": "https://governmentofbc.maps.arcgis.com/home/item.html?id=210d8b50041b4ba18e6c578682355504",
+      "url_type": "null"
+    }
+  ],
+  "tags": [
+    {
+      "display_name": "Canada",
+      "id": "629dffcd-9d8a-4651-a65d-2a29e93a62b8",
+      "name": "Canada",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "FTA",
+      "id": "3688ae50-28ef-44c2-b0a6-9739cc165ef9",
+      "name": "FTA",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "Roads",
+      "id": "6a14ec9d-1595-402f-af79-192b119ef6a2",
+      "name": "Roads",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "forest",
+      "id": "7235cf1d-98e7-4bdc-9d7e-ec3da7dd79bd",
+      "name": "forest",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "forest tenure",
+      "id": "56b9b9d4-f361-427d-b62a-3144ba8a08df",
+      "name": "forest tenure",
+      "state": "active",
+      "vocabulary_id": null
+    }
+  ],
+  "groups": [],
+  "relationships_as_subject": [],
+  "relationships_as_object": []
+}

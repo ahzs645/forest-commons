@@ -1,0 +1,42 @@
+import { it, expect } from "vitest";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { RoomStore } from "./rooms";
+it("enforces staged consent and preserves private economics through debrief and reconnect",()=>{
+ const dir=mkdtempSync(join(tmpdir(),'forest-disclosure-'));try{
+ let store=new RoomStore(dir);const owner=store.create();
+ const act=(token:string,action:string,payload:unknown={})=>store.mutate(owner.id,token,store.view(owner.id,token).revision,action,payload);
+ const one=act(owner.token,'invite',{role:'company1'}).credential!,two=act(owner.token,'invite',{role:'company2'}).credential!;
+ const rest=[3,4,5].map(i=>act(owner.token,'invite',{role:'company'+i}).credential!);
+ expect(Object.keys(store.view(owner.id,one).disclosure!.economics)).toEqual(['1']);
+ expect(Object.keys(store.view(owner.id,owner.token).disclosure!.economics)).toHaveLength(5);
+ expect(()=>act(one,'disclosure-phase',{phase:'sharing'})).toThrow('instructor');
+ expect(()=>act(one,'disclosure-share',{consent:true})).toThrow('sharing');
+ act(one,'disclosure-estimate',{savings:100});act(two,'disclosure-estimate',{savings:500});
+ expect(store.view(owner.id,one).disclosure!.estimates['2']).toBeUndefined();
+ act(owner.token,'disclosure-phase',{phase:'sharing'});
+ expect(()=>act(one,'disclosure-share',{consent:false})).toThrow('consent');
+ act(one,'disclosure-share',{consent:true});
+ expect(Object.keys(store.view(owner.id,two).disclosure!.economics)).toEqual(['1','2']);
+ act(one,'disclosure-estimate',{savings:250});
+ const economics=store.view(owner.id,owner.token).disclosure!.economics;
+ const total=Object.values(economics).reduce((n,c)=>n+c.standalone-c.pooled,0), shares=Object.fromEntries(Object.keys(economics).map(c=>[c,total/5]));
+ expect(()=>act(one,'disclosure-propose',{shares})).toThrow('instructor');
+ expect(()=>act(owner.token,'disclosure-propose',{shares:{...shares,'1':-1}})).toThrow('exact');
+ act(owner.token,'disclosure-propose',{shares});act(one,'disclosure-respond',{id:1,accept:true,company:'2'});
+ expect(store.view(owner.id,two).disclosure!.offers![0].accepted).toEqual(['1']);
+ for(const token of [two,...rest])act(token,'disclosure-respond',{id:1,accept:true});
+ expect(store.view(owner.id,one).disclosure!.offers![0].status).toBe('agreed');
+ act(owner.token,'disclosure-phase',{phase:'debrief'});
+ expect(store.view(owner.id,one).disclosure!.estimates['2'].before).toBe(500);
+ expect(store.view(owner.id,one).disclosure!.economics['2']).toBeUndefined();
+ expect(()=>act(one,'disclosure-estimate',{savings:999})).toThrow();
+ const before=store.view(owner.id,two);store=new RoomStore(dir);expect(store.view(owner.id,two)).toEqual(before);
+ const recovered=store.recover(owner.id,owner.recoveryToken);
+ expect(()=>store.view(owner.id,owner.token)).toThrow('invalid');
+ expect(()=>store.recover(owner.id,owner.recoveryToken)).toThrow('invalid');
+ expect(store.view(owner.id,recovered.token).role).toBe('instructor');
+ expect(store.view(owner.id,one).role).toBe('company1');
+ }finally{rmSync(dir,{recursive:true,force:true});}
+});

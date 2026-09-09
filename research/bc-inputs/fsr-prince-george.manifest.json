@@ -1,0 +1,14 @@
+{
+  "catalogueUrl": "https://catalogue.data.gov.bc.ca/dataset/9e5bfa62-2339-445e-bf67-81657180c682",
+  "license": "Open Government Licence \u2013 British Columbia",
+  "sourceRequest": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=300&CQL_FILTER=BBOX%28GEOMETRY%2C-123.3%2C53.85%2C-122.8%2C54.25%2C%27EPSG%3A4326%27%29+AND+FILE_TYPE_DESCRIPTION+ILIKE+%27%25Service%25%27+AND+LIFE_CYCLE_STATUS_CODE%3D%27ACTIVE%27",
+  "sha256": "219b7ca7c6fdbf6ed2102f52d85e7cd96d0a54020176ae4c0b7429380517a8d9",
+  "returned": 11,
+  "numberMatched": 11,
+  "selectedRoads": [
+    "FSR 7695 section 01 \u00b7 mapped FSR; model access",
+    "FSR 7695 section 02 \u00b7 mapped FSR; model access",
+    "FSR 7727 section 03 \u00b7 mapped FSR; model access"
+  ],
+  "note": "ACTIVE catalogue lifecycle and B40 Forest Service Road classification; not live access verification."
+}

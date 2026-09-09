@@ -1,0 +1,12 @@
+import {describe,it,expect} from 'vitest';
+import {commonValueDraws,commonValueExperiment,scoreCommonValue,type CommonValueSettings} from './common-value';
+const s:CommonValueSettings={seed:12,samples:100,bidders:4,mean:100,valueSpread:30,signalNoise:40,rivalShading:0};
+describe('independent common-value auction experiment',()=>{
+ it('is seeded and paired across every policy without mutation',()=>{const before=JSON.stringify(s),a=commonValueExperiment(s),b=commonValueExperiment(s);expect(a).toEqual(b);expect(JSON.stringify(s)).toBe(before);expect(commonValueDraws({...s,seed:13})).not.toEqual(commonValueDraws(s));});
+ it('has no winner overpayment or profit when everyone bids the exact value',()=>{const result=commonValueExperiment({...s,signalNoise:0});const row=result.rows.find(r=>r.id==='signal')!;expect(row.wins).toBeGreaterThan(0);expect(row.conditionalProfit).toBe(0);expect(row.expectedProfit).toBe(0);expect(row.overpaymentRate).toBe(0);expect(row.conditionalSignalError).toBe(0);});
+ it('conserves winning realized profit and pays nothing when losing',()=>{const d={value:80,signal:100,rivalBids:[90],ties:[.1,.2]};expect(scoreCommonValue(d,100)).toMatchObject({won:true,payment:100,receipt:80,profit:-20,overpaid:true});expect(scoreCommonValue(d,85)).toMatchObject({won:false,payment:0,receipt:0,profit:0,overpaid:false});});
+ it('uses the same fixed tie priorities for policies with equal bids',()=>{const d={value:100,signal:100,rivalBids:[100],ties:[.1,.8]};expect(scoreCommonValue(d,100).won).toBe(false);expect(scoreCommonValue({...d,ties:[.9,.8]},100).won).toBe(true);});
+ it('reports conditional denominators as unavailable when there are no wins',()=>{const row=commonValueExperiment({...s,signalNoise:0,valueSpread:0}).rows.find(r=>r.id==='shade25')!;expect(row.wins).toBe(0);expect(row.conditionalProfit).toBeNull();expect(row.overpaymentRate).toBeNull();});
+ it('exposes conditional optimism and reconciles per-auction and winning profit',()=>{const result=commonValueExperiment({...s,samples:10000});const row=result.rows[0];expect(row.conditionalSignalError!).toBeGreaterThan(10);expect(row.expectedProfit).toBeLessThan(0);for(const policy of result.rows)if(policy.conditionalProfit!==null)expect(policy.expectedProfit).toBeCloseTo(policy.winRate*policy.conditionalProfit,9);});
+ it('bounds work and rejects impossible distributions',()=>{expect(()=>commonValueExperiment({...s,samples:10001})).toThrow();expect(()=>commonValueExperiment({...s,valueSpread:101})).toThrow();});
+});

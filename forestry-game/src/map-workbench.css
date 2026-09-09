@@ -1,0 +1,48 @@
+.map-workspace {grid-template-columns:minmax(0,1fr) minmax(330px,410px)}
+.map-inspector {padding:12px}
+.map-role-panel {font-size:13px;min-width:0}
+.role-tabs {display:flex;gap:4px;position:sticky;top:-12px;background:#fff;z-index:2;padding:12px 0}
+.role-tabs button {flex:1;min-height:44px;padding:8px 4px}
+.role-tabs button[aria-pressed=true],.workbench-sites button[aria-pressed=true] {background:#173e32;color:white}
+.workbench-filters {display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+.workbench-filters label {flex:1;min-width:110px}
+.map-role-panel select,.map-role-panel input {width:100%;min-height:44px}
+.map-role-panel details,.selected-feature {border-bottom:1px solid #dfe5da;padding:10px 0}
+.map-role-panel summary,.selected-feature>summary {cursor:pointer;font-weight:650;min-height:44px;align-content:center}
+.workbench-sites {max-height:250px;overflow:auto}
+.map-role-panel table {font-size:12px;width:100%}
+.map-role-panel td,.map-role-panel th {padding:7px;text-align:left}
+.workbench-sites button {text-align:left;min-height:44px;white-space:normal}
+.workbench-resource {padding:10px 0;border-bottom:1px solid #eee}
+.workbench-resource li {display:flex;flex-wrap:wrap;gap:4px;padding:5px 0}
+.workbench-resource ol {padding-left:12px}
+.workbench-resource button {min-height:44px}
+.equipment-status {display:inline-flex;gap:4px;padding:4px 7px;border:1px solid #ced8d1;border-radius:5px;font-size:12px}
+.equipment-status[data-status=Unavailable] {border-style:dashed;color:#923b24}
+.equipment-status[data-status=Scheduled] {background:#e7f1eb}
+.product-symbol {display:inline-flex;gap:6px;align-items:center;font-weight:600}
+.product-symbol svg {flex:none}
+.workbench-balance {padding:10px 0}
+.workbench-balance dl {display:grid;grid-template-columns:1fr auto;gap:6px;margin:8px 0}
+.workbench-balance dd {margin:0;font-variant-numeric:tabular-nums}
+.forecast-grid [data-weather=thaw] {background:#f7d8d0;color:#6b2515}
+.forecast-grid [data-weather=wet] {background:#fff0cf;color:#60481a}
+.forecast-grid [data-weather=normal] {background:#d9eee0;color:#1e5132}
+.forecast-grid [data-weather=frozen] {background:#dce9f9;color:#254d77}
+.forecast-grid caption {text-align:left;font-size:11px;padding:6px 0}
+.map-role-panel fieldset {min-width:0;border:1px solid #dfe5da;border-radius:8px;padding:10px}
+.map-role-panel fieldset label {display:block;margin:8px 0}
+@container game-main (max-width: 950px) {.map-workspace {grid-template-columns:minmax(0,1fr) 330px}}
+@container game-main (max-width: 740px) {.map-workspace {grid-template-columns:1fr}.map-workspace .geo-map {height:48dvh;min-height:280px}.map-inspector {max-height:65dvh;overscroll-behavior:contain}.map-stage {position:sticky;top:0;z-index:1}.role-tabs button {min-height:48px}}
+@media(max-width:600px) {.map-workspace {grid-template-columns:1fr}.map-workspace .geo-map {height:45dvh;min-height:270px}.map-inspector {max-height:65dvh}.workbench-filters label {min-width:100px}}
+.map-role-panel .access-filter {display:flex;gap:8px;align-items:center;padding:8px 0}
+.map-role-panel .access-filter input {width:18px;min-height:24px;flex:none}
+.map-workspace .geo-tools {align-items:flex-start}
+.map-workspace .geo-tools > button,.map-workspace .geo-tools > label,.map-workspace .geo-tools .map-layer-controls-desktop > button,.map-workspace .geo-tools .map-layer-controls-desktop > label,.map-workspace .geo-tools .map-legend>summary {min-height:36px;height:auto;padding:8px 10px}
+.map-workspace .geo-tools .map-legend {margin:0}
+@media (pointer:coarse), (max-width:600px) {
+  .map-workspace .geo-tools > button,
+  .map-workspace .geo-tools > label,
+  .map-workspace .geo-tools .map-legend > summary {min-height:44px;box-sizing:border-box}
+  .map-workspace .maplibregl-ctrl-group > button {width:44px;height:44px}
+}

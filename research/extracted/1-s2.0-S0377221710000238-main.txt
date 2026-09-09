@@ -1,0 +1,1177 @@
+
+PAGE 1
+Innovative Applications of O.R.
+Cost allocation in collaborative forest transportation
+M. Frisk b, M. Göthe-Lundgren c, K. Jörnsten a, M. Rönnqvist a,b,*
+a Norwegian School of Economics and Business Administration, Bergen, Norway
+b The Forestry Research Institute of Sweden, Uppsala, Sweden
+c The Swedish National Road and Transport Research Institute, Linköping, Sweden
+article info
+Article history:
+Received 22 October 2007
+Accepted 25 June 2008
+Available online 4 February 2010
+Keywords:
+Transportation
+OR in natural resources
+Supply chain management
+Logistics
+Economics
+Group decisions and negotiations
+Linear programming
+Backhauling
+abstract
+Transportation planning is an important part of the supply chain or wood ﬂow chain in forestry. There are
+often several forest companies operating in the same region and collaboration between two or more com-
+panies is rare. However, there is an increasing interest in collaborative planning as the potential savings
+are large, often in the range 5–15%. There are several issues to agree on before such collaborative plan-
+ning can be used in practice. A key question is how the total cost or savings should be distributed among
+the participants. In this paper, we study a large application in southern Sweden with eight forest compa-
+nies involved in a collaboration. We investigate a number of sharing mechanisms based on economic
+models including Shapley value, the nucleolus, separable and non-separable costs, shadow prices and
+volume weights. We also propose a new allocation method, with the aim that the participants relative
+proﬁts are as equal as possible. We use two planning models, the ﬁrst is based on direct ﬂows between
+supply and demand points and the second includes backhauling. We also study how several time periods
+and geographical distribution of the supply and demand nodes affect the solutions. Better planning
+within each company can save about 5% and collaboration can increase this about another 9% to a total
+of 14%. The proposed allocation method is shown to be a practical approach to share the overall cost/
+savings.
+/C2112010 Elsevier B.V. All rights reserved.
+1. Introduction
+Transportation cost corresponds to a large proportion, about
+one third, of the total raw material cost in the forest industry in
+Sweden. Transportation is one part of the wood supply chain, see
+illustration in Fig. 1 . It begins at harvest areas in the forests. Here,
+trees are cut into logs (or bucked) and put in small piles. Piles are
+characterized by assortments which depend e.g., on species, diam-
+eter, length and quality. The number of assortments at each har-
+vest area are in the range 5–15%. The piles are collected by
+forwarders and put in larger piles close to forest roads which are
+accessible by logging trucks. Transportation can be done in one
+or two steps depending on whether or not the logs are taken to
+intermediate storage at terminals before being delivered to the
+customer. When the roads are in good condition, it is possible to
+make the transportation directly to the industry. Then, sawlogs
+are taken to sawmills or ports for direct export, pulplogs to pulp-
+and/or paper mills and wood fuel to heating plants. The latter is
+done by special vehicles as it generally requires that the wood fuel
+is chipped. The main transportation, however, is done by logging
+trucks for saw- and pulplogs. The principal difference between
+sawlogs and pulplogs is that sawlogs have a larger diameter. In
+some cases, trains and ships are involved to support the transpor-
+tation to and from terminals.
+The main actors involved in the woodﬂow are industrial forest-
+enterprizes, with large forest assets as well as their own pulp and
+paper industries and sawmills. These can be either private or state
+owned. There are also forest owners’ associations, which represent
+the private entities and have their own pulp- and sawmills. There
+are independent sawmills, without any larger forest assets and
+independent forest owners not connected to any industry. In addi-
+tion to these primary actors representing the wood producers and
+wood consumers, there are also the loggers and the transporters,
+harvesting and carrying the wood from forest to mill. Management
+can be centralized or decentralized. Even though all actors involved
+recognize the importance of co-operation and integration along the
+woodﬂow chain, it is easy to observe and explain why the different
+actors, upon optimizing their individual short-term goals, take
+decisions that can hinder integration and co-operation. One prob-
+lem often encountered when trying to co-operate is that planning
+and decision-making becomes much more complicated.
+Large volumes and relatively long transport distances, together
+with increasing fuel prices and environmental concern makes it
+important to improve the transportation planning, see e.g., Epstein
+et al. (1999) and Weintraub et al. (1996) . In many cases, volumes of
+the same assortment are transported in opposite directions due to
+0377-2217/$ - see front matter /C2112010 Elsevier B.V. All rights reserved.
+doi:10.1016/j.ejor.2010.01.015
+* Corresponding author. Address: Norwegian School of Economics and Business
+Administration, Bergen, Norway.
+E-mail address: Mikael.Ronnqvist@nhh.no (M. Rönnqvist).
+European Journal of Operational Research 205 (2010) 448–458
+Contents lists available at ScienceDirect
+European Journal of Operational Research
+journal homepage: www.else vier.com/locate/ejor
+
+
+PAGE 2
+a low level of interaction between the forest companies. Supply
+and demand are generally evenly dispersed geographically for each
+company. Moreover, as many companies operate in the same re-
+gion, there is often a high potential for coordination of the wood
+ﬂow. Coordination creates opportunities to better utilize transport
+capacity. This can be done by wood bartering and/or backhauling.
+Wood bartering can be used in such a way that destinations be-
+tween supply and demand nodes are changed. Backhauling can
+be used to ﬁnd better routes by combining two or several destina-
+tions (combination of a supply and demand point). In this way, the
+unloaded distance can be decreased. Examples when wood barter-
+ing and backhauling have improved transportation efﬁciency are
+found in Forsberg et al. (2005) .
+Wood bartering (or timber exchange) between forest compa-
+nies in order to reduce transport cost is fairly common in Sweden.
+The largest proportion consists of pulp wood exchange since this
+assortment is normally cut into common lengths, for example
+3 m, and its qualities are fairly equal, no matter where geographi-
+cally the wood is harvested. Hence, this assortment is easy to ex-
+change. Sawlogs are more rarely used for exchange since the logs
+are cut in speciﬁc lengths depending on which saw mill that will
+receive the logs. If sawlogs are to be exchanged, the planning for
+exchange has to be done before the logs are harvested and cut into
+speciﬁc lengths. Timber exchange seldom includes more than two
+forest companies since the more companies that are involved the
+more complex the planning becomes. Only volumes are exchanged,
+and there are no monetary transactions.
+In the case when coordination should be included in the plan-
+ning, certain questions arise: How should the potential coordina-
+tion be computed? How should the saving be divided among the
+participants? The ﬁrst question can be approached by using a Deci-
+sion Support System (DSS) based on Operations Research (OR)
+models and methods. The models and methods used in the system
+FlowOpt ( Forsberg et al., 2005 ) can be used to ﬁnd the actual sav-
+ing if all the participants co-operate, as compared to no coordina-
+tion. The second question is often not addressed. The reason for
+this is that in practice wood bartering is often only used between
+two companies and then only with a ﬁxed volume. This means that
+each company uses its internal DSS to compute the saving for dif-
+ferent volume levels without revealing the result to the other com-
+pany. This can be in order to keep sensitive information away from
+competitor. In addition, there may be substantial differences in
+savings among the companies. However, to fully use the potential
+for coordination the question of division of savings is important.
+In this paper, we will address the second question. We will
+study and use a cost allocation method as a tool for allocating costs.
+We do not split savings, instead we split the common cost among
+the participants. Further, we do not aim to identify the ‘‘best” cost
+allocation. Instead we analyze a number of alternatives. The most
+simple solution to a cost allocation problem would be to split the
+common cost equally, weighted with each participant’s volume.
+However, as will be shown in the experiments, this gives a large
+difference in relative savings among the participants. We will
+study a number of different cost allocation methods that are,
+partly, based on solution concepts from co-operative game theory.
+These methods used are based on the Shapley value, the nucleolus,
+separable and non-separable costs and shadow prices. When
+choosing among different solution concepts, we seek one that sat-
+isﬁes speciﬁc fairness criteria, called properties. A number of differ-
+ent properties are presented in the literature, and an extensive list
+can be found in Tijs and Driessen (1986) . In this context, we will
+only discuss a limited number of properties. Other articles describ-
+ing the characteristic of cost allocations are described in Anderson
+and Claus (1976), Lemaire (1984) and Megido (1978) . An applica-
+tion to forest management can be found in Hof and Field (1987) .
+In a case study carried out in southern Sweden, eight forest
+companies analyzed the potential savings of integrated or coordi-
+nated transportation planning. The potential saving was as high
+as 14.2%. The purpose of this paper is to develop a framework for
+participating companies to ﬁnd values in how the costs (or savings)
+should be distributed. In our study, we have found that existing ap-
+proaches do have some disadvantages when it comes to the rela-
+tive savings. In this paper, we suggest a new approach, called
+Equal Proﬁt Method (EPM). Our motivation was to get an allocation
+that provides an as equal relative proﬁt as possible among the par-
+ticipants. We also propose a two stage process where we in phase I
+Fig. 1. An illustration of the wood supply chain.
+M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458 449
+
+PAGE 3
+identify which volumes that do contribute to the savings, and then
+in phase II we apply the EPM approach.
+The outline of this paper is as follows. In Section 2 we describe
+Linear Programming (LP) based OR models used in transportation
+planning. In Section 3 we describe a number of economic models
+used for cost allocation, including EPM. Included is also a small test
+example to illustrate the characteristics of EPM. In Section 4,w e
+describe the DSS used, the case study and the numerical results.
+If the proposed methodology is to be used in practice a number
+of aspects should be considered, and these are discussed in Section
+5. Finally, we make some concluding remarks.
+2. Transportation planning
+Transportation planning in forestry is done in several steps and
+is divided into strategic, tactical and operational planning. Deci-
+sions on a strategic level are inﬂuenced by harvesting and road
+building/maintenance considerations. Tactical decisions mainly
+concern planning from one week to one year. On an annual basis,
+transportation is often integrated with harvesting planning, and
+then often to decide preliminary catchment areas for combinations
+of industries and assortments. Further, the result of the annual
+planning is used as a basis to distribute areas to own or sub-con-
+tracted transport organizations/hauliers. A planning problem
+which often ranges from one to several weeks is to decide the des-
+tination of logs, that is, which supply point should deliver to which
+demand point. The result is used to deﬁne transport orders for
+transporters. In this paper, we focus on this planning problem.
+The operational planning is to decide actual routes for individual
+trucks and this is not considered in this paper.
+2.1. Linear programming model
+A planning tool often used for tactical planning is the LP model
+with variables w
+ij representing the ﬂow from supply point i (with
+supply volume si) to demand point j (with demand volume dj). A
+supply point is deﬁned by a location and assortment and a demand
+point by a location and assortment group. An assortment group is a
+subset of assortments which state that several assortments may be
+used to satisfy the demand. The objective is to minimize the total
+cost where the unit cost of ﬂow between i and j is given by eij and
+depends essentially on the distance travelled and has a concave
+non-decreasing characteristic. We use sets I and J to represent
+the supply and demand points, respectively. The LP model is given
+as
+½P1/C138 min z ¼
+X
+i2I
+X
+j2Ji
+eijwij
+s:t:
+X
+j2Ji
+wij 6 si; 8i 2 I; ð1Þ
+X
+i2Ij
+wij ¼ dj; 8j 2 J; ð2Þ
+wij P 0; 8i 2 I; j 2 Ji:
+Constraint set (1) gives the available supply for each supply
+point and set (2) the corresponding demand at a demand point.
+As not all combinations of supply and demand points are possible
+due to the deﬁnition of assortment groups, we can deﬁne the set J
+i
+as the demand points that supply point i can deliver to. In the same
+way, we deﬁne set Ij as the supply points that can deliver to de-
+mand point j.
+In the LP model above, the cost is based on the fact that the
+truck drives full from supply to demand point and empty in the
+other direction. This is the base of standard agreements. However,
+this gives an efﬁciency of just 50%. Efﬁciency would be improved if
+routes involving several loaded trips were used, i.e. backhauling.
+Backhauling refers to when a truck that has carried one load be-
+tween two points, carries another load on its return. The geograph-
+ical distribution of mills is important in this context. To use
+backhaulage tours can dramatically decrease the cost, savings be-
+tween 2% and 20% are reported in different case studies, see Carls-
+son and Rönnqvist (2007) and Forsberg (2003) . The modiﬁed LP
+model can be written as:
+½P2/C138 min z ¼
+X
+k2K
+ckxk
+s:t:
+X
+k2K
+aikxk 6 si; 8i 2 I; ð3Þ
+X
+k2K
+djkxk ¼ dj; 8j 2 J; ð4Þ
+xk P 0; 8k:
+This model is column based and the variable xk denotes the
+ﬂow in backhaul route k and ck the corresponding unit cost.
+The set K represents all routes including direct ﬂows in model
+[P1] and backhauling. Constraint sets (3) and (4) represent the
+supply and demand, respectively. The coefﬁcients aik have value
+1 if route k picks up at supply point i and 0 otherwise. In the
+same way djk has value 1 if route k delivers at demand point j
+and 0 otherwise. We note that the direct ﬂow variables are repre-
+sented using columns including only two nonzero elements (i.e.
+one pick up and one delivery). There is often a large number of
+potential backhaul routes and they can typically not be used
+explicitly in a solver. Instead, they are generated in a column gen-
+eration approach (Carlsson and Rönnqvist, 2007 ). The restrictions
+imposed on the backhaul routes are e.g., driving time or the num-
+ber of pick ups and deliveries. In tactical planning, there is often a
+practical limit for using backhaul routes consisting of two direct
+ﬂows.
+2.2. Coordination between companies
+In our case we consider the problem of coordinating planning
+for several companies. It is common that transport costs can be de-
+creased if companies use wood bartering. However, this is difﬁcult
+as planners do not want to reveal supply, demand and cost infor-
+mation to competitors. In practice, this is solved by deciding on
+wood bartering of speciﬁc volumes. Today, this is done in an ad-
+hoc manner and is mostly dependent on personal relations. In
+Fig. 2 we illustrate the potential beneﬁts of wood bartering when
+two companies are involved. Here we have four mills at two com-
+panies (two mills each) together with a set of supply points for
+each company. On the left hand side, each company operates by it-
+self. The catchment areas are relatively large as compared to the
+right side where all supply and demand point are used on equal
+terms.
+3. Economic models
+With quantitative models we can coordinate transportation
+planning. With more than two companies it is difﬁcult to ﬁnd bar-
+tering volumes of different assortments (between all pairs of com-
+panies) and there is a need to ﬁnd a more quantitative way for how
+the savings or the total cost should be distributed among the par-
+ticipants. In this section, we describe a number of economic con-
+cepts or models that have been used to distribute costs in
+various industrial areas.
+3.1. Basic deﬁnitions and properties
+Each solution concept that can provide us with a cost allocation
+is said to satisfy a number of properties, i.e. fairness criteria. There
+450 M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458
+
+PAGE 4
+is, however, no concept that satisﬁes all criteria listed in the liter-
+ature. Below we list some of the most commonly used properties.
+We denote by a coalition S a subset of participants, and by the grand
+coalition N all participants. It is assumed that all participants have
+the opportunity to form and co-operate in coalitions. When coali-
+tion S co-operates, the total (or common) cost cðSÞ is generated.
+In terms of co-operative game theory this cost function is called
+the characteristic cost function and each participant is called a
+player. We say that the cost allocation problem is formulated as
+a co-operative game.
+A cost allocation method that splits the total cost, cðNÞ, among
+the participants j 2 N is said to be efﬁcient , that is P
+j2N yj ¼ cðNÞ,
+where yj is the cost allocated to participant j. A cost allocation is
+said to be individual rational if no participant pays more than its
+‘‘stand alone cost”, which is the participant’s own cost, when no
+coalitions are formed. Mathematically, this property is expressed
+as y
+j 6 cðfjgÞ.
+The core of the game is deﬁned as those cost allocations, y, that
+satisfy the conditions
+X
+j2S
+yj 6 cðSÞ; S /C26 N;
+X
+j2N
+yj ¼ cðNÞð efficiencyÞ:
+That is, no single participant or coalition of participants should
+together be allocated a cost that is higher than if the individual or
+coalition acted alone. A cost allocation in the core is said to be
+stable.
+For each coalition, S, and a given cost allocation, y, we can com-
+pute the excess e ðS; yÞ¼ cðSÞ/C0 P
+j2Syj, which expresses the differ-
+ence between the total cost of a coalition and the sum of the
+costs allocated to its members. For a given cost allocation, the vec-
+tor of all excesses can be thought of as a measure of how far the
+cost allocation is from the core. If a cost allocation is not in the core,
+at least one excess is negative.
+The cost function (or the game) is said to be monotone if
+cðSÞ 6 cðTÞ; S /C26 T /C26 N. Note, that this means that if one new com-
+pany is included in a coalition, the cost never decreases. The game
+is said to be proper if cðSÞþ cðTÞ P cðS [ TÞ; S \ T ¼; . That is, the
+cost function is sub-additive. In such a game, it is always proﬁtable
+(or at least not unproﬁtable) to form larger coalitions.
+3.2. The Shapley value
+The Shapley value is a solution concept that provides us with a
+unique solution to the cost allocation problem. The computation
+formula stated below expresses the cost to be allocated to partici-
+pant j, and is based on the assumption that the grand coalition is
+formed by entering the participants into this coalition one at a
+time. As each participant enters the coalition, he is allocated the
+marginal cost, and this means that his entry increases the total cost
+of the coalition he enters. The amount a participant receives by this
+scheme depends on the order in which the participants are en-
+tered. The Shapley value is just the average marginal cost of the
+participants, if the participants are entered in completely random
+order. The cost allocated to participant j is equal to
+yj ¼
+X
+S/C26 N:j2S
+ðjSj/C0 1Þ!ðjNj/C0j SjÞ!
+jNj! ½cðSÞ/C0 cðS /C0f jgÞ/C138;
+Here j/C1j denotes the number of participants in the considered
+coalition. The summation in this formula is the summation over
+all coalitions S that contain participant j. The quantity, cðSÞ/C0
+cðS /C0f jgÞ, is the amount by which the cost of coalition S /C0f jg in-
+creases when participant j joins it, here denoted by the marginal
+cost of participant j with respect to the coalition S /C0f jg.
+The Shapley value is based on four axioms formulated by Shap-
+ley in 1953. These axioms express that a cost allocation computed
+according to this solution concept satisﬁes the properties of efﬁ-
+ciency, symmetry, dummy property and additivity. Symmetry means
+that if two arbitrary participants, i and j, have the same marginal
+cost with respect to all coalitions not containing i and j, the costs
+allocated to these two participants must be equal. The dummy
+property states that if participant is a dummy, in the sense that
+he neither helps nor harms any coalition he may join, then his allo-
+cated cost should be zero. Finally, additivity expresses that, given
+three different characteristic cost functions c
+1; c2 and c1 þ c2, for
+each participant, the allocated cost based on c1 þ c2 must be equal
+to the sum of the allocated costs based on c1 and c2, respectively.
+For an exact formulation of these axioms we refer to Shapley
+(1953).
+The Shapley value provides us with a cost allocation that is un-
+ique. However, there is no general guarantee that it is stable, e.g., it
+does not necessarily satisfy individual rationality. It can be proven
+Fig. 2. Illustration of wood bartering. In the left part each company operates by itself and in the right part both companies use all supply points as a common resource.
+M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458 451
+
+PAGE 5
+that the Shapley value is the only value that fulﬁlls the above four
+axioms.
+3.3. The nucleolus
+When computing the nucleolus of a game, we identify a cost
+allocation that minimizes the worst inequity, such that individual
+rationality is satisﬁed. That is, we ask each coalition S how dissat-
+isﬁed it is with the proposed allocation y and we aim at minimizing
+the maximum dissatisfaction of any coalition. The dissatisfaction of
+a cost allocation y for a coalition S is expressed by the excess,
+which measures the amount by which coalition S falls short of its
+potential cðSÞ in the allocation y. The nucleolus is the cost alloca-
+tion, y, that has the lexicographically greatest associated excess
+vector. For a more formal deﬁnition of this concept, we refer to
+Schmeidler (1969) .
+The nucleolus exists and is unique. The nucleolus satisﬁes both
+the symmetry axiom and the dummy axiom. If the core is non-
+empty, the nucleolus is in the core i.e. it represents a stable cost
+allocation. The pre-nucleolus is deﬁned as the nucleolus, but it is
+not required that individual rationality is satisﬁed. If the game is
+monotone, it follows that the pre-nucleolus satisﬁes individual
+rationality. If the core is non-empty, the pre-nucleolus is also
+stable.
+3.4. Other cost allocation principles
+3.4.1. Allocation based on volumes or on stand alone costs
+A straight forward allocation is to distribute the total cost of the
+grand coalition, cðNÞ, among the participants according to a volume
+or a cost weighted measure. This is expressed by the formula
+y
+j ¼ wjcðNÞ, where wj is equal to participant j’s share of the total
+transported volume, or, alternatively, equal to cðfjgÞ=P
+i2N cðfigÞ.
+When asked, companies claim that this is the preferred model.
+It is easy to understand, easy to show and it is easy to compute.
+However, as we will see, it may provide allocations that are not
+seen as fair. One reason as why this has not been observed earlier
+is that in normal wood bartering, the actual costs (or common
+proﬁts) are not revealed.
+3.4.2. Allocations based on separable and non-separable costs
+In Tijs and Driessen (1986) , cost allocation methods are pre-
+sented, based on the fact that the total cost to be allocated is di-
+vided into two parts: the separable and the non-separable costs.
+Methods based on this idea ﬁrst allocate to each participant his
+separable cost, then distribute the non-separable cost among the
+participants according to given weights. The separable cost is equal
+to m
+j ¼ cðNÞ/C0 cðN /C0f jgÞ, e.g., the marginal cost of participant j,
+with respect to the grand coalition. In the literature of this ﬁeld,
+this is simply called participant j’s marginal cost. The non-separa-
+ble cost that remains to be distributed is then gðNÞ¼
+cðNÞ/C0 P
+j2N mj. Depending on which weights are chosen, we have
+different versions of the method; the two most straight forward
+methods are the Equal Charge Method , ECM, which distributes the
+non-separable cost equally, and the Alternative Cost Avoided Meth-
+od, ACAM, that uses the weights w
+j ¼ cðfjgÞ /C0 mj , expressing sav-
+ings that are made for each participant by joining the grand
+coalition instead of operating alone.
+Tijs and Driessen also describe the Cost Gap Method , CGM,
+where the weights are computed according to w
+j ¼ minS:j2SgðSÞ;
+where gðSÞ¼ cðSÞ/C0 P
+j2Smj. This choice of weights can be ex-
+plained as follows. The separable cost, mj is seen as a lower bound
+for the cost allocated to participant j, when joining the grand coa-
+lition. The amount mj þ wj can be seen as an upper bound for the
+cost allocated to participant j, since it is what he will pay if all other
+participants pay their marginal cost, in the best coalition S from the
+view of j. The use of this method assumes that gðSÞ P 0;
+8S and that P
+j2N wj P gðNÞ. Thus, methods based on separable
+and non-separable costs allocate the costs according to
+yj ¼ mj þ wjP
+i2N wi
+gðNÞ:
+A cost allocation that is computed by the ECM or the ACAM sat-
+isﬁes efﬁciency and symmetry. When the CGM is used, individual
+rationality and the dummy property are also fulﬁlled.
+3.4.3. Allocation based on shadow prices
+In model [P2] described earlier we get dual or shadow prices for
+each of the supply and demand constraints. We deﬁne ui and vj as
+the shadow prices for the supply and demand constraints, respec-
+tively. When we solve [P2] for the coalition S ¼ N we get cðNÞ. The
+optimal dual solution has the property cðNÞ¼ P
+i2I uisi þ P
+j2J vjdj.
+The distribution of costs in linear production models, in where
+[P2] is a special case, has been proposed by Owen (1975) and Gra-
+not (1986). They show that the core is non-empty and that a solu-
+tion can be obtained from the associated LP-problem. The solution
+is based on market prices which in the LP-model are represented
+by the shadow prices. Each company’s contribution can be found
+by computing its contribution to the dual objective function value.
+We assume that company c has contribution sc
+i to supply constraint
+i and d
+c
+j to demand constraint j. Then, we can compute its contribu-
+tion as yc ¼ P
+i2I uisc
+i þ P
+j2J vjd
+c
+j .
+3.4.4. Equal proﬁt method
+In this project, we found some disadvantages with previous
+allocation models when it came to the acceptance of the cost allo-
+cation among the companies. It was difﬁcult not to show that all
+companies had a similar relative proﬁt compared to the individual
+cost. In a negotiation situation, it would be beneﬁcial to have an
+initial allocation where the relative savings are as similar as possi-
+ble for all participants. This led us to propose a new cost allocation
+principle. We therefore, suggest a new method which is motivated
+by ﬁnding a stable allocation, such that the maximum difference in
+pairwise relative savings is minimized. We call this the Equal Proﬁt
+Method (EPM).
+The relative savings of participant i is expressed as cðfigÞ/C0 yi
+cðfigÞ ¼
+1 /C0 yi
+cðfigÞ. By the assumption, that a cost allocation is stable, we have
+that cðfigÞ P yi. Thus, the difference in relative savings between
+two participants, i and j, is equal to yi
+cðfigÞ /C0
+yj
+cðfjgÞ.To ﬁnd this allocation
+we need to solve the LP problem
+min f
+s:t: f P yi
+cðfigÞ /C0 yj
+cðfjgÞ ; 8ði; jÞ;
+X
+j2S
+yj 6 cðSÞ; S /C26 N;
+X
+j2N
+yj ¼ cðNÞ; /C0 yi P 0; 8i
+The ﬁrst constraint set is to measure the pairwise difference be-
+tween the proﬁts of the participants. The variable f is used in the
+objective to minimize the largest difference. The two other con-
+straint sets deﬁne all stable allocations. Since the objective is a
+combination between participants, it is not a weighted nucleolus.
+In the literature of this ﬁeld, we have not been able to ﬁnd an allo-
+cation method with a similar objective. Therefore, to our knowl-
+edge, this allocation method is new.
+In the case when the core is empty, we propose to use the so
+called epsilon-core. We should note that for our test data, this case
+never occurred. Using an epsilon-core means that we add a mini-
+mum penalized slack in the constraints deﬁning the core. The
+implication of an empty core is that the grand coalition is not
+452 M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458
+
+PAGE 6
+stable, i.e., some companies may break out and start their own coa-
+lition. By using an epsilon-core we can keep the grand coalition
+‘‘stable” and note the existence of a coalition that would have an
+incentive to break out. Alternatively we can seek the maximal
+number of players in a game for which the core exists. However,
+how this subgroup of players should be selected remains to be
+studied in future research.
+3.4.4.1. An illustrative numerical example. In order to illustrate the
+difference between a cost allocation computed according to the
+Equal Proﬁt Method (EPM), and cost allocations based on other
+well-known concepts, we consider a small example which com-
+prises three participants. The cost of the coalitions S; cðSÞ, are given
+by cðf1gÞ ¼ 4; cðf2gÞ ¼ 7; cðf3gÞ ¼ 5; cðf1; 2gÞ ¼ 10; cðf1; 3gÞ ¼
+8; cðf2; 3gÞ ¼ 10; cðf1; 2; 3gÞ ¼ 12.
+The mathematical model based on the EPM can now be stated
+as
+min f
+s:t: f P y1=4 /C0 y2=7 ðiÞ
+f P y1=4 /C0 y3=5 ðiiÞ
+f P y2=7 /C0 y1=4 ðiiiÞ
+f P y2=7 /C0 y3=5 ðivÞ
+f P y3=5 /C0 y1=4 ðvÞ
+f P y3=5 /C0 y2=7 ðviÞ
+y1 6 4 ðviiÞ
+y2 6 7 ðviiiÞ
+y3 6 5 ðixÞ
+y1 þ y2 6 10 ðxÞ
+y1 þ y3 6 8 ðxiiÞ
+y2 þ y3 6 10 ðxiiÞ
+y1 þ y2 þ y3 ¼ 12 ðxiiiÞ
+y1; y2; y3 P 0 ðxivÞ
+Here, yi is the cost allocated to participant i and f the maximal
+pairwise difference of relative savings. A unique optimal solution
+to this model is y1 ¼ 3; y2 ¼ 5:25; y3 ¼ 3:75, resulting in a relative
+saving equal to 25% for all three participants. Thus, the objective
+value f is equal to zero. If we compute the cost allocation based
+on the nucleolus for this small example, we obtain y
+1 ¼ 3;
+y2 ¼ 5:5 and y3 ¼ 3:5, with relative savings equal to 25%, 21.4%
+and 30% for participants 1, 2 and 3, respectively. Further, the cost
+allocation based on the Shapley value coincides with the one based
+on the nucleolus. However, in general, these points are different, as
+can be observed in the computational results in the next section of
+this paper.
+These cost allocations can be illustrated in a triangle, plotted in
+Barycentric coordinates, see (Bottema, 1982 ), in which each point
+represents a suggested cost allocation ðy
+1; y2; y3Þ, such that
+y1 þ y2 þ y3 ¼ 12 (see Fig. 3 ). The vertices of the triangle are de-
+ﬁned by the intersections of the lines corresponding to the con-
+straints (vii )–( ix), resulting in (0,7,5), (4,3,5) and (4,7,1).
+In this triangle, the line y1 ¼ 4, for example, is the same as the
+line y2 þ y3 ¼ 8. The lines corresponding to the constraints (x )–
+(xii) are then added to the triangle. The shaded area represents
+the core (the stable allocations). The points representing the
+EPM, the Shapley value and the nucleolus are shown. In order to
+simply illustrate the shape of the objective function value, f,w e
+show this value for a number of points in the core. In the point rep-
+resenting the Shapley value/the nucleolus this value is 0.09.
+Finally, in Table 1 we observe the excess vectors of the two
+points. Recall that the excess of a coalition is the difference be-
+tween the total cost of a coalition and the sum of the costs allo-
+y +y =10
+y +y =10
+y =7y +y =8y =5
+y =4
+0.36
+0.5
+0.43
+0.5
+0.26
+0.09
+0.43
+0.6
+0.09
+0.6
+Nucleolus=(3, 5.5, 3.5)
+Shapley=(3, 5.5, 3.5)
+0.4
+EPM=(3, 5.25, 3.75)
+(2,5,5)
+(0,7,5)
+(3,7,2)
+(2,7,3)
+(4,6,2)
+(3,4,5)
+(4,4,4) (4,7,1)
+Unstable
+(4,3,5)
+{2,3}
+through
+through
+Unstable
+through
+Unstable
+Shapley &
+EPM
+2
+Nucleolus
+1
+3
+1 2233
+1
+objective value (   )0.09
+    in current point (in EPM   =0)
+f
+{1,3}
+f
+{1,2}
+Fig. 3. Illustration of the solutions from the different allocations.
+Table 1
+The excess vectors of the two solutions.
+Coalition: {1} {2} {3} {1,2} {1,3} {2,3}
+Shapley/nucleolus 1 1.5 1.5 1.5 1.5 1
+EPM 1 1.75 1.25 1.75 1.25 1
+M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458 453
+
+PAGE 7
+cated to its members. The two smallest elements of the two excess
+vectors are equal to 1 for both points. The Shapley value/the
+nucleolus has a lexicographically greater associated excess vector
+than the EPM, since the third smallest element is equal to 1.5,
+which is greater than 1.25.
+4. Numerical results
+4.1. Case study
+The data used in this paper has been taken from a study done by
+the Forestry Research Institute of Sweden for eight participating
+forest companies. All computations are done in the system Flow-
+Opt (Forsberg et al., 2005 ). This is a decision support system which
+includes a Geographical Information System, the Swedish road
+database NVDB and optimization routines to solve the operations
+research models. The companies operate in southern Sweden and
+cover different geographical areas. Some companies cover the en-
+tire region and others only a part. In Fig. 4 we provide an example
+of the area covered by three companies. It is clear that if the com-
+pany to the left collaborate with the middle company, the cost sav-
+ings would be small. However, if either of the two or both should
+work with the company to the right the potential would increase
+dramatically.
+The data is taken from transports carried out during one month.
+It involves all transports from the eight companies and includes
+information on time, from/to nodes, volume and assortment. There
+is also a large difference in size between the companies. Table 2
+shows the volume transported for each of the companies.
+In order to make a comparison, the same distance table and cost
+functions are used for both optimized and for the actual transpor-
+tation carried out. There are several comparisons that are interest-
+ing and we compute the following results.
+Real Single company with actual operated ﬂows
+opt1 Single company with direct ﬂows
+opt2 Single company with backhauling ﬂows
+opt3 Full coordination with direct ﬂows
+opt4 Full coordination with backhauling ﬂows
+With the above results we can compare the potential of coordi-
+nation by comparing opt1 and opt3 (or opt2 and opt4). We can also
+estimate the overall potential savings by comparing Real with opt4.
+To compare the manual solution against the backhauling is difﬁcult
+as the information about the actual transportation does not include
+information about backhauling. Therefore, we do not know the ex-
+tent to which backhauling was used in practice.
+In Table 3 the results from each of the scenarios is given. We
+note that the savings obtained from solving [P2] for each individual
+company and for a full coordination, respectively, provides a saving
+of 8.3% ðopt1 ! opt3Þ or 8.8% ðopt2 ! opt4Þ. Further, if we consider
+the potential savings as compared to the actual transportation, we
+get a saving of 14.2% ðReal ! opt4Þ.
+4.2. Test instances
+To analyze the cost allocations and their impact, we have
+constructed eight instances. These are described brieﬂy with
+the main characteristics in Table 4 . Instance I1 is the original
+data for all companies and the entire month. Instances I2–I5
+are the weekly volumes transported. Instance I6 is generated
+by adding the costs of each of the instances I2–I5. Note, that in-
+Fig. 4. The operating areas for three companies. Darker regions indicate areas of supply points and circles demand points.
+Table 2
+Information on the volume ðm3 Þ, proportion (in %), number of supply and number of
+demand points for each company.
+Company Volume Proportion (%) # Supply
+points
+# Demand
+points
+Company 1 77,361 8.76 416 37
+Company 2 301,660 34.16 1700 87
+Company 3 94,769 10.73 466 17
+Company 4 44,509 5.04 308 18
+Company 5 232,103 26.29 1468 105
+Company 6 89,318 10.12 275 30
+Company 7 36,786 4.17 175 9
+Company 8 6446 0.73 34 7
+Total 882,952 4842 310
+454 M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458
+
+PAGE 8
+stance I6 coincides with instance I1 in the number of supply
+points, number of demand points, period and the transported
+volume, but not in the transportation cost which is computed
+with FlowOpt (see below). The cost in instance I6 is the sum
+of four independent and weekly problem. In instance I7 we
+use ﬁltered data where some supply and demand volumes are
+removed. We compare the ﬂow of the transported volumes in
+opt1 and opt3, that is, in the case with no coordination between
+companies and in the case of full coordination (corresponding to
+instance I1). The part of the transported volume that coincides in
+both cases is removed. By this we can analyze each company’s
+real contribution to the collaboration. Finally, in instance I8 we
+have removed one company from the test data.
+As a basis for all the experiments, FlowOpt has been used to
+solve the transportation problem [P2] for each possible coalition
+of companies. The number of different coalitions for eight compa-
+nies is 2
+8 /C0 1 /C0 8 ¼ 247. The total transportation cost obtained for
+each coalition S, is then used to initiate the value of cðSÞ. In addi-
+tion we have solved each of the single company problems giving a
+total of 255 problems solved for each instance. The optimization
+models vary in size and the problem representing the full coalition
+with direct ﬂows in instance I1 has 5053 constraints. There are 211
+demand and 4842 supply constraints, respectively. The reason
+why the number of demand constraints are 211 and not 310
+(which is the overall number of demand points summed over indi-
+vidual companies) is that some companies deliver to the same
+industry (and assortment group). There are 39 different assort-
+ments and 12 assortment groups. The number of direct ﬂow vari-
+ables is about 240,000. The solution time for this case is a few
+seconds.
+The size of the optimization model increases dramatically and
+the model representing the full coalition with backhaul ﬂows has
+as many constraints as before i.e. 5053 constraints but the number
+of potential backhaul variables exceeds 100 million. In the column
+generation we typically generate about 100,000 new variables (be-
+side the 240,000 representing direct ﬂows) before it has converged.
+The solution time for each such problem is about 3 h for the full
+coalition. The overall time to solve the 255 backhaul problems
+for I1 exceeds 600 computational hours. In a practical setting with
+limited time we can select a ﬁxed solution time for each coalition.
+High quality solutions would typically be found as most of the
+computational time is spent on very small improvements close to
+the optimal solution.
+4.2.1. Cost allocations for instance I1
+In Table 5 we show cost allocation results according to the dif-
+ferent concepts described. In the column ‘‘Individual” the compa-
+nies’ costs of operating alone are shown. In the remaining
+columns we give the cost allocations obtained by the concepts
+and methods. For each computed cost allocation, the savings as
+compared to the individual costs are given. The average saving is
+8.6%. We also provide information as to wether the allocation is
+stable or not.
+Table 3
+Costs (in kSEK) for the scenarios analyzed.
+Company Real opt1 opt2 opt3 opt4
+Company 1 3894 3778 3640
+Company 2 15,757 14,859 14,684
+Company 3 4828 4742 4703
+Company 4 2103 2067 2043
+Company 5 10,704 10,340 10,153
+Company 6 5084 4959 4826
+Company 7 1934 1884 1877
+Company 8 333 333 332
+All companies 39,253 38,315
+Total 44,637 42,963 42,257 39,253 38,315
+Table 4
+Main characteristics of the instances used in the experiments.
+Instance # Companies Period Volume ðm3 Þ
+I1 8 Weeks 1–4 882,952
+I2 8 Week 1 217,532
+I3 8 Week 2 180,179
+I4 8 Week 3 210,862
+I5 8 Week 4 274,379
+I6 8 Sum of weeks 1–4 882,952
+I7 8 Weeks 1–4 384,726
+I8 7 Weeks 1–4 805,591
+Table 5
+Distribution of costs and their savings as compared to the individual costs for instance I1 using direct ﬂows.
+Company Individual Volume % Shapley % Shadow % ECM %
+Company 1 3778 3439 9.0 3586 5.1 3622 4.1 3808 /C0 0.8
+Company 2 14,859 13,411 9.7 13,528 9.0 12,969 12.7 12,890 13.3
+Company 3 4742 4213 11.2 4102 13.5 4069 14.2 3973 16.2
+Company 4 2067 1979 4.3 1889 8.6 1791 13.3 2093 /C0 1.3
+Company 5 10,340 10,318 0.2 9747 5.7 10,531 /C0 1.8 9643 6.7
+Company 6 4959 3971 19.9 4503 9.2 4377 11.7 4521 8.8
+Company 7 1884 1635 13.2 1587 15.8 1591 15.6 1735 7.9
+Company 8 333 287 14.0 310 6.9 303 9.1 588 /C0 76.5
+Sum 42,963 39,253 39,253 39,253 39,253
+Stable No Yes No No
+Company Individual ACAM % Nucleolus % CGM % EPM %
+Company 1 3778 3620 4.2 3650 3.4 3623 4.1 3523 6.7
+Company 2 14,859 13,464 9.4 13,207 11.1 13,441 9.5 13,549 8.8
+Company 3 4742 4090 13.8 4081 14.0 4082 13.9 4324 8.8
+Company 4 2067 1906 7.8 1935 6.4 1909 7.6 1884 8.8
+Company 5 10,340 9732 5.9 9848 4.8 9743 5.8 9428 8.8
+Company 6 4959 4511 9.0 4546 8.3 4520 8.9 4522 8.8
+Company 7 1884 1615 14.3 1667 11.5 1620 14.0 1718 8.8
+Company 8 333 314 5.7 318 4.6 315 5.6 304 8.8
+Sum 42,963 39,253 39,253 39,253 39,253
+Stable Yes Yes Yes Yes
+M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458 455
+
+PAGE 9
+The cost allocations computed according to Volume, Shadow
+and ECM are not stable. It is interesting to note that according to
+the cost allocation based on the ECM, a number of companies lose,
+compared to when they operate alone. The reason for this is that
+the weights used to allocate the non-separable cost do not take
+into account each company’s individual cost and savings. Also,
+the difference in savings for each company varies greatly with
+the concepts Volume (0.2–19.9%) and ECM (/C0 76.5% to 16.2%).
+The cost allocation based on shadow prices does not seem to be
+appropriate, as one of the largest companies does lose. There
+can be several reasons for this. One is that the transportation prob-
+lem [P2] has multiple dual solutions and we use only one in the
+tests.
+The Shapley value, ACAM, nucleolus, CGM and EPM are stable.
+We observe that the core is non-empty and, therefore, at least
+the nucleolus must represent a stable cost allocation. The fact that
+the Shapley value, the ACAM, CGM and the EPM also do so is inter-
+esting. The cost allocations obtained by the Nucleolus, ACAM and
+the CGM are similar and have a similar range (about 4–15%) of
+the savings. The extra information about coalitions that is added
+in CGM, obviously, does not have any large effect on how the total
+cost is divided among the companies.
+The most evenly spread cost savings of 6.7–8.8% are, as ex-
+pected, produced by the EPM, where the maximal pairwise differ-
+ence is minimized. The reason why the value is not equal for all is
+that there is no such stable cost allocation. This behaviour is stud-
+ied further in instance I7 where company 1 is removed from the
+coalition.
+4.2.2. Effect of backhauling
+Next we consider the case when backhauling routes are used.
+Here, we limit our choice of cost allocation concepts to compare
+the suggested EPM with Shapley value which is one well-known
+methodology. In Table 6 , we report on the numerical results ob-
+tained for instance I1. The average saving is increased from 8.6%
+to 10.8%. In the table, we give the savings based on the individual
+backhauling costs. The results for the two concepts are very similar
+in structure. Companies 3 and 4 increase the savings more and this
+is probably due to the geographical distribution where their supply
+and demand can be included in backhauling to a larger extent.
+4.2.3. Impact of several time periods
+In the data covering the whole month, we have information
+about the time of the transportation. Hence, we can analyze the
+behaviour of the cost allocations over four time periods, each cov-
+ering one week. We compute cost allocations based on the Shapley
+value and the EPM. The results are shown in Table 7 (Shapley) and
+Table 8 (EPM). The Shapley value provides relatively stable results
+over the four weeks. One exception is that company 3 has a rela-
+tively large saving in week 1. For EPM we have that company 1
+has lower savings in all weeks except week 2. Company 8 has smal-
+ler savings in three periods.
+In Table 9 , we compare the results for instances I2–I5 with in-
+stance I1 and I6. The values for Shapley in the average for instances
+I2–I5 are the same as for I6 which is due to the additivity property
+of Shapley. The structure of the allocations I1 and I6 are similar and
+the main difference is the increase in efﬁciency in I1 (39,253 kSEK
+instead of 39,758 kSEK), i.e. by viewing an aggregated problem.
+Using EPM in instances I1 and I6 clearly indicate that company 1
+should be treated differently compared to the others.
+4.2.4. Impact of geographical distribution
+All the volumes contributed from each company do not improve
+the overall solution. In an attempt to test this aspect, we have
+tested a two-step approach. In the ﬁrst step we compare solutions
+in opt1 and opt3, that is, the separate solutions for the individual
+companies with the collaborative solution in instance I1. Flows
+that have not changed from the individual solutions are removed.
+About 55% of the volumes are removed in this way. The remaining
+volumes are used to deﬁne instance I7. In the second phase we use
+the solution from the ﬁltered data and apply the EPM. Then we, for
+each company, add the individual cost from step one with the cost
+obtained with EPM in the second step.
+In Table 10 , we provide the results from this instance. Column
+‘‘Fixed” represents the cost of the solution not changed against
+the individual solutions. Column ‘‘Filtered” is the difference be-
+tween columns ‘‘Individual” and ‘‘Fixed”. The value of total is the
+expected cost if each company worked independent. Columns
+‘‘Shapley” and ‘‘EPM” give the cost allocation of the ﬁltered prob-
+lem. The total value under ‘‘Shapley” is the coordinated value to
+be allocated to the participants. In columns ‘‘Shapley + ﬁxed” and
+‘‘EPM + ﬁxed” we give the costs when the ﬁxed value is added to
+the cost allocations. The columns ‘‘%” and ‘‘% (total)” give the rela-
+tive and overall savings.
+Table 7
+Cost allocations for instances I2–I5 using Shapley.
+Instance/company I2 % I3 % I4 % I5 % Sum I2–I5 %
+Company 1 828 4.5 975 3.3 958 5.1 858 6.4 3619 4.8
+Company 2 3945 8.1 1619 10.1 2198 10.3 6006 6.3 13,768 7.9
+Company 3 769 20.1 1023 8.1 1321 9.9 1045 13.5 4159 12.5
+Company 4 422 11.3 492 8.5 414 7.3 567 6.9 1895 8.4
+Company 5 2270 4.9 2418 4.5 2711 5.4 2439 6.9 9838 5.4
+Company 6 1047 9.3 987 6.8 1375 6.2 1148 11.3 4557 8.4
+Company 7 532 12.5 358 14.5 372 17.9 350 14.8 1613 14.7
+Company 8 058 9.2 67 1.3 64 5.6 121 8.8 311 6.7
+Sum 9872 7940 9412 12,534 39,758
+Stable Yes No Yes Yes Yes
+Table 6
+Distribution of costs according to volume, Shapley and EPM and their savings as
+compared to the individual costs for instance I1 using backhauling routes.
+Company Individual Shapley % EPM %
+Company 1 3640 3445 5.4 3381 7.1
+Company 2 14,684 13,350 9.1 13,284 9.5
+Company 3 4703 3951 16.0 4255 9.5
+Company 4 2043 1835 10.2 1848 9.5
+Company 5 10,153 9466 6.8 9184 9.5
+Company 6 4826 4380 9.2 4365 9.5
+Company 7 1877 1588 15.4 1698 9.5
+Company 8 332 301 9.3 300 9.5
+Sum 42,257 38,315 38,315
+Stable Yes Yes
+456 M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458
+
+PAGE 10
+Using the Shapley value, the largest savings are for companies 3
+and 8. However, the savings are all high in the range 14.0–24.6%.
+The differences can be motivated by the location and importance
+of the companies. Using EPM, we can get the same savings for all
+companies, i.e., 17.8%. When we study the overall savings the
+spread is larger for both concepts. In fact, the structure is similar
+and the differences relatively small. If we compare the Shapley va-
+lue for instance I7 (% (total)) and compare it with the Shapley value
+for instance I1, they are very similar. Using ﬁltered data, we can
+ﬁrst make a cost allocation for the ﬁltered volumes providing a
+beneﬁt. Then, the ﬁxed part is added. This process does take the
+geographic location and its impact into account. It seems from
+the results, as if the Shapley value considers this aspect to a higher
+degree, than the EPM.
+4.2.5. Impact of coalition size
+Using EPM, we have seen that company 1 has less cost savings
+than the other seven companies. In instance I8 we have removed
+company 1 and used cost allocations Shapley and EPM on this
+smaller problem, see Table 11 . Using EPM, we will get the same
+savings for the seven companies as given by EPM applied to in-
+stance I1. The reason is that the coalition of companies 2–8 pro-
+vides the best value for this coalition and that they would like to
+break out. If a grand coalition is formed anyway, company 1 will
+get all of the increased improvement. However, it will not be en-
+Table 8
+Cost allocations for instances I2–I5 using EPM.
+Instance/company I2 % I3 % I4 % I5 % Sum I2–I5 %
+Company 1 816 5.9 961 4.7 931 7.7 845 7.8 3553 6.6
+Company 2 3899 9.2 1667 7.4 2254 8.0 5908 7.8 13,728 8.2
+Company 3 875 9.2 1032 7.4 1350 8.0 1113 7.8 4370 8.0
+Company 4 432 9.2 498 7.4 411 8.0 561 7.8 1902 8.0
+Company 5 2191 8.2 2346 7.4 2636 8.0 2413 7.8 9587 7.8
+Company 6 1049 9.2 981 7.4 1348 8.0 1192 7.8 4571 8.1
+Company 7 552 9.2 388 7.4 418 8.0 379 7.8 1736 8.2
+Company 8 058 9.2 67 1.2 64 6.0 123 7.8 312 6.4
+Sum 9872 7940 9412 12,534 39,758
+Stable Yes Yes Yes Yes Yes
+Table 9
+Cost allocations for instances I1, I6 and average of I2–I5 using Shapley and EPM.
+Company Shapley I1 % EPM I1 % Shapley aver I2–I5 % EPM aver I2–I5 % Shapley I6 % EPM I6 %
+Company 1 3586 5.1 3523 6.7 3619 4.8 3553 6.6 3619 4.8 3549 6.7
+Company 2 13,528 8.5 13,549 8.4 13,768 7.9 13,728 8.2 13,768 7.9 13,751 8.0
+Company 3 4102 13.5 4324 8.8 4159 12.5 4370 8.0 4159 12.5 4370 8.0
+Company 4 1889 8.6 1884 8.8 1895 8.4 1902 8.0 1895 8.4 1902 8.0
+Company 5 9747 5.7 9428 8.8 9838 5.4 9587 7.8 9838 5.4 9568 8.0
+Company 6 4503 9.2 4522 8.8 4557 8.4 4571 8.1 4557 8.4 4573 8.0
+Company 7 1587 15.8 1718 8.8 1613 14.7 1736 8.2 1613 14.7 1739 8.0
+Company 8 310 6.9 304 8.8 311 6.7 312 6.4 311 6.7 306 8.0
+Sum 39,253 39,253 39,758 39,758 39,758 39,758
+Stable Yes Yes Yes Yes Yes Yes
+Table 10
+Cost allocations for instance I7.
+Company Individual Fixed Filtered Shapley Shapley + ﬁxed % % (Total) EPM EPM + ﬁxed % % (Total)
+Company 1 3778 2472 1305 1123 3595 14.0 4.8 1074 3546 17.8 6.1
+Company 2 14,859 7072 7788 6410 13,482 17.7 9.3 6405 13,477 17.8 9.3
+Company 3 4742 2217 2526 1904 4121 24.6 13.1 2077 4294 17.8 9.5
+Company 4 2067 824 1243 1064 1888 14.4 8.6 1022 1846 17.8 10.7
+Company 5 10,340 6508 3832 3245 9752 15.3 5.7 3152 9659 17.8 6.6
+Company 6 4959 2290 2670 2210 4499 17.2 9.3 2196 4485 17.8 9.6
+Company 7 1884 452 1432 1153 1605 19.5 14.8 1178 1630 17.8 13.5
+Company 8 333 233 100 77 310 22.8 6.9 82 315 17.8 5.3
+Sum 42,963 22,067 20,895 17,186 39,253 17,186 39,253
+Stable Yes Yes
+Table 11
+Cost allocations for instance I8 using Shapley and EPM.
+Company Individual Shapley % EPM %
+Company 1
+Company 2 14,859 13,574 8.7 13,549 8.8
+Company 3 4742 4092 13.7 4324 8.8
+Company 4 2067 1891 8.5 1884 8.8
+Company 5 10,340 9742 5.8 9428 8.8
+Company 6 4959 4534 8.6 4522 8.8
+Company 7 1884 1587 15.8 1718 8.8
+Company 8 333 310 6.9 304 8.8
+Sum 39,185 35,730 35,730
+Stable Yes Yes
+M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458 457
+
+PAGE 11
+ough to get the same improvements as the other seven companies.
+Using the Shapley value we ﬁnd that the cost allocation is very
+similar to that but computed for instance I1.
+5. Concluding remarks
+We have studied a number of economic models and proposed a
+new cost allocation method, EPM, for how the costs can be distrib-
+uted taking various properties of the planning problem into ac-
+count. The concepts based on Shapley value, Nucleous, CGM and
+EPM provide stable cost allocations for the instances analyzed
+and are interesting as a basis for sharing costs or distributing sav-
+ings. The cost allocations based on volume, ACAM and ECM give
+non-stable solutions for some instances. Moreover, Volume and
+ECM give a large unmotivated spread in cost savings and are there-
+fore, less suitable.
+We have analyzed the cost allocations based on the Shapley va-
+lue and EPM on a set of instances. Coordination over several time
+periods (weeks) gives similar allocations as over one aggregated
+period (month). Including backhauling improves the efﬁciency
+but does not change the structure of cost allocations. The potential
+of cost savings depends on the geographical distribution of the com-
+panies in the coalition. By studying the supply and demand maps of
+the companies, it is relatively easy to understand the reason for
+spread in savings between the coalitions. We have proposed the
+EPM method because it makes it easier for the participants to agree,
+than by the use of any of the other considered methods. However, as
+companies become aware of the strategic importance of the geo-
+graphical location, some companies may want a larger share of
+the cost savings. Then other cost allocation methods among those
+studied (or a hybrid) may be the preferred choice. The Shapley value
+seems to take this aspect into account. However, the Shapley value
+is more difﬁcult to understand and harder to accept for planners.
+The two-step approach, which involves splitting the volumes into
+one ﬁxed part and one part which represents the part that improves
+the planning, provides a powerful tool. In this way, it is easy to moti-
+vate planners that the cost allocation based on the non-ﬁxed part of
+the volumes, should satisfy that all participants have the same
+relative savings, as achieved by EPM. Then, in the second step, the
+ﬁxed part is added to form the total cost allocation. The cost alloca-
+tions obtained when EPM is used in the ﬁrst step are similar to the
+ones obtained when Shapley is used. However, EPM is easier to
+understand and more acceptable for the planners.
+It is very unusual that as many as eight forest companies to-
+gether analyze the potential savings of co-operating within trans-
+portation planning. In practice, the number of companies is often
+limited to only two and they would agree only on bartering vol-
+umes. As more companies become part of the coordination it is
+not viable to agree only on volumes. The result of the analysis
+shows that there is a lot of money to save, up to 14.2% of the trans-
+portation cost. The transportation cost for these companies is
+about 60 million Euros and the potential saving relates to more
+than 8 million Euros. Additionally, the environmental effects of
+better co-operation between the companies are very positive with
+about a 20% reduction of emissions from the trucks.
+One aspect of how the collaboration should be carried out con-
+cerns the law governing restrictive practices. Coordination of the
+transportation planning must be performed in a way that it cannot
+be interpreted as a formation of cartels. The exact ruling seems to
+be rather a grey zone, but the current interpretation by many com-
+panies is that collaboration and wood bartering between compa-
+nies is allowed as long as it does not interfere with the overall
+wood market. For example, the companies are not allowed to col-
+laborate in the buying of wood from forest land owners e.g., use the
+same price lists.
+There are questions about what type of organization should col-
+lect sensitive information about supply, demand and costs and per-
+form the collaborative planning. We believe that there needs to be
+an independent organisation to carry out and suggest wood barter-
+ing. This is already used in the operations to measure volume/
+weight of all delivered logs to mills and keeping track of all trans-
+portation carried out by trucks. This information is then used for
+invoicing between companies. As a result of this work there are a
+number of companies (out of the eight in the study) who decided
+to continue and they have now used the EPM approach (without
+ﬁltering) in their operational planning starting May 2008. They
+used problem [P1] as this is easier to study on a tactical level as
+there is no issue with backhauling trips that are common for two
+companies. Problem [P2] with backhauling can then be used with-
+in each company to improve the planning. An additional practical
+constraint they added was that the ﬂow balance between any pair
+of companies should be equal. This implies that there is no need for
+invoicing between the companies. Two important aspect to partic-
+ipate are that the collaboration is based on a long term relationship
+and mutual responsibilities in case unplanned events occurs.
+We have studied collaboration between forest companies and
+the proposed EPM approach is accepted and is in use. It may be
+that other industries have other characteristic and that the ap-
+proach therefore, is not as appropriate. This is something we want
+to do in further studies, and we are interested in particular in the
+petroleum industry which is another important industry in the
+Nordic countries. We also intend to study how different business
+models will affect the overall system performance. In a practical
+situation, the results reported rely on the fact that all forest com-
+panies agree in advance to accept a cost allocation computed in
+any of the suggested approaches. In practice, this may be difﬁcult
+as there is a large difference in size between companies or their po-
+sition in the overall wood supply chain. It is likely that the largest
+companies are the key drivers and have a stronger position in a
+negotiation. It could also be the case that a transport organisation
+take the lead and establish a collaboration. Also, the question of
+how a negotiation process may take place when companies have
+different negotiating power is interesting.
+References
+Anderson, R.C., Claus, A., 1976. Cost allocation in transportation system. Southern
+Economic Journal 43 (1), 793–803.
+Bottema, O., 1982. On the area of a triangle in Barycentric coordinates. Crux
+Mathematicorum 8, 228–231.
+Carlsson, D., Rönnqvist, M., 2007. Backhauling in forest transportation – models,
+methods and practical usage. Canadian Journal of Forest Research 37, 2612–
+2623.
+Epstein, R., Morales, R., Sern, J., Weintraub, A., 1999. Use of OR systems in the
+Chilean forest industries. Interfaces 29, 7–29.
+Forsberg, M., 2003. Transportsamordning Nord – Analys av returtransporter. Report
+nr. 529 - 2003. Skogforsk, Uppsala, Sweden (in Swedish).
+Forsberg, M., Frisk, M., Rönnqvist, M., 2005. FlowOpt – A decision support tool for
+strategic and tactical transportation planning in forestry. International Journal
+of Forest Engineering 16, 101–114.
+Granot, D., 1986. A generalized linear production model: A unifying model.
+Mathematical Programming 34, 212–222.
+Hof, J., Field, R., 1987. On the possibility of using joint cost allocation in forest
+management decision making. Forest Science 33 (4), 1035–1046.
+Lemaire, J., 1984. An application of game theory: Cost allocation. Astin Bulletin 14
+(1).
+Megido, N., 1978. Computational complexity of the game theory approach to cost
+allocation for a tree. Mathematics of Operations Research 3 (3).
+Owen, G., 1975. On the core of linear production games. Mathematical
+Programming 9, 358–370.
+Schmeidler, D., 1969. The nucleolus of a characteristic function game. SIAM Journal
+on Applied Mathematics (17/6), 1163–1170.
+Shapley, L.S., 1953. A value for n-person Games. Annals of Mathematics Studies 28,
+307–317.
+Tijs, S.H., Driessen, T.S.H., 1986. Game theory and cost allocation problems.
+Management Science 32 (8), 1015–1028.
+Weintraub, A., Epstein, R., Morales, R., Sern, J., Traverso, P., 1996. A truck scheduling
+system improves efﬁciency in the forest industries. Interfaces 26 (4), 1–12.
+458 M. Frisk et al. / European Journal of Operational Research 205 (2010) 448–458

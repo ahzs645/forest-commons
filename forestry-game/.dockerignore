@@ -1,0 +1,6 @@
+node_modules
+dist
+.forest-rooms
+.env
+.env.*
+*.log

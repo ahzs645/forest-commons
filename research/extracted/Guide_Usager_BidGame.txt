@@ -1,0 +1,380 @@
+
+PAGE 1
+ 
+ 
+ 
+ 
+ 
+Guide usager 
+BidGame 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Développé par Guillaume Morin 
+stagiaire Été 2017 
+ 
+  
+
+
+PAGE 2
+Description 
+Une partie est composée de plusieurs tours. Chaque tour est situé dans une saison et 
+dure un nombre de semaines variable. Le joueur n’a pas de limite de temps pour 
+compléter son tour.  
+Un tour se déroule en trois étapes:  
+1) Si des lots sont mis aux enchères , le joueur peut miser sur ceux -ci. Les 
+résultats des enchères seront connus au début du tour suivant. Donc, dès le 
+tour suivant, le joueur pourra commencer à récolter son bois gagné aux 
+enchères. 
+2) Si le joueur à un ou plusieurs lots en inventaire, il peut planifier sa récolte en 
+fonction de sa capacité de récolte. 
+3) Finalement, lorsque le joueur a terminé de faire ses mises et de planifier sa 
+récolte, il appuie sur le bouton « Fin du Tour » pour appliquer sa planification. 
+À ce moment, la récolte est effectuée et il peut choisir ce qu’il désire vendre à 
+l’aide de l’outil de ventes.  
+Débuter une partie 
+Pour démarrer une partie il faut cliquer sur le bouton central “Charger un scénario” . 
+Cela va ouvrir une fenêtre pour sélectionner un fichier. Sélectionner le fichier scénario 
+désiré se terminant par « .bidgame ». 
+
+PAGE 3
+Écran Principal 
+ 
+Figure 1 : Interface du jeu des enchères 
+L’interface principale présentée à la figure 1 est séparée en cinq sections  : Achats, 
+Inventaire, Demandes, Calendrier, Panneau d’information générale. 
+  
+
+
+PAGE 4
+Section 1. Achats 
+Dans la section Achats, la liste des enchères en cours est affichée. En gras, sous le 
+titre «  Achats » se trouve l’indicateur des prochaines vagues d’enchères. Selon le 
+scénario, le volume qui sera mise en enchère peut être caché ou non, dans la figure 
+ci-dessous le volume de la prochaine vague d’enchère est visible.  
+La couleur de fond sert d’indicateur : 
+Si le fond est jaune cela signifie que l’enchère se termine  durant le tour actuel et que 
+le joueur n’a pas misé sur celle-ci.  
+Si le fond est vert cela veut dire que le joueur a une mise active sur ce lot et la mise 
+dépasse le prix estimé. S’il n’y a pas de prix estimé (0$) alors le fond sera toujours vert 
+lorsque le joueur aura une mise active.  
+Si le fond est rouge, cela signifie que le joueur a une mise active sur ce lot, mais qu’elle 
+est inférieure au prix estimé. 
+ 
+Figure 2 : Section des achats 
+ 
+
+
+PAGE 5
+Si l’utilisateur désire avoir davantage d’information sur un bl oc, il doit appuyer sur le 
+symbole de flèche pointant vers le bas qui est indiqué par la flèche rouge sur la figure 
+ci-dessus. En appuyant sur la flèche, le joueur ouvre un panneau contenant toute 
+l’information du bloc mis en vente, tel qu’illustré à la figure ci-dessous.  
+ 
+ 
+Figure 3 : Enchère détaillée 
+ 
+
+
+PAGE 6
+1- Indique le nom de l’enchère 
+2- Indique quand l’enchère se termine. 
+3- Indique le volume total du bloc 
+4- Il s’agit d’un indicateur de la répartition des essences du bloc. Il est possible 
+d’avoir le volume et le pourcentage de représentation exact en pointant le 
+curseur sur la section désirée. 
+ 
+Figure 4 : Info-bulle sur l'indicateur de répartition 
+5- Il s’agit du prix estimé du bloc. Dans la réalité, cette valeur est souvent fournie 
+par le BMMB et les mises ne sont pratiquement jamais remportées en dessous 
+de cette valeur.  La valeur par mètre cube indique à combie n est estimée la 
+valeur pour un mètre cube du bloc. Cette valeur est calculée en divisant le prix 
+estimé par le volume. 
+6- Il s’agit du total misé par le joueur sur cette enchère. La valeur par mètre cube 
+indique la combien chaque mètre cube coûtera en redevance. Cette valeur est 
+calculée en divisant la mise actuelle par le volume. 
+7- Il s’agit d’un indicateur qui peut être activé dans le scénario afin de fournir de 
+l’aide à la décision. Le profit potentiel représente une estimation du profit que 
+le bloc pourrait  rapporter. Le minimum est calculé en prenant la demande la  
+moins profitable (Prix de vente – Coût de transport) moins le coût de récolte le 
+plus élevé (la pire saison pour récolter). Le maximum est calculé en prenant la 
+demande la plus profitable (Prix de vente – Coût de transport) moins le coût de 
+récolte le plus faible (la meilleure saison pour récolter).  Néanmoins, le profit 
+potentiel ne prend pas en compte le volume des demandes.  
+Si on a assez de demande pour les produits du bloc, la différence entre le profit 
+potentiel et la mise actuelle donne une estimation du profit que l’on pourrait 
+faire avec le bloc si on le gagnait, on le récoltait et on le vendait maintenant. 
+ 
+  
+
+
+PAGE 7
+Comment calculer le profit potentiel (s’il n’est pas affiché) :  
+ Dans la section « demandes », trier par essence, puis trouver les clients 
+avec le prix minimum et le prix maximum en prenant en compte les coûts 
+de transport (11). 
+ Soustraire les redevances (6). 
+ Dans la section «  achats », repérer les coûts de récolte (10) et soustraire 
+le coût maximum de récolte au prix minimum et soustraire le coût minimum 
+de récolte au prix maximum.  
+ Multiplier par le volume en m3 de cette essence offert dans le bloc (8) 
+ 
+8- Il s’agit de la liste des essences présente sur le bloc 
+ 
+Figure 5 : Liste des essences en enchère 
+A. Indique le nom de l’essence. 
+B. Indique le volume disponible de cette essence. 
+C. Ici le joueur indique combien il désire payer par mètre cube pour 
+cette essence. 
+D. Indique le total que le joueur mise pour cette essence, i l s’agit 
+du montant par mètre cube multiplié par le volume. 
+Si l’option est activée dans le scénario, il est possible de connaître le profit 
+potentiel par produit en pointant le curseur sur l’icône, le nom ou le volume du 
+produit dans la liste d’essences. Il s’agit du même indicateur que celui expliqué 
+au point sept, sauf qu’il est calculé pour un seul produit à la fois au lieu de 
+l’ensemble du bloc. Un exemple est montré à la figure suivante : 
+ 
+Figure 6 : Profit potentiel par produit 
+9- La garantie correspond au montant que le joueur devra payer s’il remporte 
+l’enchère, mais refuse le bloc. 
+ 
+
+
+PAGE 8
+10- Il s’agit des coûts de récolte du bloc. En pointant le curseur sur le texte il est 
+possible d’obtenir le détail des coûts de récolte par saison c omme présenté à 
+la figure suivante : 
+ 
+Figure 7 : Détail des coûts de récolte 
+11- Il s’agit des coûts de transport du bloc vers les différents clients. En pointant le 
+curseur il est possible d’obtenir le détail des coûts de transport pour chaque 
+point de vente comme présenté à la figure suivante : 
+ 
+Figure 8 : Détail des coûts de transport 
+12- Il s’agit du bouton pour confirmer une mise. Si le bouton est bleu cela signifie 
+que le joueur n’a pas encore confirmé sa m ise. À l’inverse, s’il est gris cela 
+signifie qu’une mise est déjà active pour cette enchère. 
+13- Il s’agit du bouton pour annuler une mise. Si le bouton est bleu cela signifie 
+qu’il y a une mise active sur l’enchère. À l’inverse, s’il est gris cela signifie qu’il 
+n’y a pas de mise active pour cette enchère. 
+14- Il s’agit du bouton permettant de cacher l’information supplémentaire de 
+l’enchère. 
+ 
+Dans le bas de la section Achats, il est possible de voir un résumé des enchères 
+placées. 
+ 
+Figure 9 : Résumé des enchères placées 
+Il est possible de savoir le montant total d’argent placé sur les enchères ainsi que le 
+volume de bois sur lequel le joueur a misé. En plaçant le curseur sur le volume total il 
+est possible d’avoir un détail du volume par essence sur lequel le joueur a misé: 
+
+
+PAGE 9
+ 
+Figure 10 : Détail du volume par essence 
+ 
+Section 2. Inventaire 
+ 
+Figure 11 : Section Inventaire 
+Dans la section Inventaire, la liste des blocs de coupe du joueur est  affichée avec 
+l’information suivante : 
+ 
+
+
+PAGE 10
+1- Indique le nom du bloc de coupe. 
+2- Indique le volume restant sur pied  (m3) dans le bloc  par rapport au  volume 
+initial du bloc (m3). 
+3- Il s’agit de la liste de toutes les essences du bloc ainsi que leur volume restant 
+sur pied. Ces produits doivent être récoltés avant d’être disponible. 
+4- Il s’agit du coût de récolte. Le montant par mètre cube est déterminé en fonction 
+des redevances  (la mise du joueur)  et du coût de récol te durant la saison 
+actuelle. L e montant total correspond au volume à récolter durant le tour 
+multiplié par le coût par mètre cube. Le détail du coût de récolte est disponible 
+en plaçant le curseur sur les coûts de récolte :  
+ 
+Figure 12 : Détail des coûts de récolte 
+5- Il s’agit de la section servant à indiquer le volume à récolter sur ce bloc pour le 
+tour actuel. L’utilisateur peut utiliser le curseur (Slider) pour ajuster son volume 
+ou bien il peut entrer le volume exact dans la case à la droite du  curseur 
+(Slider). Le bouton Max permet de récolter le maximum de volume du bloc. La 
+capacité de récolte pour le tour est visible dans le panneau d’information 
+générale dans le bas de l’application. 
+6- Il s’agit de la liste de tous les produits en bord de route ainsi que le ur volume. 
+Ces inventaires peuvent être expédiés aux clients.  
+7- Il s’agit des coûts de transport vers les différents points de vente. Il est possible 
+d’avoir le détail en pointant le curseur sur les coûts de transport. 
+8- Il s’agit du bouton pour refuser un bloc après l’avoir gagné aux enchères. 
+L’option de refuser un bloc est disponible uniquement le tour suivant son 
+acquisition aux enchères. En cas de refus le joueur devra payer le montant de 
+la garantie : 
+ 
+Figure 13 : Refuser un bloc 
+
+
+PAGE 11
+9- Il s’agit du volume sur pied de l’ensemble des blocs du joueur. Le scénario peut 
+avoir une limite pour le volume sur pied en fin de partie. Si cette limite est 
+dépassée, cette information sera affichée en rouge. En pointant le curseur sur 
+le texte il e st possible d’avoir le détail par essence ainsi que le volume limite 
+toléré en fin de partie : 
+ 
+Figure 14 : Détail du volume total sur pied 
+10- Il s’agit du volume en bord de route de l’ensemble des blocs du joueur.  Le 
+scénario peut avoir une limite pour le volume en bord de route en fin de partie. 
+Si cette limite est dépassée, cette information sera affichée en rouge.  En 
+pointant le curseur sur le texte il est possible d’avoir le détail par essence ainsi 
+que le volume limite toléré en fin de partie : 
+ 
+Figure 15 : Détail du volume total en bord de route 
+ 
+  
+
+
+PAGE 12
+Section 3. Demandes 
+La section Demandes regroupe les différentes demandes de produits pour l’ensemble 
+des clients  
+.
+  
+Figure 16 : Section Demandes 
+Le tableau regroupe les demandes actuelles. Il est possible de trier les demandes en 
+cliquant sur les entêtes de colonnes respectives. La colonne Essence tri les demandes 
+par priorité (les priorités sont définies dans le fichier scénario , qu i correspondent 
+habituellement à l’ordre de présentation du BMMB).  
+Les demandes peuvent être finies ou infinies. Les demandes infinies acceptent la 
+totalité du volume qu’un joueur peut vendre alors que les demandes finies acceptent 
+une quantité maximale de produit. Les demandes finies peuvent également avoir une 
+pénalité rattachée qui pénalisera le joueur s’il ne les a pas remplies à la fin de la partie.  
+Dans le bas du tableau il est possible de voir le total des demandes avec pénalité à 
+remplir avant la fin de la partie. La pénalité actuelle est également affichée, indiquant 
+au joueur combien il paiera s’il ne comble pas les demandes restantes. En pointant le 
+curseur sur le volume total à remplir il est possible d’avoir le détail par essence. 
+ 
+Figure 17 : Détail des demandes finies à remplir 
+En pointant le curseur sur les pénalités il est possible de voir le détail de celles-ci. 
+
+
+PAGE 13
+ 
+Figure 18 : Détail des pénalités 
+Section 4. Calendrier 
+Le calendrier permet de voir le déroulement de la partie ainsi que la saison et la durée, 
+en semaines, de chacun des tours. La saison peut être importante selon le scénario 
+puisqu’on peut désactiver la récolte ou faire varier les coûts de récolte par bloc selon 
+la saison. Le nombre de semaines est important puisque notre capacité de récolte est 
+définie par semaine. La période en vert indique le tour actuel. 
+ 
+Figure 19 : Calendrier 
+En pointant le curseur sur une période il est possible de voir les enchères se terminant 
+durant le tour ainsi que la capacité de récolte : 
+ 
+Figure 20 : Détail d'un tour 
+ 
+Section 5. Panneau d’information générale 
+Le panneau permet au joueur de savoir combien d’argent il possède actuellement, le 
+taux d’intérêt annuel ainsi que sa capacité de récolte pour le tour. Le bouton Fin de 
+Tour finalise les décisions d’enchères et de récolte du tour et ouvre l’écran de vente si 
+le joueur possède des produits en inventaire bord de route. Le joueur peut également 
+voir l’écran de score en cliquant sur son budget (voir image 22). 
+ 
+Figure 21 : Panneau d'information générale 
+L’intérêt est composé par semaine et s’accumule dès que le joueur termine un tour 
+avec un budget négatif.  
+ 
+  
+
+
+PAGE 14
+Écran de Vente 
+L’écran de vente affiche l’ensemble des produits récoltés (en inventaire bord de route) 
+du joueur et offre des options pour optimiser ses ventes. Le joueur contrôle 
+uniquement le volume qu’il désire vendre et l’application se charge, selon les op tions 
+du joueur, de maximiser ses profits pour le volume demandé.
+ 
+Chaque produit représente la somme disponible en inventaire bord de route pour tous 
+les blocs du joueur. L’écran se décompose ainsi : 
+
+PAGE 15
+1- Le nom du produit ainsi que le volume disponible en m3. 
+2- Un curseur (Slider) permettant au joueur de décider le volume d’un produit qu’il 
+désire vendre. Il peut également inscrire manuellement le volume exact à 
+vendre. 
+3- Il s’agit d’un indicateur du prix de vente minimum et maximum du produit pour 
+le volume sélec tionné. Il est possible d’avoir le détail de chaque vente en 
+plaçant le curseur sur l’indicateur : 
+ 
+Figure 22 : Détail des ventes pour un produit 
+4- Indique le profit total pour la vente du volume indiqué pour un produit. Le 
+montant par mètre cube indique le profit moyen d’un mètre cube de ce produit, 
+en maximisant le profit. 
+5- La première option permet  au joueur de spécifier s’il veut d’abord rempli r les 
+demandes avec pénalités en premier. Si toutes les demandes avec pénalités  
+sont remplies le surplus sera vendu aux demandes infinies.  
+La deuxième option permet au joueur d’indiquer s ’il désire que les pénalités 
+soient prises en compte dans le calcul de profits. Si les pénalités sont prises 
+en compte, l’application va considérer l’argent qu’un joueur paierait en pénalité 
+s’il ignorait une demande finie pour prioriser les demandes à remplir. Par 
+contre, la pénalité ne sera pas affichée dans le prix de vente.  Astuce : Cette 
+option est très utile en fin de partie ! 
+La troisième option permet au joueur d’indiquer qu’il désire uniquement faire le 
+plus de profit possible en vendant ses produits sans prendre en compte les 
+pénalités de fin de partie. Astuce : Cette option est utile en début de partie. 
+6- Il s’agit d’un bouton qui met en vente la totalité des produits disponibles. 
+7- Indique le montant total que le joueur recevra suite à cette vente. En appuyant 
+sur le bouton Vendre le joueur confirme la vente et le tour sera terminé.  
+ 
+  
+
+
+PAGE 16
+Fin de partie : Écran des résultats 
+À la fin de la partie, la fenêtre du sommaire apparaît. Il est également possible d’avoir 
+accès à cet écran en cliquant sur le budget actuel dans le panneau d’information 
+générale. 
+ 
+Figure 23 : Écran des résultats 
+L’information est séparée en deux sections  : celle de gauche correspond au bilan 
+budgétaire et celle de droite correspond au bilan des enchères. Dans la section de 
+gauche se retrouve : 
+1. Revenus des ventes : Correspond au montant total reçu en vendant le bois. 
+2. Redevances : Correspond au montant total payé en redevance lors des 
+récoltes. Les redevances correspondent aux montants misés ($/m3) à 
+l’enchère. 
+3. Transport : Correspond au montant total payé en transport lors des ventes de 
+bois. 
+4. Récolte : Correspond au montant total payé pour récolter le bois. 
+5. Garantie : Correspond à la somme des montants payés lorsque le joueur 
+refuse des lots. 
+6. Intérêts : Correspond au montant total payé en intérêt lorsque le joueur 
+possède un budget négatif. 
+7. Pénalités d’inventaire sur pied : Correspond aux pénalités totales payées si le 
+joueur possède trop de bois sur pied à la fin de partie. 
+8. Pénalités d’inventaire bord de route : Correspond aux pénalités totales 
+payées si le joueur possède trop de bois en bord de route à la fin de partie. 
+9. Pénalités des demandes : Correspond aux pénalités totales payées pour les 
+demandes non remplies. 
+Dans la section de droite se trouve des informations générales indiquant le nombre 
+d’enchères gagnées et effectuées, le bois récolté et vendu ainsi que le nombre de 
+demandes remplies.  
+Un tableau résumant l’ensemble des enchères permet de faire un bilan sur les lots qui 
+ont été profitables (Scierie 1) et ceux qui ont été exploités à perte ( Scierie 2). Dans 
+cette section, le profit est calculé uniquement sur le bois récolté et il n’inclue pas de 
+pénalités. Il est possible de savoir le pourcentage du bloc qui a été récolté et le 
+pourcentage récolté qui a été vendu par bloc. En pointant le curseur sur le nom du 
+bloc il est possible de voir le volume initial du bloc. 

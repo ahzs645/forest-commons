@@ -1,0 +1,30 @@
+services:
+  classroom:
+    build:
+      context: ..
+      target: classroom
+    environment:
+      FOREST_ADMIN_TOKEN: ${FOREST_ADMIN_TOKEN:?Set a strong administrator credential}
+    volumes:
+      - rooms:/data
+    restart: unless-stopped
+    # Backend is accessible only on the internal Compose network.
+  web:
+    build:
+      context: ..
+      target: web
+    environment:
+      FOREST_DOMAIN: ${FOREST_DOMAIN:?Set the deployment hostname}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - classroom
+    restart: unless-stopped
+volumes:
+  rooms:
+  caddy_data:
+  caddy_config:

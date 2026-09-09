@@ -1,0 +1,1043 @@
+
+PAGE 1
+This article was downloaded by: [66.183.149.249] On: 07 September 2026, At: 10:22
+Publisher: Institute for Operations Research and the Management Sciences (INFORMS)
+INFORMS is located in Maryland, USA
+INFORMS Transactions on Education
+Publication details, including instructions for authors and subscription information:
+http://pubsonline.informs.org
+An Educational Game in Collaborative Logistics
+Sophie D'Amours, Mikael Rönnqvist,
+To cite this article:
+Sophie D'Amours, Mikael Rönnqvist,  (2013) An Educational Game in Collaborative Logistics. INFORMS Transactions
+on Education 13(2):102-113. https://doi.org/10.1287/ited.1120.0090
+Full terms and conditions of use: https://pubsonline.informs.org/Publications/Librarians-Portal/PubsOnLine-
+Terms-and-Conditions
+This article may be used only for the purposes of research, teaching, and/or private study. Commercial use or
+systematic downloading (by robots or other automatic processes) is prohibited without explicit Publisher approval,
+unless otherwise noted. For more information, contact permissions@informs.org.
+The Publisher does not warrant or guarantee the article’s accuracy, completeness, merchantability, fitness
+for a particular purpose, or non-infringement. Descriptions of, or references to, products or publications, or
+inclusion of an advertisement in this article, neither constitutes nor implies a guarantee, endorsement, or support
+of claims made of that product, publication, or service.
+Copyright © 2013, INFORMS
+Please scroll down for article—it is on subsequent pages
+With 12,500 members from nearly 90 countries, INFORMS is the largest international association of operations
+research (O.R.) and analytics professionals and students. INFORMS provides unique networking and learning
+opportunities for individual professionals, and organizations of all types and sizes, to better understand and use
+O.R. and analytics tools and methods to transform strategic visions and achieve better outcomes.
+For more information on INFORMS, its publications, membership, or meetings visit http://www.informs.org
+
+PAGE 2
+INFORMS
+Transactions on Education
+Vol. 13, No. 2, January 2013, pp. 102–113
+ISSN 1532-0545 (online)
+http://dx.doi.org/10.1287/ited.1120.0090
+© 2013 INFORMS
+An Educational Game in Collaborative Logistics
+Sophie D’Amours
+FORAC Research Consortium, CIRRELT, Université Laval, Québec, Canada, sophie.damours@gmc.ulaval.ca
+Mikael Rönnqvist
+Norwegian School of Economics, No-5045 Bergen, Norway, mikael.ronnqvist@nhh.no
+W
+e describe an educational game in collaborative logistics. The game is based on an award-winning appli-
+cation in cost allocation in transportation. The purpose of the game is to acquire an understanding of
+negotiation, coalition building, and cost/proﬁt sharing when the players have different powers and hold differ-
+ent levels of information. The game is played with each player representing a single company. The challenge for
+the players is to ﬁnd an efﬁcient coalition and to share the beneﬁts and costs of the collaboration. We describe the
+underlying case study, review basic concepts in game theory, outline the teaching case, and discuss experiences
+from running the game in several countries and with students in business, engineering, and forestry.
+Key words : collaborative logistics; cost sharing; cooperative game; logistics
+History : Received: December 2010; accepted: November 2011.
+1. Introduction
+As enterprises are specializing and diversifying, they
+rely more on collaborations with other business enti-
+ties (Audy et al. 2011). Organizations are adopting
+these strategies in order to outdo the competi-
+tion; access new markets, while being mindful of
+operational, social, and environmental constraints.
+Furthermore, by sharing costs and information, orga-
+nizations are able to optimize their logistics activities.
+However, each enterprise has its own objectives and
+typically makes its own planning decisions to maxi-
+mize individual proﬁt. Therefore, it becomes crucial
+to anticipate how business entities can work together,
+how they can value their collaboration, and how they
+can share the beneﬁts of collaboration. In order to
+illustrate the behavior when companies are faced with
+the task of sharing information and agree on shar-
+ing beneﬁts, we have developed a teaching case based
+on an industrial case study described in Frisk et al.
+(2010). This article won the EURO Management Sci-
+ence Strategic Innovation Prize in 2007. The teach-
+ing case is run as a game, is easy to understand,
+and can be used in many logistics or quantitative
+courses and for many different students. We have
+used it with Master’s students at business and engi-
+neering schools, with professionals in transportation
+planning, and with business executives. In addition,
+we have utilized it in several countries, including
+Sweden, Norway, Canada, France, and Chile.
+A popular educational game is the “beer distribu-
+tion game” (beer game) developed at MIT (Sterman
+1989). It is a simulation game to illustrate the impact of
+the bullwhip effect in supply chains and it serves stu-
+dents to understand how supply chain work and has
+motivated research on supply chains integration and
+synchronization challenges. Electronic versions of the
+game also exist; see, e.g., Simchi-Levi et al. (2003). The
+beer game has also been adopted and implemented
+for different sectors; for example, the FORAC Research
+Consortium developed an online version for the for-
+est industry (Wood Supply Game 2012). The impor-
+tance and positive effects of making use of business
+games as teaching tools in Management Science (MS)
+and Operations Research (OR) courses are discussed
+in Grifﬁn (2007) and Ben-Zvi and Carton (2007). It is
+argued that business games are an effective way to
+engage students with MS/OR topics. They provide an
+understanding of the real problems and the practical
+situations faced by companies or organizations. There
+exist games for several industrial sectors. Recently,
+Talluri (2009) described a game for teaching revenue
+management and Allon and Van Mieghem (2010)
+described one for supply chain sourcing. A taxon-
+omy of online simulation games is described in Wood
+(2007). Cochran (2005) is also a reference for classroom
+games and related literature. Sniedovich (2002) dis-
+cusses the importance and use of educational games.
+A short and limited version of the game in this paper
+is also described in D’Amours and Rönnqvist (2010a).
+102
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 3
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS 103
+In this paper, we describe the case study and its
+history, review some basic concepts in game theory,
+describe the game and how it is played, and we pro-
+vide some general observations. A two-hour lecture
+where the game is played is divided into four parts.
+In the ﬁrst part, the background of the industrial case
+study and settings of the teaching case and game
+rules are introduced. In the second and third parts,
+the game is played in two runs. In the ﬁrst run, a
+restricted game is played, where the number of par-
+ticipants in each coalition is limited to two at most. In
+the second run, any collaboration and size of one or
+several coalitions are allowed. In the fourth and ﬁnal
+part, the results and experiences of the industrial case
+study are described and discussed as well as a review
+of the theoretical background.
+The outline of the paper is as follows. In §2, we
+describe the case study used in the game. In §3, we
+provide some basic concepts in game theory for
+instructors not familiar with game theory. We present
+these concepts to the students after playing the game.
+In §4, we describe what happened in the real case. In
+§5, we describe some material used to play the game.
+In §6, we describe experiences from running the game
+in different settings. We end with some concluding
+remarks.
+2. Case Study
+The data used in this paper have been taken from
+a case study done by the Forestry Research Insti-
+tute of Sweden for eight participating forest compa-
+nies. These companies operate in the southern part of
+Sweden as shown in Figure 1. The shaded areas are
+the locations of supply areas and the stars are mills.
+In total there are 898 harvest areas and 101 mills. The
+total number of products is 39. A product is a log
+type with a speciﬁc combination of species, diameter,
+length, and quality. Demand is expressed as a volume
+per product.
+In our case we consider the problem of coordinating
+ﬁber procurement and transportation for all or some
+of the eight companies. It is common that transport
+costs can be decreased if companies use wood barter-
+ing. However, this is difﬁcult because planners do not
+want to reveal supply, demand, and cost information
+to competitors. In practice, this is solved by deciding
+on wood bartering of speciﬁc volumes. Today, this is
+typically done in an ad hoc manner and is mostly
+dependent on personal relations. In Figure 2, we illus-
+trate the potential beneﬁts of wood bartering when
+two companies are involved. Here, we have four mills
+at two companies (each company is responsible for
+two mills) together with a set of supply points for
+each company. On the left-hand side, each company
+operates by itself. The transportation distances are rel-
+atively long as compared to the right side where all
+supply and demand points are used jointly by both
+companies. Because the overall cost is more or less
+proportional to the distance, it is clear that the solu-
+tion on the right side with collaboration is much bet-
+ter than the left side without collaboration.
+The data to support the case study are taken from
+companies records reporting on ﬁber procurement
+and transportation carried out during one typical
+month. They involve all transports from the eight
+companies and include information on time, origin
+destination, volume, and product. The level of activ-
+ity varies within the companies. Table 1 shows the
+volume transported and the proportion of the total
+transported volume for each of the companies. Com-
+panies are of different sizes, for example, company 2
+is much larger than company 8. While playing the
+game, the players typically experience the power of
+the larger companies in the negotiation process. For
+example, player holding company 8 rarely gets any
+attention from the other players.
+The companies operate in southern Sweden and
+cover different geographical areas; see Figure 3 where
+the green areas show the supply areas and the red
+circles denote the mills. Some companies cover the
+entire region (e.g., company 2) and others only a
+part (e.g., company 1). There is a correlation between
+the overlap in coverage, between two companies and
+the potential for cost savings from collaboration. For
+example, if companies 2 and 3 collaborate, the cost
+savings can be large whereas if companies 1 and 3
+collaborate, the cost savings would be smaller.
+From the case study, we had detailed information
+on all transports made by the eight companies. With
+this information, we can compute the optimal cost for
+each company as well as the cost if all eight com-
+panies work together. In addition, we can also com-
+pute the cost of all possible coalitions. There are 247
+(28–1–8) coalitions possible. Transportation costs
+for all coalitions were computed with the system
+FlowOpt (Forsberg et al. 2005). This is a decision
+support system that includes a geographical infor-
+mation system, the Swedish road database NVDB,
+and optimization routines to solve the OR models.
+The transportation planning problem is to decide
+how to transport logs from supply to demand points.
+The transportation can be done directly or indirectly
+through terminals. Moreover, there are several trans-
+portation modes, including trucks, trains, and ships.
+In Table 2, we provide information on the actual
+cost of the transportation activities, the cost when
+transportation is optimized within the company, and
+ﬁnally the cost when all companies are working
+together. The total saving when all companies are
+working together is 8.6%. In the game, for consistency
+we use only the optimized values. We do not use the
+actual costs because the companies might differ in
+how effectively the plan their operations.
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 4
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+104 INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS
+Figure 1 Illustration of Geographical Area Where the Companies Operate in Southern Sweden
+3. Basic Concepts in Collaboration
+One important aim of the game is to provide an
+understanding of the negotiation process of cost shar-
+ing mechanisms, and the importance of trust and
+fairness. Some important concepts needed for this
+are found in the game theory literature. This section
+is provided for the instructors who might want to
+review these concepts with the students at the end
+of the game. It is based on the description found in
+D’Amours and Rönnqvist (2010b). We will describe a
+number of sharing principles once the coalition has
+been formed and agreed upon. We start by introduc-
+Additional information, including supplemental material and rights and permission policies, is available at http://ite.pubs.informs.org.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 5
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS 105
+Figure 2 Illustration of Wood Bartering Between Two Companies
+Company 1:
+No collaboration Collaboration
+Company 2:
+Notes. On the left, the transportation ﬂows for two companies (indicated in dotted and dark lines) work with their own supply and demand. On the right, the
+companies treat their supply and demand as common. The total distance is about 50% shorter using a common wood bartering.
+ing some basic notation used in game theory. We will
+discuss sharing principles based on cost allocation
+methods. We have a set of business entities N . A coali-
+tion S is a subset of business entities; i.e., S ⊂ N . The
+grand coalition is the set of all entities, i.e., N . The cost
+of a coalition is denoted c4S5.
+A cost allocation method distributes (or allocates)
+the total cost of a coalition to the entities. In many
+cases there is an assumption that we use the grand
+coalition as a basis, but below we may have any
+coalition as a basis for the allocation. This aspect is
+important because it is often needed to establish the
+contribution of all possible coalitions. Each entity j
+will be allocated the cost yj. A coalition set consisting
+of only one entity j is denoted 8j9. Because the total
+cost is to be distributed among the entities, we have
+∑
+j∈s
+yj = c4S50 (1)
+A cost allocation that satisﬁes the above constraint
+is said to be efﬁcient. There are other properties that
+can be associated with a cost allocation. One property
+that requires that the entity not be allocated a higher
+Table 1 Monthly Volumes (Cubic Meters) for Each of the Eight
+Companies
+Company Volume Proportion (%)
+Company 1 77 1300 8 08
+Company 2 301 1300 34 02
+Company 3 232 1100 26 03
+Company 4 89 1300 10 01
+Company 5 94 1770 10 07
+Company 6 44 1509 5 00
+Company 7 36 1786 4 02
+Company 8 6 1446 0 07
+cost than its own cost is called individual rationality.
+This is simply expressed as
+yj ≤ c48j950 (2)
+Another important concept is to ensure that there is
+no incentive for a coalition to break out and work
+independently. This implies that the cost allocated to a
+particular coalition of entities cannot exceed the actual
+cost of the coalition. There are many potential coali-
+tions and this means that we have one constraint for
+each possible coalition. This can be expressed as
+∑
+j∈S′
+yj ≤ c4S5 ∀ S′ ⊂ S0 (3)
+Constraint sets (1) and (3) deﬁne what is called the
+core. Any solution in the core is called stable. In gen-
+eral, there is no guarantee that there exists a solution
+in to the core. The game is said to be monotone if
+c4S′5 ≤ c4S51 S ′ ⊂ S0 (4)
+This means that if one new entity is included in a
+coalition, the cost never decreases. The game is said
+to be proper if
+c4S5 + c4T 5 ≥ c4S ∪ T 51 S ∩ T = 0 (5)
+This implies that it is always proﬁtable (or at least
+not unproﬁtable) to form larger coalitions. The prop-
+erties discussed above are not satisﬁed for all classes
+of games. Some may be guaranteed and others not.
+For each coalition, S, and a cost allocation, y, we can
+compute the excess
+e4S1 y5 = c4S5 −
+∑
+j∈S
+yj 1 (6)
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 6
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+106 INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS
+Figure 3 Supply Areas (Indicated with Green) and Demand Points or Mills (Indicated with Red Circles) for the Companies
+Company 1 Company 2 Company 3 Company 4
+Company 5 Company 6 Company 7 Company 8
+which expresses the difference between the total cost
+of a coalition and the sum of the costs allocated to its
+members. For a given cost allocation, the vector of all
+excesses can be thought of as a measure of how far
+the cost allocation is from the core. If a cost allocation
+is not in the core, at least one excess is negative.
+Many quantitative allocation rules exist and we will
+discuss some that have been used in different appli-
+cations. A simple and straightforward allocation is to
+Table 2 Real and Optimized Costs Associated with Each Company
+and when All Work Together
+Company Cost-real Cost-opt Cost-all
+Company 1 3 1894 3 1780
+Company 2 15 1757 14 1860
+Company 3 10 1704 10 1340
+Company 4 5 1084 4 1960
+Company 5 4 1828 4 1740
+Company 6 2 1103 2 1067
+Company 7 1 1934 1 1884
+Company 8 333 333
+Companies 1–8 39 1253
+Total 44 1637 42 1964 39 1253
+Note. All costs, are given in kSEK (thousands of Swedish kronor).
+distribute the total cost of the coalition among the
+participants according to a volume or a cost weighted
+measure. This allocation is called weighted costs and is
+expressed by the formula
+yj = c48j95
+∑
+j∈S c48j95 c4S50 (7)
+This allocation method is intuitive but can often lead
+to an allocation that does not satisfy the core condi-
+tions. A more advanced method is based on dividing
+the allocation into two parts. One is associated with a
+separable cost and the other a nonseparable cost. The
+separable cost or the marginal cost (7) of entity j and
+the nonseparable cost (9) can be expressed as
+mj = c4S5 − c4S\8j95 (8)
+gS = c4S5 −
+∑
+j∈S
+mj (9)
+The separable cost for an entity j is simply the
+cost difference between the case when the entity is
+included in the grand coalition or not. This is a mea-
+sure of the overall impact by including entity j or
+not. If this marginal cost is added for all entities we
+Additional information, including supplemental material and rights and permission policies, is available at http://ite.pubs.informs.org.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 7
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS 107
+do not obtain, in general, the cost of the grand coali-
+tion. This latter difference is the nonseparable cost.
+Methods based on separable and nonseparable costs
+allocate the costs according to
+yj = mj +
+wj
+∑
+j∈S wj
+gS0 (10)
+Depending on which weights are chosen, there are
+different versions of the method. The two most
+straightforward methods are called the equal charge
+method, which distributes the nonseparable cost
+equally, and the alternative cost avoided method,
+which uses the weights wj = c48j95 − mj. The latter
+method expresses savings that are made for each par-
+ticipant by joining the grand coalition instead of oper-
+ating alone. These allocations satisfy the efﬁciency
+and symmetry properties; however, they are not nec-
+essarily in the core. These and other additional ver-
+sions are discussed in Tijs and Driessen (1986).
+The Shapley value (Shapley 1953) is a solution con-
+cept that provides us with a unique solution to the
+cost allocation problem. The underlying idea is based
+on the assumption that the grand coalition is formed
+by entering the entities into this coalition one at a
+time. As each entity enters the coalition, it is allo-
+cated the marginal cost, and this means that its entry
+increases the total cost of the coalition it enters. The
+amount an entity receives by this scheme depends
+on the order in which the entities are entered. The
+Shapley value is the average marginal cost of the
+entity, if the entities are entered in completely random
+order. The cost allocated to entity j is equal to
+yj =
+∑
+S′⊂S−8j9
+S′!4S − S′ −15!
+S! 4c4S ′ ∪ 8j95 − c4S′550 (11)
+Here · denotes the number of entities in the con-
+sidered coalition. The quantity, c4S ∪ 8j95 − c4S5, is the
+amount by which the cost of coalition S increases
+when entity j joins it, here denoted by the marginal
+cost of entity j with respect to the coalition S. The
+Shapley value satisﬁes the efﬁciency property but
+does not necessarily satisfy the stability or the indi-
+vidual rationality properties.
+When solving the transportation model used in the
+case study, we get dual or shadow prices for each
+of the supply and demand constraints. We deﬁne ui
+and vj as the shadow prices of the ﬂow conservation
+constraints for the supply and demand constraints,
+respectively. Here, i and j are the indices of the sup-
+ply nodes 4i5 and demand nodes 4j5, respectively. The
+supply in supply node i is denoted si and demand at
+demand node j is denoted dj. The set of supply nodes
+are denoted l and the set of demand nodes J . When
+we solve the transportation model for the coalition
+S = N , we get c4N 50 The optimal dual solution has the
+property
+c4N 5 =
+∑
+i∈I
+uisi +
+∑
+j∈J
+vj dj 0 (12)
+A distribution of costs in linear production mod-
+els, and our model is a special case, has been pro-
+posed by Owen (1975), who shows that the core is
+nonempty and that a solution can be obtained from
+the associated linear program (LP) problem. The solu-
+tion is based on market prices, which correspond to
+the shadow prices in the linear program. Each com-
+pany’s contribution can be found by computing its
+contribution to the dual objective function value. We
+assume that company c has contribution sc
+i to supply
+constraint i and dc
+j to demand constraint j. Here we
+assume that the supply of each supply node, si, is the
+summation of all companies, i.e., si = ∑
+c sc
+i . The same
+splitting also applies for the demand nodes. Then we
+can compute its contribution as
+yc =
+∑
+i∈I
+uisc
+i +
+∑
+j∈J
+vj dc
+j 0 (13)
+In many applications the entities wish to share the
+relative savings equally. One such approach, called
+equal proﬁt method (EPM), is suggested in Frisk et al.
+(2010). In this approach, the following LP is solved
+min f
+s.t. f ≥ yi
+c48i95 −
+yj
+c48j95 1 ∀ i1 j
+∑
+j∈S
+yj ≤ c4S51 ∀ S ⊂ N
+∑
+j∈N
+yj = c4N 5
+(14)
+The ﬁrst constraint set is to measure the pairwise
+difference between the proﬁts of the entities. The vari-
+able f is used in the objective to minimize the largest
+difference. The two other constraint sets deﬁne all sta-
+ble allocations. In cases where the objective is not zero
+(no difference between the entities) the reason is that
+there is a coalition that has an incentive to break out;
+i.e., the core constraints must be satisﬁed. The EPM is
+related to a weighted version of the constrained egali-
+tarian allocation (CEA) method (Dutta and Ray 1991).
+The CEA method seeks to pick a point in the core
+where the allocated amounts are as equal as possible.
+We can also deﬁne a weighted version of the CEA
+method (Koster 1999). In order to relate the weighted
+CEA method to the method of Frisk et al. (2010), we
+set the weight of player i equal to 1 /c48i95.
+In Table 3, we show the results when we use a vol-
+ume weighted allocation, Shapley values, dual prices,
+and EPM. It is clear that the results are very different
+for the applied methods.
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 8
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+108 INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS
+Table 3 Relative Savings in Percentage with Sharing Principles:
+Volume, Shapley Values, Dual Prices, and EPM
+Company Volume Shapley Dual EPM
+Company 1 9 00 5 01 4 01 6 07
+Company 2 9 07 9 00 12 07 8 08
+Company 3 0 02 5 07 −108 8 08
+Company 4 19 09 9 02 11 07 8 08
+Company 5 11 02 13 05 14 02 8 08
+Company 6 4 03 8 06 12 03 8 08
+Company 7 13 02 15 08 15 06 8 08
+Company 8 14 00 6 09 9 01 8 08
+4. What Happened with the
+Companies
+The research project provided the expected savings
+of each potential coalitions between the eight compa-
+nies. The expected savings were interesting however
+the sharing of it was not simple. The results of the
+study were presented to the managers. Each partici-
+pating company was pleased and impressed with the
+large savings in both cost and CO 2 emissions. There
+was a discussion on how the overall cost and/or cost
+reduction should be split. In the forestry business, the
+cost is often based on average price per metric ton or
+cubic meter. Hence, a natural way of splitting the cost
+is for each company to take a share of the total cost
+corresponding to its proportion of volume. The result
+of a volume-based weighting is viewed in Table 3,
+but it was not acceptable that the second largest com-
+pany (Company 5) would gain only 0.2%. This dif-
+ference in savings between the companies was too
+high and it was impossible to reach an agreement.
+The reasons for this difference in relative savings are
+twofold. First, each company takes responsibility for
+its own supply and makes sure it is delivered to
+the new destinations (coupling between supply and
+demand points). Secondly, the geographical distribu-
+tion differs between companies and this affects the
+new distribution solution and the individual impact
+of each company.
+In order to come up with a sharing principle
+that the companies could agree on, several shar-
+ing principles based on economic models including
+Shapley value, the nucleolus, separable and nonsepa-
+rable costs, shadow prices, and volume weights were
+tested and analyzed. As part of the analysis, the EPM
+was developed. The motivation was to get an allo-
+cation that provided an as equal as possible relative
+proﬁt among the participants. In addition, it satisﬁes
+core constraints from cooperative game theory and is
+a stable solution the explicit mathematical formula-
+tion of the method was presented in §3. This approach
+was acceptable to the forest companies. It was fur-
+ther extended in a two-stage process where the ﬁrst
+stage identiﬁed volumes that made a contribution to
+the collaboration, i.e., volumes in the integrated solu-
+tion that were not the same as in the individual solu-
+tions. Then the EPM was applied to these identiﬁed
+volumes.
+As a result of the case study, three companies
+started collaborating in 2008 by coordinating their
+planning on a monthly basis. Before each month, each
+company provided the information about supply and
+demand to a third party logistics, provider in this case
+the Forestry Research Institute of Sweden. Then an
+integrated plan (i.e., common plan) was made and
+the result was given back to the forest companies
+for their own detailed transportation planning. The
+sharing principle was based on having the same rel-
+ative savings applied to each company’s own sup-
+ply. In addition, there were some constraints such as
+making sure that each company was the main sup-
+plier for its own mills and that pairwise exchange
+ﬂows were the same. The latter is to avoid ﬁnancial
+exchanges between companies. Moreover, core condi-
+tions were not included. With this revised model, it
+was not possible to guarantee a stable solution, but
+the companies were of the opinion that this part was
+not that important. More important however, was that
+they could trust each other in the long term. The
+approach was tested during four months in 2008 and
+the potential savings were 5%–15% each month. Cur-
+rently in development is a web-based application for
+common plans where a third party logistics provider
+is not required.
+5. Game
+The game can be played in three versions. The ﬁrst
+version has four companies and four players the sec-
+ond includes ﬁve companies (ﬁve players) and the
+third, all eight companies (eight players). In the ver-
+sions with four and ﬁve companies, more information
+is provided to the players. Here, all actual costs of all
+the possible coalitions are provided. All versions of
+the game are played during a two- to three-hour lec-
+ture. In a standard class, there will be a set of groups
+of four (or ﬁve) students. The best layout is to have
+the students of each group gathered together around a
+table. Each group should have space to move around
+the table. Each participant will receive a document
+explaining the game and providing the needed infor-
+mation. Students are not expected to prepare in any
+way. It is better to have them read papers on game
+theory after they experienced the game. The informa-
+tion provided for the students in version 1 (four com-
+panies/four players) is described below.
+We ﬁrst outline the purpose of the game and give
+a printout map, shown in Figure 4, of supply points
+and demand points for each of the four companies.
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 9
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS 109
+Figure 4 Maps for Companies 1, 2, 3, and 4
+Company 1 Company 2 Company 3 Company 4
+Note. Supply areas are shaded and dark circles are plants.
+Each company can work individually and has a spe-
+ciﬁc transportation cost. A summary of the compa-
+nies when they are working individually during one
+month is given in Table 4.
+The companies can form one or several coalitions (a
+set of companies working together). If they work in a
+coalition, they simply treat their supply and demand
+as common and can ﬁnd a solution that lowers the
+overall transportation cost. For example, if compa-
+nies 1 and 2 work individually, the overall cost is
+3,780 (Company 1) + 14,860 (Company 2) = 18,640
+kSEK. However, if they work together, the cost is
+18,300 kSEK, which represents a savings of 340 kSEK
+(18,640−18,300). One question is how these 340 kSEK
+should be divided between the two companies, 1
+and 2. There are many possible coalitions, and Table 5
+summarizes the costs and savings for all possible con-
+ditions. The improvement in the table is given as
+percentage, i.e., savings divided by the aggregated
+individual cost. For example, the improvement for
+coalition (Company 1 + Company 2 + Company 3) is
+computed as 1 1270/281980 = 4038%.
+In the collaboration game, each group consists
+of four players. Each player is responsible for one
+company. The objective for each player is to improve
+its own cost/proﬁt as much as possible. The task is
+to discuss and agree which companies should work
+Table 4 Summary of the Four Companies and Their Transportation
+Volume (m3), Transportation Cost (kSEK), and Average
+Transportation Distance (km)
+Company Volume Individual cost Average distance
+Company 1 77 1300 3 1780 70 03
+Company 2 301 1300 14 1860 56 08
+Company 3 232 1100 10 1340 68 05
+Company 4 89 1300 4 1960 68 05
+Total 700 1000 33 1940 —
+together (if any). The decision on how the over-
+all savings should be divided within the companies
+in a coalition is part of deciding which companies
+should work together. In phase 1, only two companies
+can work together. In phase 2, any coalition struc-
+ture is possible. For example, all companies can work
+together, no companies work together, or any group
+of two or three companies can work together. Each
+company can only participate in one coalition in each
+of the game.
+Once the ﬁrst phase is played, we have a discussion
+on how the participants made their decisions, their
+thinking, and their bargaining power. We also discuss
+the different results (displayed for all groups) that
+the students have agreed on. This discussion is often
+interesting and provides a good basis for the second
+phase. To support this discussion, we have developed
+an Excel sheet where each group solution is inserted
+through an easy input form (Results_4companies.xlsx
+is provided as a supplementary ﬁle). Figure 5 gives
+an example from phase 2 when eight groups have
+Table 5 Summary of Possible Coalitions and Their Cost if They Work
+Together, Summed Individual Cost, and Savings and
+Improvement
+Coalition Cost (kSEK) Cost (kSEK) Improvement
+(companies) (collaboration) (individual) Savings (kSEK) (%)
+1 + 2 18 1300 18 1640 340 1 082
+1 + 3 14 1000 14 1120 120 0 085
+1 + 4 8 1510 8 1740 230 2 063
+2 + 3 24 1210 25 1200 990 3 093
+2 + 4 19 1040 19 1820 780 3 094
+3 + 4 15 1060 15 1300 240 1 057
+1 + 2 + 3 27 1710 28 1980 1 1270 4 038
+1 + 2 + 4 22 1490 23 1600 1 1110 4 070
+1 + 3 + 4 18 1580 19 1080 500 2 062
+2 + 3 + 4 28 1400 30 1160 1 1760 5 084
+1 + 2 + 3 + 4 32 1000 33 1940 1 1940 5 072
+Additional information, including supplemental material and rights and permission policies, is available at http://ite.pubs.informs.org.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 10
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+110 INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS
+Figure 5 Input Information from Eight Groups with Their Agreed Upon Coalition and Agreed Upon Savings
+Note. In this case all eight groups agreed on the grand coalition, but the agreed upon savings are quite different.
+inserted their solution. First the coalitions agreed are
+inserted and then the agreed savings for each com-
+pany within each coalition. The coalitions are selected
+in the white area of rows 4–7 using a dropdown
+list and the agreed savings are inserted in the white
+area of rows 12–15. All input is done in the white
+areas whereas the grey areas are information com-
+puted based on the input. Based on the input, two
+results are generated. In the Excel sheets, the compa-
+nies are denoted C1 (Company l), C2 (Company 2) etc.
+First, we compute the relative savings for each com-
+pany. This is viewed in a table which is illustrated in
+Figure 6. Here it is easy to see how fair the distribu-
+tion is. For example, group 1 selected a full coalition,
+which gives an average saving of 5.76%. However, the
+Figure 6 Relative Savings for Each Company Based on the Inserted Solution
+agreed savings for the companies turned out to be
+3.97%, 6.59%, 5.42%, and 5.04%. Second, the same rel-
+ative savings are also shown in an Excel graph, shown
+in Figure 7. These results typically generate a lively
+discussion among the students about rationality, fair-
+ness and trust.
+Version 2 of the game is identical to version 1
+except that a ﬁfth company is added. This makes
+the ﬁrst phase a bit more complicated because at
+least one company must be left outside a coalition.
+Moreover, the new ﬁfth company has spread of its
+resources, providing high potential for collaboration
+and therefore, raising its power. The supplementary
+ﬁle for version 2 is Results_5companies.xlsx.
+Additional information, including supplemental material and rights and permission policies, is available at http://ite.pubs.informs.org.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 11
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS 111
+Figure 7 Relative Savings for Each Company Based on the Inserted
+Solutions from the Eight Groups
+0.00
+2.00
+4.00
+6.00
+8.00
+10.00
+12.00
+14.00
+12345678
+Savings (%)
+Teams
+Company savings
+C1
+C2
+C3
+C4
+The information provided for the students in ver-
+sion 3 (eight students and companies) is different.
+Each company has information about its total cost
+together with the information about collaborating
+with one other company. There is no information on
+collaborating with three or several companies. In this
+version, it is more important to ﬁnd agreements with-
+out knowing the real beneﬁts. In Table 6, we provide
+the information for one company. Version 3 also has
+two phases. In the ﬁrst phase, coalitions of at most
+two companies should be found. This is more difﬁ-
+cult, compared to versions 1 and 2 because there are
+many more alternatives. Also, here it is very clear
+that companies 2 and 3 have much higher negotiation
+power. In the second phase, any coalition and princi-
+ple for sharing the beneﬁt may be used. In this version
+of the game, the students do not know the savings
+when they decide to collaborate. They need to deﬁne
+the coalition and set the principle they will follow
+for the splitting of the savings. Only the real beneﬁts
+of the agreed coalitions are announced to the agreed
+groups. They ﬁnish the game by computing the sav-
+ings following the principle they have agreed on.
+Once the game is played, we follow up with what
+happened in the industrial case study and what
+sharing mechanisms were tested and used. We intro-
+duce the students to basic game theory, including the
+Table 6 Costs and Savings (kSEK) When Company 1 Works Together
+with a Second (2–8) Company
+Company Company Cost (separate) Cost (together) Savings
+1 2 18 1640 18 1300 340
+1 3 14 1120 14 1000 120
+1 4 8 1740 8 1510 230
+1 5 8 1520 8 1490 30
+1 6 5 1840 5 1770 70
+1 7 5 1660 5 1660 0
+1 8 4 1110 4 1100 10
+core conditions, efﬁcient allocation, and individual
+rationality concepts. We then go through well-known
+methods such as the Shapley values and the shadow
+price approach. We also show results when using a
+simple “volume” based allocation method, which is
+often used in practice. Finally, we present the retained
+approach called the equal proﬁt method. Essentially
+we make a quick run through material similar to §4
+in this paper.
+There is also a discussion of other drivers for the
+collaboration. These are the effects of CO 2 emissions,
+trust, and long-term relationships. To form any coali-
+tion is also highly dependent on which company is
+the driver and which business model each company
+has. Therefore, we discuss different business models
+and behavior and how the coalitions can be formed.
+More information and results based on the case study
+can be found in Audy et al. (2012).
+The closing discussion always brings up the chal-
+lenges of building long-term relationships between
+the players. Key aspects of the transaction cost the-
+ory and the agency theory are used to sustain the
+discussion. Finally, we tend to use this discussion to
+reinforce the contribution of game theory to assess
+the potential of collaborative logistics as well as pro-
+voke reﬂection on other aspects of long-term relations
+such as trust, communication, coordination mecha-
+nism, and contracts. We also provide extra reading.
+For example, the papers by Audy et al. (2010) and
+Lehoux et al. (2009) are good complements to the
+game because they report on collaborative logistics
+cases. It is clear that this game does not cover all the
+important issues, but we believe that it contributes to
+students developing key competencies for establish-
+ing higher quality collaboration in logistics.
+6. Experiences
+We have played this game with students, business
+people, and researchers in France, Sweden, Norway,
+Chile, and Canada. All information (PDF docu-
+ments, Excel sheets, and PowerPoint presentation) are
+provided on a password-protected part of the ITE
+website, accessible only to the instructors. We ﬁrst
+developed version 3 of the game where eight play-
+ers are provided with the company information and
+information on the impact of partnering with another
+company. For example, company 1, knows its cost,
+average transportation distance, and the geographical
+location of its catchment areas and industries. Com-
+pany 1 also knows the potential beneﬁt of pairing
+with company 2, 3, 4, 5, 6, 7, and 8, respectively. It
+does not know the beneﬁt of being part of a larger
+coalition. For us this was the replication of the case
+study because there are eight companies involved in
+the real case. However, we found that the players
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 12
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+112 INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS
+with the smallest companies were rapidly put aside.
+The only way they could really be heard by the oth-
+ers was to join forces with them even though they
+did not have any incentive at ﬁrst sight. As a group,
+they are perceived as an interesting “larger” player.
+Then others start discussing collaboration with them
+as a group. This was difﬁcult for the students to real-
+ize; very few participants saw the potential of this
+strategy and were capable of using its power in the
+negotiation process.
+Running the game in different countries permitted
+us to capture cultural differences. These observations
+cannot be generalized but are interesting to discuss
+here because they illustrate strategies in dealing with
+the case. North Americans tend to build their coalition
+one by one, which is in contrast with Scandinavians
+who typically start with the grand coalition and rarely
+eliminate a company from the grand coalition. Partic-
+ipants from France and Chile used mixed strategies
+mainly based on relations—pairing with their friends.
+In Chile, one group decided to eliminate the small-
+est company and gave the player the responsibility of
+mediating the grand coalition. In this game the play-
+ers focus more on coalition building than on design-
+ing the sharing mechanism.
+We then developed version 1 of the game. This ver-
+sion deals with a smaller number of companies and
+provides more information. Each player knows the
+potential beneﬁt of paring with all other companies.
+The players are rapidly challenged because no equi-
+librium exists and they need to negotiate an incentive
+to get the maximum out of the grand coalition. The
+discussions are easier to manage than in version 3 of
+the game because only four players are involved in
+each group. The players focus more on the sharing
+mechanism than on coalition building. We then devel-
+oped version 2 (with ﬁve companies/players) as we
+wanted to create a more difﬁcult negotiation situa-
+tion in the ﬁrst phase. In this version, one company
+must be left outside as only two coalitions of two
+companies can be made in phase 1. This creates more
+discussions and negotiations among the participants.
+This version is the one we use most frequently today.
+We have also developed an Excel sheet for versions
+1 and 2 to illustrate the results and characteristics of
+the most common sharing principles. In the version
+with four and in particular with ﬁve companies, it is
+clear how much bargaining power the largest com-
+pany has. All others have an incentive to collaborate
+with this company, which often can come up with
+very good agreements. It is also interesting to note
+when all companies are working together, much of
+this bargaining power of the largest company is lost
+and the agreements provide relative savings of the
+same order.
+7. Conclusions
+Collaboration among supply chains is attracting inter-
+est from academic and industrial communities. It is
+seen as a new approach to increase the value created
+through better cross-chain coordination. However,
+most agree that establishing efﬁcient and sustainable
+collaborations requires highly skilled and competent
+people. This is why we developed this business game.
+Business games are often used for developing com-
+plex competences. This is the case for this game
+because the participants integrate advanced game the-
+ory knowledge as well as develop their negotiation
+skills. Moreover, it also provides an insight into how
+differently the bargaining power can be based on the
+size and location of the companies.
+To be efﬁcient, business games need to be simple
+and meaningful. The game proposed in this paper
+focuses on two aspects of collaboration in logistics:
+coalition building and sharing mechanism. It is sim-
+ple to explain and to run. Moreover, the game builds
+on an industrial case study providing a meaningful
+background in terms of the data (e.g., maps, costs,
+distances, and volumes) and human behavior. It also
+shows that the theories learned through the exercise
+are relevant to students.
+Supplementary Material
+Files that accompany this paper can be found and down-
+loaded from http:/ /dx.doi.org/10.1287/ited.1120.0090.
+References
+Allon G, Van Mieghem JA (2010) The Mexico-China sourcing
+game: Teaching global dual sourcing. INFORMS Trans. Ed.
+10(3):105–112.
+Audy JF, D’Amours S, Rousseau JM (2010) Cost allocation in
+the establishment of a collaborative transportation agree-
+ment, an application to the furniture industry. J. OR Society
+61:1559–1559.
+Audy JF, D’Amours S, Rönnqvist M (2012) An empirical study on
+coalition formation and cost/savings allocation. Int. J. Prod.
+Econom. 136:13–27.
+Audy JF, Lehoux N, D’Amours S, Rönnqvist M (2011) Why should
+we work together? OR/MS Today April, 48–53.
+Ben-Zvi T, Carton TC (2007) From rhetoric to reality: Business
+games as educational tools. INFORMS Trans. Ed. 8(1):10–18.
+Cochran JJ (2005) Active learning for quantitative courses.
+Greenberg HJ, Smith JC, eds. Tutorials in Operations Research
+(INFORMS, Hanover, MD), 237–256.
+D’Amours S, Rönnqvist M (2010a) An educational game in
+collaborative logistics. Camarinha-Matos LM, Boucher X,
+Afsarmanesh H, eds. 11th IFIP WG 5.5 Working Conf. Virtual
+Enterprises, PRO-VE 2010, St. Etienne, France , 755–764.
+D’Amours S, Rönnqvist M (2010b) Energy, natural resources, envi-
+ronmental economics. Bjørndal M, Bjørndal E, Pardalos P ,
+Rönnqvist M, eds. Issues in Collaborative Logistics (Springer Ver-
+lag, Berlin), 395–409.
+Dutta B, Ray D (1991) Constrained egalitarian allocations. Games
+Econom. Behav. 3(4):403–422.
+Forsberg M, Frisk M, Rönnqvist M (2005) FlowOpt—A decision
+support tool for strategic and tactical transportation planning
+in forestry. Int. J. For. Eng. 16:101–114.
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 
+
+
+PAGE 13
+D’Amours and Rönnqvist: An Educational Game in Collaborative Logistics
+INFORMS Transactions on Education 13(2), pp. 102–113, © 2013 INFORMS 113
+Frisk M, Göthe-Lundgren M, Jörnsten K, Rönnqvist M (2010) Cost
+allocation in collaborative forest transportation. Eur. J. Oper.
+Res. 205:448–458.
+Grifﬁn P (2007) The use of classroom games in management science
+and operations research. INFORMS Trans. Ed. 8(1):1–2.
+Koster M (1999) Weighted constrained egalitarianism in TU-games,
+Center for Economic Research, Discussion Paper 107, Tilburg
+University, The Netherlands.
+Lehoux N, Audy J-A, D’Amours S, Rönnqvist M (2009) Issues and
+experiences in logistics collaboration in Leveraging knowledge
+for innovations in collaborative networks. Camarinha-Matos
+LM, Paraskakis I, Afsarmanesh H, eds. 10th IFIP WG 5.5 Work-
+ing Conf. Virtual Enterprises, PRO-VE 2009, Thessaloniki, Greece ,
+69–76.
+Owen G (1975) On the core of linear production games. Math. Prog.
+9:358–370.
+Shapley LS (1953) A value for n-person game. Kuhn HW, Tucker
+AW, eds. Contributions to the Theory of Games , Vol. 2 (Princeton
+University Press, Princeton, NJ) 307–317.
+Simchi-Levi D, Kaminsky P , Simchi-Levi E (2003) Designing and
+Managing the Supply Chain , 2nd ed. (Irwin/McGraw-Hill,
+New York).
+Sniedovich M (2002) OR/MS games: 1. A neglected educational
+resource. INFORMS Trans. Ed. 2(3):86–95.
+Sterman J (1989) Modeling managerial behavior: Misperceptions of
+feedback in a dynamic decision making experiment. Manage-
+ment Sci. 35(3):321–339.
+Talluri K (2009) The customer valuations game as a basis for
+teaching revenue management. INFORMS Trans. Ed . 9(3):
+117–123.
+Tijs SH, Driessen TSH (1986) Game theory and cost allocation prob-
+lems. Management Sci. 32(8):1015–1028.
+Wood SC (2007) Online games to teach operations. INFORMS Trans.
+Ed. 8(1):3–9.
+Wood Supply game. Accessed on March 3, 2012, http:/ /www.forac
+.ulaval.ca/index.php?id=19&L=1.
+Ad ditionalinformation, including supplemental material and rights and permission policies,is available at http://ite.pubs.informs.or g.
+Downloaded from informs.org by [66.183.149.249] on 07 September 2026, at 10:22 . For personal use only, all rights reserved. 

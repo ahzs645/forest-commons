@@ -1,0 +1,9 @@
+# Staged classroom implementation and playthrough
+
+Programmatic RoomStore playthrough, no browser. Five companies first saw only their own server-generated economics and submitted total-savings estimates. Three consented to sharing; companies revised estimates using only visible pairs. Instructor proposed equal savings: company 1 rejected the first offer, then all five accepted the second offer. The exercise realized 1,688 arbitrary cost units. In debrief all estimates were visible but companies 4/5's unshared economics remained private to themselves and the instructor.
+
+The session was backed up with scripts/room-backup.ts, restored into a fresh directory and loaded through a new RoomStore. Student-visible disclosure state matched exactly. Instructor recovery rotated credentials and rejected reuse of the old recovery key. See classroom-disclosure-results.json for credential-free evidence and classroom-disclosure.ts for reproduction (fresh random values each run).
+
+Seven classroom tests passed, including staged phase permissions, explicit consent, redaction, false-company response attempts, invalid allocations, unanimous acceptance, restart persistence and recovery rotation. TypeScript passed after concurrent season changes settled. The existing operational classroom script also completed another four weekly turns successfully; its recorded results were refreshed.
+
+Docker/Caddy/Compose deployment files were prepared, not publicly deployed or container-tested. Administrator token gates new rooms by default; an explicit local development override is documented. Fragment invitations are consumed by Classroom and removed from the location. All credentials authenticate possession of roles, not real-world identities. Public handout economics remain public fixtures; the new private experiment's numbers are generated independently on the server.

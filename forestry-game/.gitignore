@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Local classroom rooms contain role authorization hashes and private plans.
+.forest-rooms/
+
+# Local service and deployment secrets
+.env
+.env.*
+!.env.example

@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+dist/
+*.tsbuildinfo
+.forest-rooms/
+.env
+.env.*
+!.env.example
+*.log
+/tmp/
+/output/

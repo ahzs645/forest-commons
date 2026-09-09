@@ -1,0 +1,712 @@
+{
+  "author": "d0716cb8-7eb5-4d43-9f57-6022096fd79f",
+  "author_email": null,
+  "creator_user_id": "d0716cb8-7eb5-4d43-9f57-6022096fd79f",
+  "download_audience": "Public",
+  "id": "bb060417-b6e6-4548-b837-f9060d94743e",
+  "isopen": false,
+  "license_id": "22",
+  "license_title": "Access Only",
+  "license_url": "https://www2.gov.bc.ca/gov/content?id=1AAACC9C65754E4D89A118B875E0FBDA",
+  "maintainer": null,
+  "maintainer_email": null,
+  "metadata_created": "2014-12-11T05:10:52.279569",
+  "metadata_modified": "2026-08-26T17:53:09.881496",
+  "metadata_visibility": "Public",
+  "name": "digital-road-atlas-dra-master-partially-attributed-roads",
+  "notes": "Digital Road Atlas Master Partially-Attributed Roads (DGTL ROAD ATLAS MPAR SP) provides partial information about roads in British Columbia. This data set represents the public data that is available for the Digital Road Atlas.  For more information on the DRA program please visit the [DRA info page](http://www2.gov.bc.ca/gov/content?id=21FFEC94B0AD40818D2D2AF06D522714)\n\nThis dataset is updated on the 6th of every month to the warehouse",
+  "num_resources": 4,
+  "num_tags": 1,
+  "organization": {
+    "id": "e51a8106-11c7-4436-a967-7cee18bfb159",
+    "name": "geobc",
+    "title": "GeoBC Branch",
+    "type": "organization",
+    "description": "Custodian: Nancy Liesch\nDelegate: Susan Westmacott\n\n__GeoBC__ creates and manages geospatial information and products to help better manage natural resources in British Columbia. GeoBC also offers consultation services across all natural resource sector agencies.\n\n__GeoBC__ has four areas of focus directly tied to natural resource business functions:\n* Creating and maintaining a standard set of base spatial data that is open and accessible\n* Providing direction and assurance for provincial land registries\n* Offering Crown land and resource research expertise to other government agencies\n* Delivering a service for custom solutions to natural resource business issues",
+    "image_url": "2018-10-25-235213.2962110UttD3d9400x400.jpg",
+    "created": "2014-12-10T15:05:03.074998",
+    "is_organization": true,
+    "approval_status": "approved",
+    "state": "active"
+  },
+  "owner_org": "e51a8106-11c7-4436-a967-7cee18bfb159",
+  "private": false,
+  "publish_state": "PUBLISHED",
+  "record_create_date": "2013-02-27",
+  "record_last_modified": "2026-08-26",
+  "record_publish_date": "2013-02-27",
+  "replacement_record": "",
+  "resource_status": "onGoing",
+  "retention_expiry_date": "",
+  "security_class": "PUBLIC",
+  "source_data_path": "",
+  "state": "active",
+  "title": "Digital Road Atlas (DRA) - Master Partially-Attributed Roads",
+  "type": "bcdc_dataset",
+  "url": null,
+  "version": null,
+  "view_audience": "Public",
+  "contacts": [
+    {
+      "displayed": [
+        "displayed"
+      ],
+      "email": "GeoBCInfo@gov.bc.ca",
+      "name": "GeoBC Inquiries",
+      "org": "e51a8106-11c7-4436-a967-7cee18bfb159",
+      "role": "pointOfContact"
+    }
+  ],
+  "dates": [
+    {
+      "date": "2017-04-06",
+      "type": "Published"
+    }
+  ],
+  "more_info": [
+    {
+      "description": "",
+      "url": ""
+    }
+  ],
+  "resources": [
+    {
+      "bcdc_type": "geographic",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2019-05-07T21:50:39.555000",
+      "datastore_active": false,
+      "description": "The Distribution Service allows for data to be downloaded in various file formats from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+      "format": "multiple",
+      "hash": "",
+      "id": "91178b21-0bcc-4f90-b130-e02fa4e4fda1",
+      "iso_topic_category": [
+        "economy"
+      ],
+      "last_modified": "2026-08-11T04:07:10",
+      "metadata_modified": "2026-08-11T12:43:21.782737",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "BC Geographic Warehouse Custom Download",
+      "object_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+      "object_short_name": "DRA_MPAR",
+      "ofi": "True",
+      "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+      "position": 0,
+      "projection_name": "epsg3005",
+      "resource_access_method": "indirect access",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "asNeeded",
+      "size": null,
+      "spatial_datatype": "SDO_GEOMETRY",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download this dataset. For more information on using the distribution order form see [How to download data using the Catalogue or iMapBC](https://bcgov.github.io/data-publication/pages/dps_data_distribution_w.html). If the data is visible through public WMS, click the <b>Preview</b> button on the toolbar.",
+      "url": "",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "DIGITAL ROAD ATLAS LINE ID is a unique numeric road segment identifier e.g. 453567.",
+          "column_name": "DIGITAL_ROAD_ATLAS_LINE_ID",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "DRA_LINEI"
+        },
+        {
+          "column_comments": "FEATURE TYPE is the feature type clasification, e.g. bridge, dam, ferry route, etc.",
+          "column_name": "FEATURE_TYPE",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "FTYPE"
+        },
+        {
+          "column_comments": "HIGHWAY EXIT NUMBER is a numeric or alpha-numeric identifier assigned to a road segment that allows egress from a segment designated as a highway, e.g. 5a.",
+          "column_name": "HIGHWAY_EXIT_NUMBER",
+          "data_precision": 6,
+          "data_type": "VARCHAR2",
+          "short_name": "HWYEXITNUM"
+        },
+        {
+          "column_comments": "HIGHWAY ROUTE NUMBER is the Highways and Arterials numbers, delimited by a plus sign, e.g. 1+5+97.",
+          "column_name": "HIGHWAY_ROUTE_NUMBER",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "HWYRTENUM"
+        },
+        {
+          "column_comments": "SEGMENT LENGTH 2D is the 2D road segment length in meters e.g. 123.345.",
+          "column_name": "SEGMENT_LENGTH_2D",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "SEGLNGTH2D"
+        },
+        {
+          "column_comments": "SEGMENT LENGTH 3D is the 3D Segment length in meters e.g. 123.345.",
+          "column_name": "SEGMENT_LENGTH_3D",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "SEGLNGTH3D"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS1 is the first full alias name, e.g. Trans-Canada Hwy E.",
+          "column_name": "ROAD_NAME_ALIAS1",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS1"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS2 is the Second full alias name, e.g. Hwy 1.",
+          "column_name": "ROAD_NAME_ALIAS2",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS2"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS3 is the third full alias name, e.g Hwy 5.",
+          "column_name": "ROAD_NAME_ALIAS3",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS3"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS4 is the fourth full alias name, e.g. Hwy 97.",
+          "column_name": "ROAD_NAME_ALIAS4",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS4"
+        },
+        {
+          "column_comments": "ROAD NAME FULL is the complete name for the road made up of the concatenation of the individual road name components, e.g. Elk Valley Hwy.",
+          "column_name": "ROAD_NAME_FULL",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDNAME"
+        },
+        {
+          "column_comments": "ROAD SURFACE is the road surface type, e.g boat, decommissioned, loose, overgrown, paved, rough, unknown.",
+          "column_name": "ROAD_SURFACE",
+          "data_precision": 15,
+          "data_type": "VARCHAR2",
+          "short_name": "RDSURFACE"
+        },
+        {
+          "column_comments": "ROAD CLASS is the navigational road classification, e.g alleyway, arterial, collector, etc.",
+          "column_name": "ROAD_CLASS",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "ROAD_CLASS"
+        },
+        {
+          "column_comments": "NUMBER OF LANES is the total number of lanes of through traffic on both sides of the segment, e.g. 2.",
+          "column_name": "NUMBER_OF_LANES",
+          "data_precision": 2,
+          "data_type": "NUMBER",
+          "short_name": "NUMLANES"
+        },
+        {
+          "column_comments": "DATA CAPTURE DATE is the Date of data capture in the format YYYYMMDD e.g. 20110623.",
+          "column_name": "DATA_CAPTURE_DATE",
+          "data_precision": 7,
+          "data_type": "DATE",
+          "short_name": "CPTRDATE"
+        },
+        {
+          "column_comments": "FEATURE CODE contains a value based on the Canadian Council of Surveys and Mapping''s (CCSM) system for classification of geographic features.",
+          "column_name": "FEATURE_CODE",
+          "data_precision": 10,
+          "data_type": "VARCHAR2",
+          "short_name": "FCODE"
+        },
+        {
+          "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+          "column_name": "GEOMETRY",
+          "data_precision": 1,
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "GEOMETRY"
+        },
+        {
+          "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+          "column_name": "OBJECTID",
+          "data_precision": "38",
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_comments": "SE_ANNO_CAD_DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type. ",
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": 4000,
+          "data_type": "BLOB"
+        },
+        {
+          "column_comments": "FEATURE_LENGTH_M is the system calculated length or perimeter of a geometry in meters",
+          "column_name": "FEATURE_LENGTH_M",
+          "data_precision": 19,
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LEN"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+          "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=4489,3241&scale=16000.0&center=-13684558.0352,6307892.15725",
+          "preview_image_url": "",
+          "preview_latitude": "49.1942858",
+          "preview_longitude": "-122.93047639",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?",
+          "preview_zoom_level": "16"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "document",
+      "cache_last_updated": null,
+      "cache_url": "null",
+      "created": "2014-12-10T21:10:52.301000",
+      "datastore_active": "false",
+      "description": "",
+      "format": "zip",
+      "hash": "",
+      "id": "a06a2e11-a0b1-41d4-b857-cb2770e34fb0",
+      "isUrl": "true",
+      "iso_topic_category": [
+        "economy"
+      ],
+      "metadata_modified": "2025-04-11T12:50:12.051987",
+      "mimetype": "null",
+      "mimetype_inner": "null",
+      "name": "Full province in geodatabase format - 258MB\t",
+      "object_name": "",
+      "object_short_name": "",
+      "object_table_comments": "",
+      "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+      "position": 1,
+      "projection_name": "na",
+      "resource_access_method": "direct access",
+      "resource_storage_location": "external",
+      "resource_type": "data",
+      "resource_update_cycle": "monthly",
+      "size": null,
+      "spatial_datatype": "NA",
+      "state": "active",
+      "supplemental_info": "",
+      "url": "https://nrs.objectstore.gov.bc.ca/itqlyp/DRA_Public/dgtl_road_atlas.gdb.zip",
+      "url_type": "null",
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "webservice",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2015-12-14T10:53:19.396000",
+      "datastore_active": false,
+      "description": "Web Mapping Service (WMS) allows for data to be fed out via a service from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+      "format": "wms",
+      "hash": "",
+      "id": "a4f69e0f-a53d-4fc8-8de6-a08c7b05ee76",
+      "iso_topic_category": [
+        "economy"
+      ],
+      "last_modified": "2026-08-11T04:07:10",
+      "metadata_modified": "2026-08-11T12:43:22.274833",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "WMS getCapabilities request",
+      "object_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+      "object_short_name": "DRA_MPAR",
+      "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+      "position": 2,
+      "projection_name": "epsg4326",
+      "resource_access_method": "service",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "monthly",
+      "size": null,
+      "spatial_datatype": "",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to see or copy the WMS call. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+      "url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?service=WMS&request=GetCapabilities",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "DIGITAL ROAD ATLAS LINE ID is a unique numeric road segment identifier e.g. 453567.",
+          "column_name": "DIGITAL_ROAD_ATLAS_LINE_ID",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "DRA_LINEI"
+        },
+        {
+          "column_comments": "FEATURE TYPE is the feature type clasification, e.g. bridge, dam, ferry route, etc.",
+          "column_name": "FEATURE_TYPE",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "FTYPE"
+        },
+        {
+          "column_comments": "HIGHWAY EXIT NUMBER is a numeric or alpha-numeric identifier assigned to a road segment that allows egress from a segment designated as a highway, e.g. 5a.",
+          "column_name": "HIGHWAY_EXIT_NUMBER",
+          "data_precision": 6,
+          "data_type": "VARCHAR2",
+          "short_name": "HWYEXITNUM"
+        },
+        {
+          "column_comments": "HIGHWAY ROUTE NUMBER is the Highways and Arterials numbers, delimited by a plus sign, e.g. 1+5+97.",
+          "column_name": "HIGHWAY_ROUTE_NUMBER",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "HWYRTENUM"
+        },
+        {
+          "column_comments": "SEGMENT LENGTH 2D is the 2D road segment length in meters e.g. 123.345.",
+          "column_name": "SEGMENT_LENGTH_2D",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "SEGLNGTH2D"
+        },
+        {
+          "column_comments": "SEGMENT LENGTH 3D is the 3D Segment length in meters e.g. 123.345.",
+          "column_name": "SEGMENT_LENGTH_3D",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "SEGLNGTH3D"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS1 is the first full alias name, e.g. Trans-Canada Hwy E.",
+          "column_name": "ROAD_NAME_ALIAS1",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS1"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS2 is the Second full alias name, e.g. Hwy 1.",
+          "column_name": "ROAD_NAME_ALIAS2",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS2"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS3 is the third full alias name, e.g Hwy 5.",
+          "column_name": "ROAD_NAME_ALIAS3",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS3"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS4 is the fourth full alias name, e.g. Hwy 97.",
+          "column_name": "ROAD_NAME_ALIAS4",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS4"
+        },
+        {
+          "column_comments": "ROAD NAME FULL is the complete name for the road made up of the concatenation of the individual road name components, e.g. Elk Valley Hwy.",
+          "column_name": "ROAD_NAME_FULL",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDNAME"
+        },
+        {
+          "column_comments": "ROAD SURFACE is the road surface type, e.g boat, decommissioned, loose, overgrown, paved, rough, unknown.",
+          "column_name": "ROAD_SURFACE",
+          "data_precision": 15,
+          "data_type": "VARCHAR2",
+          "short_name": "RDSURFACE"
+        },
+        {
+          "column_comments": "ROAD CLASS is the navigational road classification, e.g alleyway, arterial, collector, etc.",
+          "column_name": "ROAD_CLASS",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "ROAD_CLASS"
+        },
+        {
+          "column_comments": "NUMBER OF LANES is the total number of lanes of through traffic on both sides of the segment, e.g. 2.",
+          "column_name": "NUMBER_OF_LANES",
+          "data_precision": 2,
+          "data_type": "NUMBER",
+          "short_name": "NUMLANES"
+        },
+        {
+          "column_comments": "DATA CAPTURE DATE is the Date of data capture in the format YYYYMMDD e.g. 20110623.",
+          "column_name": "DATA_CAPTURE_DATE",
+          "data_precision": 7,
+          "data_type": "DATE",
+          "short_name": "CPTRDATE"
+        },
+        {
+          "column_comments": "FEATURE CODE contains a value based on the Canadian Council of Surveys and Mapping''s (CCSM) system for classification of geographic features.",
+          "column_name": "FEATURE_CODE",
+          "data_precision": 10,
+          "data_type": "VARCHAR2",
+          "short_name": "FCODE"
+        },
+        {
+          "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+          "column_name": "GEOMETRY",
+          "data_precision": 1,
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "GEOMETRY"
+        },
+        {
+          "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+          "column_name": "OBJECTID",
+          "data_precision": "38",
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_comments": "SE_ANNO_CAD_DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type. ",
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": 4000,
+          "data_type": "BLOB"
+        },
+        {
+          "column_comments": "FEATURE_LENGTH_M is the system calculated length or perimeter of a geometry in meters",
+          "column_name": "FEATURE_LENGTH_M",
+          "data_precision": 19,
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LEN"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+          "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=4489,3241&scale=16000.0&center=-13684558.0352,6307892.15725",
+          "preview_image_url": "",
+          "preview_latitude": "49.1942858",
+          "preview_longitude": "-122.93047639",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?",
+          "preview_zoom_level": "16"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "webservice",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2017-11-06T19:25:12.275000",
+      "datastore_active": false,
+      "description": "KML Ground Overlays can be used to display geographic data in mapping applications, including Google Earth. Data is served via WMS from the B.C. Geographic Warehouse (BCGW), a central government repository.",
+      "format": "kml",
+      "hash": "",
+      "id": "dad1fc2c-d897-406c-a900-b4c6830af0eb",
+      "iso_topic_category": [
+        "economy"
+      ],
+      "last_modified": "2026-08-11T04:07:10",
+      "metadata_modified": "2026-08-11T12:43:22.849371",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "Download KML Ground Overlay file",
+      "object_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+      "object_short_name": "DRA_MPAR",
+      "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+      "position": 3,
+      "projection_name": "epsg4326",
+      "resource_access_method": "service",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "monthly",
+      "size": 0,
+      "spatial_datatype": "",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download the KML Ground Overlay file. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+      "url": "https://openmaps.gov.bc.ca/kml/geo/layers/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP_loader.kml",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "DIGITAL ROAD ATLAS LINE ID is a unique numeric road segment identifier e.g. 453567.",
+          "column_name": "DIGITAL_ROAD_ATLAS_LINE_ID",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "DRA_LINEI"
+        },
+        {
+          "column_comments": "FEATURE TYPE is the feature type clasification, e.g. bridge, dam, ferry route, etc.",
+          "column_name": "FEATURE_TYPE",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "FTYPE"
+        },
+        {
+          "column_comments": "HIGHWAY EXIT NUMBER is a numeric or alpha-numeric identifier assigned to a road segment that allows egress from a segment designated as a highway, e.g. 5a.",
+          "column_name": "HIGHWAY_EXIT_NUMBER",
+          "data_precision": 6,
+          "data_type": "VARCHAR2",
+          "short_name": "HWYEXITNUM"
+        },
+        {
+          "column_comments": "HIGHWAY ROUTE NUMBER is the Highways and Arterials numbers, delimited by a plus sign, e.g. 1+5+97.",
+          "column_name": "HIGHWAY_ROUTE_NUMBER",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "HWYRTENUM"
+        },
+        {
+          "column_comments": "SEGMENT LENGTH 2D is the 2D road segment length in meters e.g. 123.345.",
+          "column_name": "SEGMENT_LENGTH_2D",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "SEGLNGTH2D"
+        },
+        {
+          "column_comments": "SEGMENT LENGTH 3D is the 3D Segment length in meters e.g. 123.345.",
+          "column_name": "SEGMENT_LENGTH_3D",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "SEGLNGTH3D"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS1 is the first full alias name, e.g. Trans-Canada Hwy E.",
+          "column_name": "ROAD_NAME_ALIAS1",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS1"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS2 is the Second full alias name, e.g. Hwy 1.",
+          "column_name": "ROAD_NAME_ALIAS2",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS2"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS3 is the third full alias name, e.g Hwy 5.",
+          "column_name": "ROAD_NAME_ALIAS3",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS3"
+        },
+        {
+          "column_comments": "ROAD NAME ALIAS4 is the fourth full alias name, e.g. Hwy 97.",
+          "column_name": "ROAD_NAME_ALIAS4",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDALIAS4"
+        },
+        {
+          "column_comments": "ROAD NAME FULL is the complete name for the road made up of the concatenation of the individual road name components, e.g. Elk Valley Hwy.",
+          "column_name": "ROAD_NAME_FULL",
+          "data_precision": 70,
+          "data_type": "VARCHAR2",
+          "short_name": "RDNAME"
+        },
+        {
+          "column_comments": "ROAD SURFACE is the road surface type, e.g boat, decommissioned, loose, overgrown, paved, rough, unknown.",
+          "column_name": "ROAD_SURFACE",
+          "data_precision": 15,
+          "data_type": "VARCHAR2",
+          "short_name": "RDSURFACE"
+        },
+        {
+          "column_comments": "ROAD CLASS is the navigational road classification, e.g alleyway, arterial, collector, etc.",
+          "column_name": "ROAD_CLASS",
+          "data_precision": 12,
+          "data_type": "VARCHAR2",
+          "short_name": "ROAD_CLASS"
+        },
+        {
+          "column_comments": "NUMBER OF LANES is the total number of lanes of through traffic on both sides of the segment, e.g. 2.",
+          "column_name": "NUMBER_OF_LANES",
+          "data_precision": 2,
+          "data_type": "NUMBER",
+          "short_name": "NUMLANES"
+        },
+        {
+          "column_comments": "DATA CAPTURE DATE is the Date of data capture in the format YYYYMMDD e.g. 20110623.",
+          "column_name": "DATA_CAPTURE_DATE",
+          "data_precision": 7,
+          "data_type": "DATE",
+          "short_name": "CPTRDATE"
+        },
+        {
+          "column_comments": "FEATURE CODE contains a value based on the Canadian Council of Surveys and Mapping''s (CCSM) system for classification of geographic features.",
+          "column_name": "FEATURE_CODE",
+          "data_precision": 10,
+          "data_type": "VARCHAR2",
+          "short_name": "FCODE"
+        },
+        {
+          "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+          "column_name": "GEOMETRY",
+          "data_precision": 1,
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "GEOMETRY"
+        },
+        {
+          "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+          "column_name": "OBJECTID",
+          "data_precision": "38",
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_comments": "SE_ANNO_CAD_DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type. ",
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": 4000,
+          "data_type": "BLOB"
+        },
+        {
+          "column_comments": "FEATURE_LENGTH_M is the system calculated length or perimeter of a geometry in meters",
+          "column_name": "FEATURE_LENGTH_M",
+          "data_precision": 19,
+          "data_type": "NUMBER",
+          "short_name": "FEAT_LEN"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+          "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=4489,3241&scale=16000.0&center=-13684558.0352,6307892.15725",
+          "preview_image_url": "",
+          "preview_latitude": "49.1942858",
+          "preview_longitude": "-122.93047639",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?",
+          "preview_zoom_level": "16"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "display_name": "provincial digital road atlas",
+      "id": "c96bf1c6-04e9-4300-b845-96855edee3d1",
+      "name": "provincial digital road atlas",
+      "state": "active",
+      "vocabulary_id": null
+    }
+  ],
+  "groups": [],
+  "relationships_as_subject": [],
+  "relationships_as_object": []
+}

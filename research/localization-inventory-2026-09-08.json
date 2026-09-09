@@ -1,0 +1,414 @@
+{
+  "remainingStaticTextNodes": 222,
+  "translatedCalls": 1386,
+  "files": [
+    {
+      "file": "BuckingDesk.tsx",
+      "count": 8,
+      "texts": [
+        "Bucking and recovery ·",
+        "Choose how existing timber grades become products. Recovery conserves harvested volume and cannot upgrade pulp into sawlogs. These are illustrative processing choices, not measured mill recovery curves. Set the choice on each crew stop to apply it.",
+        "Productivity ×",
+        "· direct harvest cost ×",
+        "% recovered",
+        "Illustrative lot contribution across access cases:",
+        "to",
+        ". Demand-capped appraisal includes acquisition and indicative harvest/haul costs, not guaranteed realized profit."
+      ]
+    },
+    {
+      "file": "Classroom.tsx",
+      "count": 6,
+      "texts": [
+        "· revision",
+        "· Company",
+        "· your savings",
+        "kSEK",
+        "· asking",
+        "Improve"
+      ]
+    },
+    {
+      "file": "CoalitionCharts.tsx",
+      "count": 5,
+      "texts": [
+        "Partnership and allocation picture",
+        "Co.",
+        "Lines show shared group membership, not freight routes or company geography. The circle layout is schematic. Membership does not imply that an offer has been accepted.",
+        "Exercise kSEK · negative savings mean a loss",
+        "Standalone costs come from the selected four- or five-company handout. Allocated cost equals standalone cost minus the current proposed savings, including custom edits. These teaching amounts are separate from campaign cash. The table below provides exact values and editable group membership."
+      ]
+    },
+    {
+      "file": "CohortMonitor.tsx",
+      "count": 2,
+      "texts": [
+        "cash ·",
+        "· checked"
+      ]
+    },
+    {
+      "file": "CrewTimeline.tsx",
+      "count": 1,
+      "texts": [
+        "h ·"
+      ]
+    },
+    {
+      "file": "DeliverabilityDesk.tsx",
+      "count": 1,
+      "texts": [
+        "m³"
+      ]
+    },
+    {
+      "file": "DisruptionDesk.tsx",
+      "count": 9,
+      "texts": [
+        "OPERATING DISRUPTIONS",
+        "Respond to changing conditions",
+        "Authored teaching events. Closures change available routes and capacity; recovery payments enter the campaign ledger immediately.",
+        "Weeks",
+        "Recovery paid · restored week",
+        "Recovery:",
+        "Pay for recovery",
+        "Wait for normal reopening",
+        "Waiting recorded. You can still choose recovery."
+      ]
+    },
+    {
+      "file": "DraftOptions.tsx",
+      "count": 8,
+      "texts": [
+        "Forecast draft strategy",
+        "Cap dispatch at commitments",
+        "Sales priority",
+        "Net transport margin",
+        "Contracts first",
+        "Include avoided shortfall penalties",
+        "Uses forecast access and selected treatment and bucking productivity and recovery. The optional cap reserves whole loads within remaining monthly targets; small remainders may need manual dispatch. Ranking uses net transport margin per hour and the selected contract policy. Avoided penalties affect advice only, never sales revenue. The cap does not guarantee better service or profit.",
+        "Draft with these choices"
+      ]
+    },
+    {
+      "file": "EightCompanyExercise.tsx",
+      "count": 24,
+      "texts": [
+        "Eight companies · agree before disclosure",
+        "Round",
+        ". This is a local pass-and-play exercise: pass the device to each representative to record acceptance. Confirmations are not authenticated online decisions. Generated teaching coefficients use abstract cost units, separate from the original four/five-company source data and campaign finances.",
+        "Initially only standalone costs and pair savings are shown. Agree on how to divide savings before revealing larger coalition results. This is staged classroom disclosure, not protection against inspecting local source code.",
+        "Equal savings per member",
+        "Savings proportional to standalone cost",
+        "Changing the rule before disclosure clears every acceptance. After disclosure it is frozen until a new round.",
+        "Pairwise savings · 28 pairs",
+        "/8 companies have accepted. No larger coalition totals are included in the current view or reflection export.",
+        "Freeze rule and reveal larger coalitions",
+        "Revealed coalition results",
+        "Grand coalition savings:",
+        "cost units. Generated pair benefits are reduced by coordination costs for larger groups; more participants do not automatically create more savings.",
+        "Exclusion bargaining",
+        "Compare each seven-company alternative under the same frozen rule. A larger total gain does not guarantee that every remaining company receives more; excluded companies keep their standalone outside option.",
+        "Excluded company",
+        "Change vs grand coalition",
+        "Remaining companies gaining",
+        "Blocking coalition analysis ·",
+        "alternatives",
+        "A positive gap means a subgroup can obtain more total savings than its grand-coalition allocation. This permits a redistribution making members better off; it does not guarantee the frozen sharing rule does so.",
+        "additional cost units available.",
+        "No proper coalition blocks this allocation in the generated model.",
+        "Starting a new round clears this round’s decisions and changes the generated coefficients. Export first to keep them."
+      ]
+    },
+    {
+      "file": "FacilityTransferDesk.tsx",
+      "count": 2,
+      "texts": [
+        "Forest deliveries run first. Transfers use remaining truck hours and existing output stock, before this week’s processing. Internal transfers earn no sales revenue. Quantities are input-equivalent m³.",
+        "No transfer mappings configured for this region."
+      ]
+    },
+    {
+      "file": "HarvestPlanning.tsx",
+      "count": 2,
+      "texts": [
+        "m³/h",
+        "km / 1,000 m³"
+      ]
+    },
+    {
+      "file": "InventoryCharts.tsx",
+      "count": 9,
+      "texts": [
+        "Current roadside batches, assuming no dispatch or new harvest. Deterioration happens at the start of the labelled week, before trucks load. Each downgrade resets the age clock and multiplies quality by 0.9. A product with no downgrade becomes waste.",
+        "No roadside inventory is currently waiting.",
+        "m³",
+        "Weeks beyond the",
+        "-week season show the storage rule only; the campaign does not automatically advance beyond its final week. Age is time since harvest or the last downgrade, not necessarily the original harvest age. Circles mark downgrades; crosses mark waste.",
+        "Batch ages, quality and full transition sequence",
+        "m³",
+        "Age (weeks)",
+        "If held: start-of-week transitions"
+      ]
+    },
+    {
+      "file": "MapRolePanel.tsx",
+      "count": 9,
+      "texts": [
+        "Forecast and access ·",
+        "Facility transfer ·",
+        "Haul from selected site ·",
+        "Product:",
+        "· change the product filter above.",
+        "m³",
+        "m³",
+        "m³",
+        "m³"
+      ]
+    },
+    {
+      "file": "MapWorkspace.tsx",
+      "count": 6,
+      "texts": [
+        "m³",
+        "m³",
+        "m³/h",
+        "km",
+        "km/h",
+        "/ m³"
+      ]
+    },
+    {
+      "file": "MillProcessingDesk.tsx",
+      "count": 11,
+      "texts": [
+        "Choose deliveries into mill inventory, then schedule conversion and output sales. Log intake earns no sales revenue. Output quantities use input-equivalent m³ to make the material balance explicit; these are teaching yields, not calibrated lumber dimensions. Unsold output and unprocessed input remain in mill inventory.",
+        "Capacity",
+        "m³/week · processing cost",
+        "/m³. Received",
+        "; processed",
+        "; residue",
+        "Input inventory:",
+        "intake",
+        "Process input m³ this week",
+        "Sell available outputs up to weekly demand",
+        "Sold to date"
+      ]
+    },
+    {
+      "file": "NegotiationOffers.tsx",
+      "count": 8,
+      "texts": [
+        "From allocation to agreement",
+        "Freeze the current allocation as a proposal. Each company can accept or reject that exact offer. Later edits create a new draft; they never rewrite a signed proposal.",
+        "Offered savings (kSEK)",
+        "accepts",
+        "Shared-device classroom exercise: these are recorded role decisions, not authenticated signatures or messages to other people. An efficient offer can still be unstable; review blocking coalitions before accepting. The campaign backhaul contract remains a separate operating assumption.",
+        "Offer history (",
+        "companies · groups",
+        "acceptances ·"
+      ]
+    },
+    {
+      "file": "NetworkDispatchLab.tsx",
+      "count": 1,
+      "texts": [
+        "m³"
+      ]
+    },
+    {
+      "file": "OfftakeDesk.tsx",
+      "count": 2,
+      "texts": [
+        "m³",
+        "/m³"
+      ]
+    },
+    {
+      "file": "PartnerComparison.tsx",
+      "count": 11,
+      "texts": [
+        "Compare the same truck’s repositioning plus a partner’s independent out-and-back freight journey against one shared journey. Travel cost uses this truck’s rate. Handling also consumes fleet hours. These local trip comparisons do not optimize the entire network.",
+        "Next own pickup",
+        "Cargo",
+        "Independent / pooled km",
+        "Joint travel saving",
+        "Payment to us",
+        "Our / partner saving",
+        "Added hours",
+        "m³",
+        "Unavailable, completed, outside its contract window, or no open route.",
+        "Payment covers extra travel cost plus our negotiated share of the measured saving, capped by the partner’s freight quote. A trip is accepted only if both sides avoid a travel-cost loss. Actual weather and remaining hours can still prevent dispatch."
+      ]
+    },
+    {
+      "file": "PlanningDesk.tsx",
+      "count": 14,
+      "texts": [
+        "· goal",
+        "m³",
+        "m³",
+        "m³",
+        "Dispatch constraints and consequences (",
+        "further notes will be visible in the operating report.",
+        "m³",
+        "m³",
+        "m³",
+        "m³",
+        "m³",
+        "Productivity ×",
+        "· direct harvest cost ×",
+        "· disturbance factor ×"
+      ]
+    },
+    {
+      "file": "PreSeasonDesk.tsx",
+      "count": 6,
+      "texts": [
+        "Move to a permitted staging node before week1 runs. Each move costs cash and counts against a separate",
+        "h pre-season allowance per resource; it does not consume weekly production hours. Routing uses the opening forecast. Positioning locks when operations begin.",
+        "km ·",
+        "h ·",
+        "Positioning record ·",
+        "h ·"
+      ]
+    },
+    {
+      "file": "ProcurementCharts.tsx",
+      "count": 12,
+      "texts": [
+        "Chart values (",
+        "Category",
+        "Workload and access composition",
+        "One reference day is eight productive crew-hours, not a calendar day or a whole fleet shift. Uses remaining eligible volume (",
+        "m³), the lot's",
+        "m³/hour baseline, mean crew productivity factor",
+        ", final-treatment productivity",
+        ", and the engine's wet/thaw factors. Excludes travel, breakdowns, queues and haulage. Closed terrain:",
+        ". Thinning assignments require their own treatment calculation.",
+        "of",
+        "remaining forecast weeks have both accessible terrain and a route to at least one destination with demand. This does not reserve capacity.",
+        "Composition uses the current scenario's declared terrain classes and road lengths. Every stored road edge is counted once, including closures; this is network composition, not the selected lot's haul route. Bearing classes are model inputs, not surveyed soil categories or public-road classifications. Parcel and access-road assumptions remain educational; the map's trunk geography does not validate them."
+      ]
+    },
+    {
+      "file": "ProcurementLab.tsx",
+      "count": 3,
+      "texts": [
+        "Downside weight",
+        "m³",
+        "m³"
+      ]
+    },
+    {
+      "file": "ProductionCharts.tsx",
+      "count": 10,
+      "texts": [
+        "Production by roadside access class",
+        "Production assortment",
+        "All assortments",
+        "Cumulative within each delivery period",
+        "Actual harvested volume grouped by the stand's connecting road class. This is production at roadside, before dispatch; timber is not yet assigned to a mill. Forest access does not mean the entire onward route is forest road. Older saves without production records remain “unknown” instead of being reconstructed.",
+        "Run a week to record production provenance.",
+        "Production by public, forest and unknown access",
+        "m³",
+        "m³",
+        "Production and service are separate outcomes"
+      ]
+    },
+    {
+      "file": "RegionalApp.tsx",
+      "count": 17,
+      "texts": [
+        "forest commons",
+        "m³",
+        "m³",
+        "m³",
+        "m³",
+        "m³",
+        "h/",
+        "m³ ·",
+        "h/",
+        "m³",
+        "m³",
+        "m³",
+        "m³",
+        "t CO₂e",
+        "Forest Commons ·",
+        "kg/m³",
+        "m³"
+      ]
+    },
+    {
+      "file": "ReservationDesk.tsx",
+      "count": 10,
+      "texts": [
+        "Reserve this stand’s assortment for a destination and market. Earlier reservations get available roadside stock first. Unproduced volume is a planning request, not a delivery guarantee; access, retention, mill demand and truck hours still apply.",
+        "Monthly mill commitment",
+        "Spot outlet",
+        "Mill processing intake",
+        "Partner contract",
+        "Accepted contract",
+        "Choose contract",
+        "m³",
+        "Earlier",
+        "Outstanding planned volume by destination"
+      ]
+    },
+    {
+      "file": "StewardshipCharts.tsx",
+      "count": 8,
+      "texts": [
+        "Advance a year to see volume, habitat and treatment history.",
+        "Growth and removals include all stands.",
+        "Habitat recovery and treatment effects",
+        "Landscape versus secured management area. Indices are teaching assumptions, not measured habitat quality. Older saved years without managed-area observations remain blank.",
+        "Management calendar",
+        ", year",
+        "Accessible action history",
+        ": management membership is fixed when the annual exercise begins."
+      ]
+    },
+    {
+      "file": "TransportObligationsLab.tsx",
+      "count": 7,
+      "texts": [
+        ", B",
+        "; B:",
+        ", uB",
+        ", vA",
+        ", vB",
+        ", μA",
+        ", μB"
+      ]
+    },
+    {
+      "file": "TurnDurationMode.tsx",
+      "count": 3,
+      "texts": [
+        "turns over",
+        "physical weeks. Settlement periods contain",
+        "turns."
+      ]
+    },
+    {
+      "file": "WeatherCharts.tsx",
+      "count": 5,
+      "texts": [
+        "Seasonal weather curves",
+        "This regional package has no numerical weather dataset. Add weatherCharts with provenance, 52 weekly forecast/actual values per zone and the first campaign calendar week. Access categories remain available below.",
+        "Seasonal weather curves",
+        "Campaign week 1 corresponds to calendar week",
+        "Campaign window only"
+      ]
+    },
+    {
+      "file": "i18n.tsx",
+      "count": 2,
+      "texts": [
+        "English",
+        "Français"
+      ]
+    }
+  ]
+}

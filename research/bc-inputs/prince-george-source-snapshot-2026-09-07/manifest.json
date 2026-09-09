@@ -1,0 +1,41 @@
+{
+  "collectedAt": "2026-09-08T05:40:19.823549+00:00",
+  "bboxWGS84": [
+    -123.0,
+    53.95,
+    -122.9,
+    54.02
+  ],
+  "status": "unreviewed-geographic-authoring-sample",
+  "datasets": [
+    {
+      "name": "inventory-rank1",
+      "catalogueUrl": "https://catalogue.data.gov.bc.ca/dataset/2ebb35d8-c82f-4a17-9c96-612ac3532d55",
+      "title": "VRI - 2025 - Forest Vegetation Composite Rank 1 Layer (R1)",
+      "license": "Open Government Licence - British Columbia",
+      "licenseUrl": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+      "metadataModified": "2026-05-27T12:40:42.561633",
+      "metadataRequest": "https://catalogue.data.gov.bc.ca/api/3/action/package_show?id=2ebb35d8-c82f-4a17-9c96-612ac3532d55",
+      "metadataSha256": "a5038f6206abe4994fad27a27475c713c21066d1296ce89afc1debc9b791a089",
+      "error": "HTTP Error 400: Bad Request"
+    },
+    {
+      "name": "tenure-roads",
+      "catalogueUrl": "https://catalogue.data.gov.bc.ca/dataset/9e5bfa62-2339-445e-bf67-81657180c682",
+      "title": "Forest Tenure Road Segment Lines",
+      "license": "Open Government Licence - British Columbia",
+      "licenseUrl": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+      "metadataModified": "2026-09-05T12:41:39.109743",
+      "metadataRequest": "https://catalogue.data.gov.bc.ca/api/3/action/package_show?id=9e5bfa62-2339-445e-bf67-81657180c682",
+      "metadataSha256": "261fde9dcdc6fd1b0b083e34925a60506e71ea748558d83ccf5fe255b8edc049",
+      "error": "HTTP Error 400: Bad Request"
+    }
+  ],
+  "limitations": [
+    "No mill operating status, capacity or market prices inferred.",
+    "Inventory volume fields require their published utilization and projection definitions.",
+    "Tenure road lines do not establish a connected or truck-accessible road graph.",
+    "Samples intersect the bounding box; geometry is not clipped to it.",
+    "No harvest rights, ecological calibration, or professional review is implied."
+  ]
+}

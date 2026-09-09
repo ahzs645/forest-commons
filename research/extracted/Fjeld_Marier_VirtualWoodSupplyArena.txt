@@ -1,0 +1,230 @@
+word/document.xml
+COFE-FORMEC-IUFRO
+ 
+2022
+ 
+–
+ 
+One
+ 
+Big
+ 
+Family:
+ 
+Shaping
+ 
+Our
+ 
+Future
+ 
+Together Corvallis, Oregon, U.S.A. – October 4-7, 2022
+The
+ 
+V
+irtual
+ 
+Wood
+ 
+Supply
+ 
+Arena
+–
+ 
+next
+ 
+generation
+ 
+on-line
+ 
+training
+ 
+tool
+ 
+for 
+forest logistics
+Dag
+ 
+Fjeld
+Swedish
+ 
+university
+ 
+of
+ 
+agricultural
+ 
+sciences,
+ 
+Sweden
+Dag.Fjeld@slu.se
+Philippe
+ 
+Marier
+FORAC,
+ 
+Université
+ 
+Laval,
+ 
+Québec,
+ 
+Canada
+Philippe.Marier@forac.ulaval.ca
+Björn 
+Edlund
+Swedish
+ 
+university
+ 
+of
+ 
+agricultural
+ 
+sciences,
+ 
+Sweden
+Bjorn.Edlund@slu.se
+Lars.Eliasson
+Skogforsk
+, 
+Sweden
+Lars.Eliasson@skogforsk.se
+Mikael Frisk
+Creative Optimization Sweden AB
+Frisk@creativeoptimization.se
+Mikael Rönnqvist
+Université
+ Laval
+, 
+Québec,
+ 
+Canada
+Mikael.Ronnqvist@gmc.ulaval.ca
+Keywords:
+ 
+wood s
+upply chain
+, coordinating 
+operations, weather, 
+trafficability
+EXTENDED
+ 
+ABSTRACT
+The Virtual Wood Supply Arena 
+(VWSA) 
+is an on-line training tool 
+for managing 
+roundwood
+ purchase, production and transport in CTL supply systems. The training environment simulates 12-week periods with monthly mill delivery goals while handling weekly weather and site 
+trafficability
+ for harvesting and hauling. 
+Earlier logistics training tools developed by the same group include the Wood Supply Game 
+(
+D’Amours
+ et al. 2017) 
+and Transport Game
+ (
+Abasian
+ et al. 
+2019)
+. The VWSA is designed to come as close to reality as possible in an on-line environment. It includes three roles per company (purchase-, production- and transport managers) managing 10 harvesting teams and 10 trucks over 4 supply regions and 2 climate zones (highlands, lowlands). Deliveries of 5 assortments are managed to 5 mills (2 pulp mills and 3 saw mills). Team KPIs include monthly delivery precision per mill assortment, capacity utilization, relocation- and hauling distances.
+ The use
+r
+ interfaces are presented below.
+Each 12-week training scenario may be selected from 4 annual weather cycles (52 weeks). The annual cycles include 1) 10-year average, 2) cold winter, 3) dry summer and 4) warm-wet summer. The training includes both development of monthly goals as well as weekly decisions for each of the three functions.
+ 
+Figure
+ 1
+.
+ User log-in (left) and purchase manager interface (right) 
+Figure
+ 
+2
+.
+ Production manager interface (left)
+ 
+and transport manager interface (right).
+In the context of 
+university 
+training,  
+ 
+t
+he 
+VWSA
+ 
+provides 
+a 
+high level of 
+realism 
+and 
+accelerated 
+experience-based learning
+. P
+articipants 
+respond to both typical and atypical 
+weekly variation in the operating environment
+ and learn 
+effective geographical allocation of resources, as well as the adaptive management of road-side stocks to ensure 
+secure deliveries, 
+regardless of 
+trafficability
+ challenges. 
+The exercise is suitable for participants who have a basic understanding of production 
+and transport management in CTL 
+supply systems. 
+A single training run requires 4-6 hours 
+and 
+is followed by a 
+post-session analysis of team performance. The first prototype
+s
+ w
+ere
+ implemented in forestry training at SLU and 
+U
+niversité
+ 
+Laval in 2022. A benchmarking function 
+is 
+under development so that competing teams can compare their performance to an optimal solution.
+ 
+The development of the VWSA was financed the 
+Ljungbergs
+ Foundation of Sweden. The development team includes SLU, FORAC/
+Université
+ Laval, 
+Skogforsk
+ and
+ Creative Optimization Sweden.
+ 
+References
+Abasian
+, F
+, 
+Rönnqvist, M
+, 
+M
+arier
+ P, 
+Fjeld
+ 
+D
+ 
+(2019). The Transportation Game. IRE Transactions on Education. 21. 10.1287/ited.2019.0223.
+D’Amours
+, S
+, 
+Marier
+, P
+, 
+Rönnqvist, M
+, 
+Azouzi
+, R
+, 
+Fjeld, D
+ 
+(2017). The Online Wood Supply Game. INFORMS Transactions on Education. 18. 10.1287/ited.2017.0174.
+
+LINKS
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId8" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:Lars.Eliasson@skogforsk.se" TargetMode="External"/><Relationship Id="rId13" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image3.png"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/><Relationship Id="rId7" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:Bjorn.Edlund@slu.se" TargetMode="External"/><Relationship Id="rId12" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image2.png"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId16" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/><Relationship Id="rId6" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:Philippe.Marier@forac.ulaval.ca" TargetMode="External"/><Relationship Id="rId11" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image1.png"/><Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:Dag.Fjeld@slu.se" TargetMode="External"/><Relationship Id="rId15" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable" Target="fontTable.xml"/><Relationship Id="rId10" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:Mikael.Ronnqvist@gmc.ulaval.ca" TargetMode="External"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/webSettings" Target="webSettings.xml"/><Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink" Target="mailto:Frisk@creativeoptimization.se" TargetMode="External"/><Relationship Id="rId14" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/image4.png"/></Relationships>

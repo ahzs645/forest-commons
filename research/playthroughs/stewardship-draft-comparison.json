@@ -1,0 +1,62 @@
+[
+  {
+    "weather": "normal",
+    "commitmentAware": false,
+    "harvest": 53685,
+    "delivered": 48892.95288949345,
+    "cash": 2757479.411830648,
+    "targetChecks": 30,
+    "targetHits": 6,
+    "waste": 4417.782794175449
+  },
+  {
+    "weather": "normal",
+    "commitmentAware": true,
+    "harvest": 53685,
+    "delivered": 48700.79288949345,
+    "cash": 2742904.9385911967,
+    "targetChecks": 30,
+    "targetHits": 6,
+    "waste": 4593.184207092799
+  },
+  {
+    "weather": "long-thaw",
+    "commitmentAware": false,
+    "harvest": 53543.497854223766,
+    "delivered": 48789.46231913449,
+    "cash": 2683524.928368195,
+    "targetChecks": 30,
+    "targetHits": 6,
+    "waste": 4190.828977705517
+  },
+  {
+    "weather": "long-thaw",
+    "commitmentAware": true,
+    "harvest": 53543.497854223766,
+    "delivered": 48802.584606940574,
+    "cash": 2682457.305826471,
+    "targetChecks": 30,
+    "targetHits": 6,
+    "waste": 4190.8746348505
+  },
+  {
+    "weather": "dry",
+    "commitmentAware": false,
+    "harvest": 53685,
+    "delivered": 48418.14477425614,
+    "cash": 2795367.2110952293,
+    "targetChecks": 30,
+    "targetHits": 9,
+    "waste": 5101.616455194954
+  },
+  {
+    "weather": "dry",
+    "commitmentAware": true,
+    "harvest": 53685,
+    "delivered": 48431.25396196197,
+    "cash": 2790495.276214352,
+    "targetChecks": 30,
+    "targetHits": 9,
+    "waste": 5071.49536632371
+  }
+]

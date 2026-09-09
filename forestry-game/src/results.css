@@ -1,0 +1,8 @@
+.results-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.results-metrics > div { padding:12px; background:var(--surface-soft,#f3f6f3); border-radius:10px; min-width:0; }
+.results-metrics dt { font-size:.85rem; color:#52635a; }
+.results-metrics dd { margin:6px 0 0; font-weight:650; overflow-wrap:anywhere; }
+.results-definitions, .results-week { margin:20px 0; }
+.results-definitions summary, .results-week summary { cursor:pointer; padding:10px 0; }
+.results-week select { min-height:44px; margin-left:8px; }
+.results-week li { margin:8px 0; overflow-wrap:anywhere; }

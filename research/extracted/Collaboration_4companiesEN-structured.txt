@@ -1,0 +1,46 @@
+Collaboration game - 4 companies 		Group:		Company: 
+The purpose of this collaboration game is to establish an agreement in how four companies should organize themselves and divide the overall cost and the potential savings. Each company has a supply and demand for a set of products in balance (demand = supply), see Figure 1, and the cost arises when the supply is transported to the demand locations. Each company can work individually and has a specific transportation cost. The costs are found by using an optimization model which minimizes the cost given supply and demand. 
+
+Figure 1: Maps describing each of the four companies C1 – C2 – C3 – C4. 
+Green areas describe supply areas and red circles industries with demand.
+A summary of the companies when they are working individually during one month is given in Table 1. 
+Table 1. Summary of the four companies and their transportation volume, 
+transportation cost and average transportation distance.
+The companies can form one or several coalitions (a set of companies working together). If they work in a coalition, they simply treat their supply and demand as common, and can find a solution that lowers the overall transportation cost. For example, if companies C1 and C2 work individually, the overall cost is 3,780 (C1) + 14,860 (C2) = 18,640 kSEK. However, if they work together, the cost is 18,300 kSEK which represent a saving of 340 kSEK (18,640-18,300). One question is how these 340 kSEK should be divided between the two companies C1 and C2. There are many possible coalitions and Table 2 summarizes their costs and savings. The improvement in the table is given as percentage i.e. savings divided by the the aggregated individual cost. For example, the improvement for coalition (C1+C2+C3) is computed as 1,270/28,980=4.38%.
+Table 2. Summary of possible coalitions sand their cost if they work together, summed individual cost, saving and improvement. 
+
+Assignments:
+In the collaboration game, each group consists of four players. Each player is responsible for one company. The objective for each player is to improve its own cost/profit as much as possible. Discuss and agree which companies that should work together (if any). In part A only two companies can work together. In part B any coalition structure is possible. For example, all companies can work together, no companies work together, any group of two or three companies can work together. Each company can only participate in one coalition (in both part A and part B). Given the agreed coalitions in the two parts, how should the overall savings be divided among the participating companies? 
+
+
+Answers:
+Part A:							Part B:
+Coalitions:							Coalitions:
+Total saving is:						Total saving is:
+Company C1 saves:					Company C1 saves:
+Company C2 saves:					Company C2 saves:
+Company C3 saves:					Company C3 saves:
+Company C4 saves:					Company C4 saves:
+Company | Volume | Individual cost | Average distance
+C1 |   77,300 m3 |   3,780 (kSEK) | 70,3 km
+C2 | 301,300 m3 | 14,860 (kSEK) | 56,8 km
+C3 | 232,100 m3 | 10,340 (kSEK) | 68,5 km
+C4 |   89,300 m3 |  4,960 (kSEK) | 68,5 km
+Total | 700,000 m3 | 33,940 (kSEK) | -----
+
+Coalition | Cost (kSEK)
+(collaboration) | Cost (kSEK) 
+(individual) | 
+Saving (kSEK) | Improvement
+(%)
+C1 + C2 | 18,300 | 18,640 |   340 | 1,82
+C1 + C3 | 14,000 | 14,120 |   120 | 0,85
+C1 + C4 |   8,510 |   8,740 |   230 | 2,63
+C2 + C3 | 24,210 | 25,200 |   990 | 3,93
+C2 + C4 | 19,040 | 19,820 |   780 | 3,94
+C3 + C4 | 15,060 | 15,300 |   240 | 1,57
+C1+C2+C3 | 27,710 | 28,980 | 1,270 | 4,38
+C1+C2+C4 | 22,490 | 23,600 | 1,110 | 4,70
+C1+C3+C4 | 18,580 | 19,080 |   500 | 2,62
+C2+C3+C4 | 28,400 | 30,160 | 1,760 | 5,84
+C1+C2+C3+C4 | 32,000 | 33,940 | 1,940 | 5,72

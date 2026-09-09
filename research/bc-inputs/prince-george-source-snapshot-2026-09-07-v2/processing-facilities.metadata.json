@@ -1,0 +1,976 @@
+{
+  "author": "7e1570fc-e986-4357-9899-c7147c234c0f",
+  "author_email": null,
+  "creator_user_id": "7e1570fc-e986-4357-9899-c7147c234c0f",
+  "data_quality": "The dataset is based upon the best information available and received at the time of the mill survey. The limitations of this dataset include: (1) The Mill List Survey does not survey secondary manufacturing facilities (e.g. millwork, engineered wood products, Reman products, cabinet, etc.) in BC. (2)  Based on Mill List Survey responses, mills are classified as a) open with the response, b) presumed open without response, c) did not operate at all during the year (temporary or indefinite closure) or d) closed (permanently). This dataset is derived from mills in category a) and b). Mills that have announced permanent closure in a certain survey year are recorded as category a) for that year. (3) Some coordinates may not reflect the precise mill locations but may refer to the closest community. (4) The annual capacity is estimated based on the same standard operating assumption for each mill (number and duration of shifts and days per year). Actual mill production can be higher or lower than estimated capacity if a mill runs on a different operating schedule than assumed here. Therefore, while capacity provides guidance on mill output, it is not a measure of the actual production level of the mill.  ",
+  "download_audience": "Public",
+  "id": "67daf53d-e3bb-45ee-9121-8aa1193b7492",
+  "isopen": false,
+  "license_id": "22",
+  "license_title": "Access Only",
+  "license_url": "https://www2.gov.bc.ca/gov/content?id=1AAACC9C65754E4D89A118B875E0FBDA",
+  "lineage_statement": "The Annual Major Primary Timber Processing Facilities Survey",
+  "maintainer": null,
+  "maintainer_email": null,
+  "metadata_created": "2020-03-19T17:29:01.530555",
+  "metadata_modified": "2026-06-19T12:41:47.479331",
+  "metadata_visibility": "Public",
+  "name": "british-columbia-major-timber-processing-facilities",
+  "notes": "British Columbia has conducted an annual Major Primary Timber Processing Facilities Survey (Mill List Survey) since 1991. The survey gathers operational information on various mill types across the province. Please check the website below for more information about the survey:\r\nhttps://www2.gov.bc.ca/gov/content/industry/forestry/competitive-forest-industry/forest-industry-economics/fibre-mill-information/major-timber-processing-facilities-survey\r\n\r\nBased on the latest province-published survey data, GEOBC, DataBC, and the Economic Services Branch together developed the Major Timber Processing Facilities dataset to show the location and the estimated annual capacity of each operational or presumably operational mill in the province. ",
+  "num_resources": 3,
+  "num_tags": 17,
+  "organization": {
+    "id": "c7967d8a-8902-4cb9-94b9-ace58b8a77ba",
+    "name": "economic-and-trade",
+    "title": "Economics and Trade Branch",
+    "type": "organization",
+    "description": "Custodian: Janna Jessee",
+    "image_url": "",
+    "created": "2020-02-20T08:03:06.610090",
+    "is_organization": true,
+    "approval_status": "approved",
+    "state": "active"
+  },
+  "owner_org": "c7967d8a-8902-4cb9-94b9-ace58b8a77ba",
+  "private": false,
+  "publish_state": "PUBLISHED",
+  "purpose": "Provide a spatial compilation of all open or presumed open primary timber processing facilities in British Columbia (BC), allowing users to conduct various analyses that require accurate facility location and operational information. ",
+  "record_create_date": "2020-03-19",
+  "record_last_modified": "2026-06-19",
+  "record_publish_date": "2020-05-07",
+  "replacement_record": "",
+  "resource_status": "onGoing",
+  "retention_expiry_date": "",
+  "security_class": "PUBLIC",
+  "source_data_path": "",
+  "state": "active",
+  "title": "British Columbia Major Timber Processing Facilities",
+  "type": "bcdc_dataset",
+  "url": null,
+  "version": null,
+  "view_audience": "Public",
+  "contacts": [
+    {
+      "displayed": [
+        "displayed"
+      ],
+      "email": "Erika.carswell@gov.bc.ca",
+      "name": "Erika Carswell ",
+      "org": "e51a8106-11c7-4436-a967-7cee18bfb159",
+      "role": "pointOfContact"
+    },
+    {
+      "displayed": [
+        "displayed"
+      ],
+      "email": "Anshul.Dhankher@gov.bc.ca",
+      "name": "Anshul.Dhankher",
+      "org": "c7967d8a-8902-4cb9-94b9-ace58b8a77ba",
+      "role": "businessExpert"
+    },
+    {
+      "displayed": [
+        "displayed"
+      ],
+      "email": "jiali.j.leng@gov.bc.ca",
+      "name": "Jiali (Julie) Leng",
+      "org": "c7967d8a-8902-4cb9-94b9-ace58b8a77ba",
+      "role": "businessExpert"
+    }
+  ],
+  "dates": [
+    {
+      "date": "2018-10-01",
+      "type": "Created"
+    }
+  ],
+  "more_info": [
+    {
+      "description": "",
+      "url": ""
+    }
+  ],
+  "resources": [
+    {
+      "bcdc_type": "geographic",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-05-07T17:34:23.027000",
+      "datastore_active": false,
+      "description": "The Distribution Service allows for data to be downloaded in various file formats from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+      "format": "multiple",
+      "hash": "",
+      "id": "c5553f20-f589-4ca5-8ed6-afb45ae281b1",
+      "iso_topic_category": [
+        "economy",
+        "location"
+      ],
+      "last_modified": "2026-06-17T21:20:30",
+      "metadata_modified": "2026-06-19T00:01:26.366541",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "BC Geographic Warehouse Custom Download",
+      "object_name": "WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV",
+      "object_short_name": "GSRTMBRPRC",
+      "object_table_comments": "GSR_TMBR_PRCSSING_FAC_SV is a spatially enabled layer. This dataset is a compilation of all open or presumed open primary manufacturing facilities in the Province of BC that produce wood products",
+      "ofi": "True",
+      "package_id": "67daf53d-e3bb-45ee-9121-8aa1193b7492",
+      "position": 0,
+      "projection_name": "epsg3005",
+      "resource_access_method": "indirect access",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "asNeeded",
+      "size": null,
+      "spatial_datatype": "SDO_GEOMETRY",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download this dataset. For more information on using the distribution order form see [How to download data using the Catalogue or iMapBC](https://bcgov.github.io/data-publication/pages/dps_data_distribution_w.html). If the data is visible through public WMS, click the <b>Preview</b> button on the toolbar.",
+      "url": "",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "Is the name that can identify the occupant who provides the BC Government or BC Government related services to public. e.g., West Fraser Mills Ltd.",
+          "column_name": "COMPANY_NAME",
+          "data_precision": 500,
+          "data_type": "VARCHAR2",
+          "short_name": "COMPANY_NM"
+        },
+        {
+          "column_comments": "Is a free form expression of the site descriptor (e.g. unit), and the civic building number / street / street indicator portion of an address, e.g., Unit 1, 123 Main Street East.",
+          "column_name": "STREET_ADDRESS",
+          "data_precision": 200,
+          "data_type": "VARCHAR2",
+          "short_name": "STRTADDRSS"
+        },
+        {
+          "column_comments": "Is the name of the municipality, community, Indian reservation, subdivision, regional district, aboriginal lands, or natural feature the occupant site is located in, e.g., Victoria, Saanich IR 1, Capital Regional District.",
+          "column_name": "LOCALITY",
+          "data_precision": 100,
+          "data_type": "VARCHAR2",
+          "short_name": "LOCALITY"
+        },
+        {
+          "column_comments": "Is the Canadian Postal code value associated with the physical address, e.g., V9Z 2K1.",
+          "column_name": "POSTAL_CODE",
+          "data_precision": 15,
+          "data_type": "VARCHAR2",
+          "short_name": "POSTAL_CD"
+        },
+        {
+          "column_comments": "Is the geographic coordinate, in decimal degrees (dd.dddddd), of the location of the feature as measured from the equator, e.g., 55.323653",
+          "column_name": "LATITUDE",
+          "data_precision": 9,
+          "data_type": "NUMBER",
+          "short_name": "LATITUDE"
+        },
+        {
+          "column_comments": "Is the geographic coordinate, in decimal degrees (-ddd.dddddd), of the location of the feature as measured from the prime meridian, e.g., -123.093544",
+          "column_name": "LONGITUDE",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "LONGITUDE"
+        },
+        {
+          "column_comments": "Is the number of the mill as registed by the economic services branch, e.g., 105, 1061.",
+          "column_name": "MILL_ID",
+          "data_precision": 20,
+          "data_type": "VARCHAR2",
+          "short_name": "MILL_ID"
+        },
+        {
+          "column_comments": "Is the size of mill (conventional versus unconventional) where conventional mills are the primary manufacturing facilities. ",
+          "column_name": "OPERATION_SIZE",
+          "data_precision": 50,
+          "data_type": "VARCHAR2",
+          "short_name": "OPRTN_SZE"
+        },
+        {
+          "column_comments": "Is the rank of mill (primary versus secondary versus tertiary). Existing dataset consists of only primary at this time.",
+          "column_name": "OPERATION_RANK",
+          "data_precision": 50,
+          "data_type": "VARCHAR2",
+          "short_name": "OPRTN_RNK"
+        },
+        {
+          "column_comments": "Contains Op (Operational) or DNR (Did not respond, and assumed open).",
+          "column_name": "STATUS",
+          "data_precision": 254,
+          "data_type": "VARCHAR2",
+          "short_name": "STATUS"
+        },
+        {
+          "column_comments": "Contains the code of product produced, e.g., CHP (CHP), LBR (Lumber).",
+          "column_name": "PRODUCT_CODE",
+          "data_precision": 254,
+          "data_type": "VARCHAR2",
+          "short_name": "PRODUCT_CD"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in millions of board feet.",
+          "column_name": "EST_AN_CAP_MLN_BOARD_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_BD_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of bone dry units (BDU).",
+          "column_name": "EST_AN_CAP_000_BDUS",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_BDU"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of oven dried tonnes.",
+          "column_name": "EST_AN_CAP_000_TONNES",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_TNNE"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in million square feet (3/8th basis).",
+          "column_name": "EST_AN_CAP_MLN_SQ_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_SQ_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of squares.",
+          "column_name": "EST_AN_CAP_000_SQUARES",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_SQ"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in millions of cubic feet",
+          "column_name": "EST_AN_CAP_MLN_CUBIC_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_CB_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 6 lineal feet per piece .",
+          "column_name": "EST_AN_CAP_000_PCS_6_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC6"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 40 lineal feet per piece.",
+          "column_name": "EST_AN_CAP_000_PCS_40_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC40"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 42 lineal feet per piece.",
+          "column_name": "EST_AN_CAP_000_PCS_42_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC42"
+        },
+        {
+          "column_comments": "CUSTODIAN_ORG_DESCRIPTION contains the name or description of the custodial organization e.g. Ministry of Agriculture.",
+          "column_name": "CUSTODIAN_ORG_DESCRIPTION",
+          "data_precision": 200,
+          "data_type": "VARCHAR2",
+          "short_name": "CUST_ORG"
+        },
+        {
+          "column_comments": "BUSINESS_CATEGORY_CLASS is the designation that the business belongs to. E.g. accommodationFoodServices.accommodations or educationalServices.multiLevelSchool",
+          "column_name": "BUSINESS_CATEGORY_CLASS",
+          "data_precision": 1000,
+          "data_type": "VARCHAR2",
+          "short_name": "BUS_CAT_CL"
+        },
+        {
+          "column_comments": "BUSINESS_CATEGORY_DESCRIPTION is the description that applies to its corresponding BUSINESS_CATEGORY_CLASS. E.g. Tourist accommodations for class accommodationFoodServices.accommodations.",
+          "column_name": "BUSINESS_CATEGORY_DESCRIPTION",
+          "data_precision": 1000,
+          "data_type": "VARCHAR2",
+          "short_name": "BUS_CAT_DS"
+        },
+        {
+          "column_comments": "OCCUPANT_TYPE_DESCRIPTION contains the description of the occupant type e.g. Hospital",
+          "column_name": "OCCUPANT_TYPE_DESCRIPTION",
+          "data_precision": 500,
+          "data_type": "VARCHAR2",
+          "short_name": "OCCPNT_TYP"
+        },
+        {
+          "column_comments": "DATE_UPDATED contains the date that the Occupant data was updated in the Occupant structure (system-generated)",
+          "column_name": "DATE_UPDATED",
+          "data_precision": 7,
+          "data_type": "DATE",
+          "short_name": "UPDATED"
+        },
+        {
+          "column_comments": "SHAPE is the column used to reference the spatial coordinates defining the feature.",
+          "column_name": "SHAPE",
+          "data_precision": 64,
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "SHAPE"
+        },
+        {
+          "column_comments": "OBJECTID is a column required by spatial layers that interact with ESRI ArcSDE.",
+          "column_name": "OBJECTID",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_comments": "SE ANNO CAD DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO GEOMETRY storage data type.",
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": 4000,
+          "data_type": "BLOB"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV",
+          "link_to_imap": "https://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=7708",
+          "preview_image_url": "",
+          "preview_latitude": "54",
+          "preview_longitude": "-126.5",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV/ows?",
+          "preview_zoom_level": "6"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "webservice",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-06-02T18:07:11.206000",
+      "datastore_active": false,
+      "description": "Web Mapping Service (WMS) allows for data to be fed out via a service from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+      "format": "wms",
+      "hash": "",
+      "id": "0f76b310-c0cb-49a2-97a8-d8d05b03fc17",
+      "iso_topic_category": [
+        "economy",
+        "location"
+      ],
+      "last_modified": "2026-06-17T21:20:30",
+      "metadata_modified": "2026-06-19T12:41:47.108657",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "WMS getCapabilities request",
+      "object_name": "WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV",
+      "object_short_name": "GSRTMBRPRC",
+      "object_table_comments": "GSR_TMBR_PRCSSING_FAC_SV is a spatially enabled layer. This dataset is a compilation of all open or presumed open primary manufacturing facilities in the Province of BC that produce wood products",
+      "package_id": "67daf53d-e3bb-45ee-9121-8aa1193b7492",
+      "position": 1,
+      "projection_name": "epsg4326",
+      "resource_access_method": "service",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "asNeeded",
+      "size": null,
+      "spatial_datatype": "",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to see or copy the WMS call. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+      "url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV/ows?service=WMS&request=GetCapabilities",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "Is the name that can identify the occupant who provides the BC Government or BC Government related services to public. e.g., West Fraser Mills Ltd.",
+          "column_name": "COMPANY_NAME",
+          "data_precision": 500,
+          "data_type": "VARCHAR2",
+          "short_name": "COMPANY_NM"
+        },
+        {
+          "column_comments": "Is a free form expression of the site descriptor (e.g. unit), and the civic building number / street / street indicator portion of an address, e.g., Unit 1, 123 Main Street East.",
+          "column_name": "STREET_ADDRESS",
+          "data_precision": 200,
+          "data_type": "VARCHAR2",
+          "short_name": "STRTADDRSS"
+        },
+        {
+          "column_comments": "Is the name of the municipality, community, Indian reservation, subdivision, regional district, aboriginal lands, or natural feature the occupant site is located in, e.g., Victoria, Saanich IR 1, Capital Regional District.",
+          "column_name": "LOCALITY",
+          "data_precision": 100,
+          "data_type": "VARCHAR2",
+          "short_name": "LOCALITY"
+        },
+        {
+          "column_comments": "Is the Canadian Postal code value associated with the physical address, e.g., V9Z 2K1.",
+          "column_name": "POSTAL_CODE",
+          "data_precision": 15,
+          "data_type": "VARCHAR2",
+          "short_name": "POSTAL_CD"
+        },
+        {
+          "column_comments": "Is the geographic coordinate, in decimal degrees (dd.dddddd), of the location of the feature as measured from the equator, e.g., 55.323653",
+          "column_name": "LATITUDE",
+          "data_precision": 9,
+          "data_type": "NUMBER",
+          "short_name": "LATITUDE"
+        },
+        {
+          "column_comments": "Is the geographic coordinate, in decimal degrees (-ddd.dddddd), of the location of the feature as measured from the prime meridian, e.g., -123.093544",
+          "column_name": "LONGITUDE",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "LONGITUDE"
+        },
+        {
+          "column_comments": "Is the number of the mill as registed by the economic services branch, e.g., 105, 1061.",
+          "column_name": "MILL_ID",
+          "data_precision": 20,
+          "data_type": "VARCHAR2",
+          "short_name": "MILL_ID"
+        },
+        {
+          "column_comments": "Is the size of mill (conventional versus unconventional) where conventional mills are the primary manufacturing facilities. ",
+          "column_name": "OPERATION_SIZE",
+          "data_precision": 50,
+          "data_type": "VARCHAR2",
+          "short_name": "OPRTN_SZE"
+        },
+        {
+          "column_comments": "Is the rank of mill (primary versus secondary versus tertiary). Existing dataset consists of only primary at this time.",
+          "column_name": "OPERATION_RANK",
+          "data_precision": 50,
+          "data_type": "VARCHAR2",
+          "short_name": "OPRTN_RNK"
+        },
+        {
+          "column_comments": "Contains Op (Operational) or DNR (Did not respond, and assumed open).",
+          "column_name": "STATUS",
+          "data_precision": 254,
+          "data_type": "VARCHAR2",
+          "short_name": "STATUS"
+        },
+        {
+          "column_comments": "Contains the code of product produced, e.g., CHP (CHP), LBR (Lumber).",
+          "column_name": "PRODUCT_CODE",
+          "data_precision": 254,
+          "data_type": "VARCHAR2",
+          "short_name": "PRODUCT_CD"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in millions of board feet.",
+          "column_name": "EST_AN_CAP_MLN_BOARD_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_BD_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of bone dry units (BDU).",
+          "column_name": "EST_AN_CAP_000_BDUS",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_BDU"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of oven dried tonnes.",
+          "column_name": "EST_AN_CAP_000_TONNES",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_TNNE"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in million square feet (3/8th basis).",
+          "column_name": "EST_AN_CAP_MLN_SQ_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_SQ_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of squares.",
+          "column_name": "EST_AN_CAP_000_SQUARES",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_SQ"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in millions of cubic feet",
+          "column_name": "EST_AN_CAP_MLN_CUBIC_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_CB_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 6 lineal feet per piece .",
+          "column_name": "EST_AN_CAP_000_PCS_6_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC6"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 40 lineal feet per piece.",
+          "column_name": "EST_AN_CAP_000_PCS_40_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC40"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 42 lineal feet per piece.",
+          "column_name": "EST_AN_CAP_000_PCS_42_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC42"
+        },
+        {
+          "column_comments": "CUSTODIAN_ORG_DESCRIPTION contains the name or description of the custodial organization e.g. Ministry of Agriculture.",
+          "column_name": "CUSTODIAN_ORG_DESCRIPTION",
+          "data_precision": 200,
+          "data_type": "VARCHAR2",
+          "short_name": "CUST_ORG"
+        },
+        {
+          "column_comments": "BUSINESS_CATEGORY_CLASS is the designation that the business belongs to. E.g. accommodationFoodServices.accommodations or educationalServices.multiLevelSchool",
+          "column_name": "BUSINESS_CATEGORY_CLASS",
+          "data_precision": 1000,
+          "data_type": "VARCHAR2",
+          "short_name": "BUS_CAT_CL"
+        },
+        {
+          "column_comments": "BUSINESS_CATEGORY_DESCRIPTION is the description that applies to its corresponding BUSINESS_CATEGORY_CLASS. E.g. Tourist accommodations for class accommodationFoodServices.accommodations.",
+          "column_name": "BUSINESS_CATEGORY_DESCRIPTION",
+          "data_precision": 1000,
+          "data_type": "VARCHAR2",
+          "short_name": "BUS_CAT_DS"
+        },
+        {
+          "column_comments": "OCCUPANT_TYPE_DESCRIPTION contains the description of the occupant type e.g. Hospital",
+          "column_name": "OCCUPANT_TYPE_DESCRIPTION",
+          "data_precision": 500,
+          "data_type": "VARCHAR2",
+          "short_name": "OCCPNT_TYP"
+        },
+        {
+          "column_comments": "DATE_UPDATED contains the date that the Occupant data was updated in the Occupant structure (system-generated)",
+          "column_name": "DATE_UPDATED",
+          "data_precision": 7,
+          "data_type": "DATE",
+          "short_name": "UPDATED"
+        },
+        {
+          "column_comments": "SHAPE is the column used to reference the spatial coordinates defining the feature.",
+          "column_name": "SHAPE",
+          "data_precision": 64,
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "SHAPE"
+        },
+        {
+          "column_comments": "OBJECTID is a column required by spatial layers that interact with ESRI ArcSDE.",
+          "column_name": "OBJECTID",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_comments": "SE ANNO CAD DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO GEOMETRY storage data type.",
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": 4000,
+          "data_type": "BLOB"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV",
+          "link_to_imap": "https://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=7708",
+          "preview_image_url": "",
+          "preview_latitude": "54",
+          "preview_longitude": "-126.5",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV/ows?",
+          "preview_zoom_level": "6"
+        }
+      ]
+    },
+    {
+      "bcdc_type": "webservice",
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-06-02T18:07:15.917000",
+      "datastore_active": false,
+      "description": "KML Ground Overlays can be used to display geographic data in mapping applications, including Google Earth. Data is served via WMS from the B.C. Geographic Warehouse (BCGW), a central government repository.",
+      "format": "kml",
+      "hash": "",
+      "id": "44543150-b0d3-43a9-abb1-8b2a17307f41",
+      "iso_topic_category": [
+        "economy",
+        "location"
+      ],
+      "last_modified": "2026-06-17T21:20:30",
+      "metadata_modified": "2026-06-19T12:41:47.482871",
+      "mimetype": null,
+      "mimetype_inner": null,
+      "name": "Download KML Ground Overlay file",
+      "object_name": "WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV",
+      "object_short_name": "GSRTMBRPRC",
+      "object_table_comments": "GSR_TMBR_PRCSSING_FAC_SV is a spatially enabled layer. This dataset is a compilation of all open or presumed open primary manufacturing facilities in the Province of BC that produce wood products",
+      "package_id": "67daf53d-e3bb-45ee-9121-8aa1193b7492",
+      "position": 2,
+      "projection_name": "epsg4326",
+      "resource_access_method": "service",
+      "resource_storage_location": "bc geographic warehouse",
+      "resource_type": "data",
+      "resource_update_cycle": "asNeeded",
+      "size": null,
+      "spatial_datatype": "",
+      "state": "active",
+      "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download the KML Ground Overlay file. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+      "url": "https://openmaps.gov.bc.ca/kml/geo/layers/WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV_loader.kml",
+      "url_type": null,
+      "details": [
+        {
+          "column_comments": "Is the name that can identify the occupant who provides the BC Government or BC Government related services to public. e.g., West Fraser Mills Ltd.",
+          "column_name": "COMPANY_NAME",
+          "data_precision": 500,
+          "data_type": "VARCHAR2",
+          "short_name": "COMPANY_NM"
+        },
+        {
+          "column_comments": "Is a free form expression of the site descriptor (e.g. unit), and the civic building number / street / street indicator portion of an address, e.g., Unit 1, 123 Main Street East.",
+          "column_name": "STREET_ADDRESS",
+          "data_precision": 200,
+          "data_type": "VARCHAR2",
+          "short_name": "STRTADDRSS"
+        },
+        {
+          "column_comments": "Is the name of the municipality, community, Indian reservation, subdivision, regional district, aboriginal lands, or natural feature the occupant site is located in, e.g., Victoria, Saanich IR 1, Capital Regional District.",
+          "column_name": "LOCALITY",
+          "data_precision": 100,
+          "data_type": "VARCHAR2",
+          "short_name": "LOCALITY"
+        },
+        {
+          "column_comments": "Is the Canadian Postal code value associated with the physical address, e.g., V9Z 2K1.",
+          "column_name": "POSTAL_CODE",
+          "data_precision": 15,
+          "data_type": "VARCHAR2",
+          "short_name": "POSTAL_CD"
+        },
+        {
+          "column_comments": "Is the geographic coordinate, in decimal degrees (dd.dddddd), of the location of the feature as measured from the equator, e.g., 55.323653",
+          "column_name": "LATITUDE",
+          "data_precision": 9,
+          "data_type": "NUMBER",
+          "short_name": "LATITUDE"
+        },
+        {
+          "column_comments": "Is the geographic coordinate, in decimal degrees (-ddd.dddddd), of the location of the feature as measured from the prime meridian, e.g., -123.093544",
+          "column_name": "LONGITUDE",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "LONGITUDE"
+        },
+        {
+          "column_comments": "Is the number of the mill as registed by the economic services branch, e.g., 105, 1061.",
+          "column_name": "MILL_ID",
+          "data_precision": 20,
+          "data_type": "VARCHAR2",
+          "short_name": "MILL_ID"
+        },
+        {
+          "column_comments": "Is the size of mill (conventional versus unconventional) where conventional mills are the primary manufacturing facilities. ",
+          "column_name": "OPERATION_SIZE",
+          "data_precision": 50,
+          "data_type": "VARCHAR2",
+          "short_name": "OPRTN_SZE"
+        },
+        {
+          "column_comments": "Is the rank of mill (primary versus secondary versus tertiary). Existing dataset consists of only primary at this time.",
+          "column_name": "OPERATION_RANK",
+          "data_precision": 50,
+          "data_type": "VARCHAR2",
+          "short_name": "OPRTN_RNK"
+        },
+        {
+          "column_comments": "Contains Op (Operational) or DNR (Did not respond, and assumed open).",
+          "column_name": "STATUS",
+          "data_precision": 254,
+          "data_type": "VARCHAR2",
+          "short_name": "STATUS"
+        },
+        {
+          "column_comments": "Contains the code of product produced, e.g., CHP (CHP), LBR (Lumber).",
+          "column_name": "PRODUCT_CODE",
+          "data_precision": 254,
+          "data_type": "VARCHAR2",
+          "short_name": "PRODUCT_CD"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in millions of board feet.",
+          "column_name": "EST_AN_CAP_MLN_BOARD_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_BD_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of bone dry units (BDU).",
+          "column_name": "EST_AN_CAP_000_BDUS",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_BDU"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of oven dried tonnes.",
+          "column_name": "EST_AN_CAP_000_TONNES",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_TNNE"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in million square feet (3/8th basis).",
+          "column_name": "EST_AN_CAP_MLN_SQ_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_SQ_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of squares.",
+          "column_name": "EST_AN_CAP_000_SQUARES",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_SQ"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in millions of cubic feet",
+          "column_name": "EST_AN_CAP_MLN_CUBIC_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "MLN_CB_FT"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 6 lineal feet per piece .",
+          "column_name": "EST_AN_CAP_000_PCS_6_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC6"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 40 lineal feet per piece.",
+          "column_name": "EST_AN_CAP_000_PCS_40_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC40"
+        },
+        {
+          "column_comments": "Contains the estimated annual capacity in thousands of pieces in 42 lineal feet per piece.",
+          "column_name": "EST_AN_CAP_000_PCS_42_LNL_FT",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "THSND_PC42"
+        },
+        {
+          "column_comments": "CUSTODIAN_ORG_DESCRIPTION contains the name or description of the custodial organization e.g. Ministry of Agriculture.",
+          "column_name": "CUSTODIAN_ORG_DESCRIPTION",
+          "data_precision": 200,
+          "data_type": "VARCHAR2",
+          "short_name": "CUST_ORG"
+        },
+        {
+          "column_comments": "BUSINESS_CATEGORY_CLASS is the designation that the business belongs to. E.g. accommodationFoodServices.accommodations or educationalServices.multiLevelSchool",
+          "column_name": "BUSINESS_CATEGORY_CLASS",
+          "data_precision": 1000,
+          "data_type": "VARCHAR2",
+          "short_name": "BUS_CAT_CL"
+        },
+        {
+          "column_comments": "BUSINESS_CATEGORY_DESCRIPTION is the description that applies to its corresponding BUSINESS_CATEGORY_CLASS. E.g. Tourist accommodations for class accommodationFoodServices.accommodations.",
+          "column_name": "BUSINESS_CATEGORY_DESCRIPTION",
+          "data_precision": 1000,
+          "data_type": "VARCHAR2",
+          "short_name": "BUS_CAT_DS"
+        },
+        {
+          "column_comments": "OCCUPANT_TYPE_DESCRIPTION contains the description of the occupant type e.g. Hospital",
+          "column_name": "OCCUPANT_TYPE_DESCRIPTION",
+          "data_precision": 500,
+          "data_type": "VARCHAR2",
+          "short_name": "OCCPNT_TYP"
+        },
+        {
+          "column_comments": "DATE_UPDATED contains the date that the Occupant data was updated in the Occupant structure (system-generated)",
+          "column_name": "DATE_UPDATED",
+          "data_precision": 7,
+          "data_type": "DATE",
+          "short_name": "UPDATED"
+        },
+        {
+          "column_comments": "SHAPE is the column used to reference the spatial coordinates defining the feature.",
+          "column_name": "SHAPE",
+          "data_precision": 64,
+          "data_type": "SDO_GEOMETRY",
+          "short_name": "SHAPE"
+        },
+        {
+          "column_comments": "OBJECTID is a column required by spatial layers that interact with ESRI ArcSDE.",
+          "column_name": "OBJECTID",
+          "data_precision": 10,
+          "data_type": "NUMBER",
+          "short_name": "OBJECTID"
+        },
+        {
+          "column_comments": "SE ANNO CAD DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO GEOMETRY storage data type.",
+          "column_name": "SE_ANNO_CAD_DATA",
+          "data_precision": 4000,
+          "data_type": "BLOB"
+        }
+      ],
+      "geographic_extent": [
+        {
+          "east_bound_longitude": "-113.5",
+          "north_bound_latitude": "60.0",
+          "south_bound_latitude": "48.0",
+          "west_bound_longitude": "-139.5"
+        }
+      ],
+      "preview_info": [
+        {
+          "layer_name": "WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV",
+          "link_to_imap": "https://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=7708",
+          "preview_image_url": "",
+          "preview_latitude": "54",
+          "preview_longitude": "-126.5",
+          "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_IMAGERY_AND_BASE_MAPS.GSR_TMBR_PRCSSING_FAC_SV/ows?",
+          "preview_zoom_level": "6"
+        }
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "display_name": "GSR",
+      "id": "734409da-fb10-46ec-860d-ea5b02b86536",
+      "name": "GSR",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "LVL",
+      "id": "7894010e-019a-4234-a64c-687e7b558242",
+      "name": "LVL",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "OSB",
+      "id": "06acc690-19b4-4294-b4df-1b445361120f",
+      "name": "OSB",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "chip",
+      "id": "214159e7-3437-47ee-9757-fe657d125b63",
+      "name": "chip",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "log home",
+      "id": "9760f381-fa00-44cf-928b-1b28133037fa",
+      "name": "log home",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "lumber",
+      "id": "2a400f74-7fcd-447a-b3d6-ab277bcdbd16",
+      "name": "lumber",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "manufacturing",
+      "id": "4f3d2ad5-8d4e-4d9b-aceb-bca04f05e51d",
+      "name": "manufacturing",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "mill",
+      "id": "06f0859a-480c-40e6-99ad-aff953a88cec",
+      "name": "mill",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "plywood",
+      "id": "ff589d27-c112-4dc0-a750-0f6fa8367c72",
+      "name": "plywood",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "pole",
+      "id": "4c218dac-5e0d-463f-b27a-671794b1545a",
+      "name": "pole",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "post",
+      "id": "bb13c7b2-2ed5-4ef8-af1a-f903cdf2961f",
+      "name": "post",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "primary timber processing facilities",
+      "id": "a3d2cf3a-f20d-4cfe-b522-5dcfa6ed10ca",
+      "name": "primary timber processing facilities",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "pulp and paper",
+      "id": "c18103f6-df85-4651-8922-71a6bd9eb1a7",
+      "name": "pulp and paper",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "shake and shingle",
+      "id": "8d23a621-7dc2-41d9-9552-551a2c45c571",
+      "name": "shake and shingle",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "sites registry",
+      "id": "57b6072d-2afe-4246-853c-3069c2f52475",
+      "name": "sites registry",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "utility pole",
+      "id": "fec0d125-d82e-4b05-972a-d93d61995c92",
+      "name": "utility pole",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "veneer",
+      "id": "fb509d57-aa81-471b-8059-000f34116608",
+      "name": "veneer",
+      "state": "active",
+      "vocabulary_id": null
+    }
+  ],
+  "groups": [],
+  "relationships_as_subject": [],
+  "relationships_as_object": []
+}

@@ -1,0 +1,60 @@
+[
+  {
+    "packedUtf16Bytes": 2582940,
+    "accessible": 10,
+    "rights": 10,
+    "cash": 774453.6843775152,
+    "year": 1,
+    "opening": 196600,
+    "growth": 2640,
+    "harvest": 20877.5,
+    "closing": 178362.5,
+    "cashChange": 124453.68437751522,
+    "habitat": 0.7323417721518988,
+    "managedHabitat": 0.52,
+    "actions": {
+      "Q01": "thin",
+      "Q02": "thin",
+      "Q03": "thin",
+      "Q04": "thin",
+      "Q05": "thin",
+      "Q06": "thin",
+      "Q07": "thin",
+      "Q08": "thin",
+      "Q09": "thin",
+      "Q10": "thin"
+    },
+    "operatingSeason": {
+      "startCalendarWeek": 13,
+      "weeks": 12,
+      "roadsideWriteOff": 0
+    }
+  },
+  {
+    "packedUtf16Bytes": 496328,
+    "accessible": 0,
+    "rights": 10,
+    "cash": -323906.3156224848,
+    "year": 2,
+    "opening": 178362.5,
+    "growth": 2640,
+    "harvest": 0,
+    "closing": 181002.5,
+    "cashChange": -1098360,
+    "habitat": 0.7573417721518988,
+    "managedHabitat": 0.545,
+    "actions": {},
+    "operatingSeason": {
+      "startCalendarWeek": 40,
+      "weeks": 12,
+      "roadsideWriteOff": 0
+    }
+  },
+  {
+    "stopped": "Error: The linked season needs a nonnegative opening budget.",
+    "managementYear": 3,
+    "week": 13,
+    "cash": -323906.3156224848,
+    "packedUtf16Bytes": 496328
+  }
+]

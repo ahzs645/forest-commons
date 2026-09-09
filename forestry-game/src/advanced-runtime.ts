@@ -1,0 +1,8 @@
+/** Translate a known diagnostic while retaining authored company/site names. */
+export function advancedMessage(text:string,tr:(text:string)=>string){const templates:[RegExp,string,string[]][]=[
+ [/^(.+): agreement (.+) fixes (.+) \/ (.+) to ordinary deliveries at (.+) through turn (\d+)\.$/,'{truck}: agreement {agreement} fixes {stand} / {product} to ordinary deliveries at {mill} through turn {deadline}.',['truck','agreement','stand','product','mill','deadline']],
+ [/^(.+): agreement (.+) protects ([\d.]+) m³ at (.+) for own-mill service or reserve through turn (\d+); deliver ordinary supply to (.+) first\.$/,'{truck}: agreement {agreement} protects {volume} m³ at {stand} for own-mill service or reserve through turn {deadline}; deliver ordinary supply to {mill} first.',['truck','agreement','volume','stand','deadline','mill']],
+ [/^(.+): agreement (.+) has unverifiable own-mill service records; cross delivery is paused\.$/,'{truck}: agreement {agreement} has unverifiable own-mill service records; cross delivery is paused.',['truck','agreement']]
+ ];
+ for(const [pattern,template,keys] of templates){const match=text.match(pattern);if(!match)continue;const translated=tr(template);if(translated===template)return text;return translated.replace(/\{(\w+)\}/g,(_,key:string)=>{const value=match[keys.indexOf(key)+1];return key==='volume'?Number(value).toLocaleString('fr-CA',{minimumFractionDigits:1,maximumFractionDigits:1}):value;});}
+ const whole=tr(text);if(whole!==text)return whole;const split=text.indexOf(': ');if(split>=0){const prefix=text.slice(0,split+2),tail=text.slice(split+2),translated=tr(tail);if(translated!==tail)return prefix+translated;}return text;}

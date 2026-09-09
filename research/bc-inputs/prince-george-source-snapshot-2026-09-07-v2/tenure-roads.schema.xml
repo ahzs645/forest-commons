@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:pub="http://delivery.openmaps.gov.bc.ca/geo/" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://delivery.openmaps.gov.bc.ca/geo/">
+  <xsd:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="https://openmaps.gov.bc.ca/geo/schemas/gml/3.2.1/gml.xsd"/>
+  <xsd:complexType name="WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVWType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="1" name="FOREST_FILE_ID" nillable="false" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="ROAD_SECTION_ID" nillable="false" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="START_STATION" nillable="false" type="xsd:decimal"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="END_STATION" nillable="false" type="xsd:decimal"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="TIMBER_MARK" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="ROAD_RESPONSIBILITY_TYPE_CODE" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="RETIREMENT_DATE" nillable="true" type="xsd:date"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FEATURE_LENGTH" nillable="true" type="xsd:decimal"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="FEATURE_CLASS_SKEY" nillable="false" type="xsd:decimal"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FILE_STATUS_CODE" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FILE_TYPE_CODE" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FILE_TYPE_DESCRIPTION" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="GEOGRAPHIC_DISTRICT_CODE" nillable="false" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="GEOGRAPHIC_DISTRICT_NAME" nillable="false" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="CLIENT_NUMBER" nillable="false" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="CLIENT_NAME" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="LIFE_CYCLE_STATUS_CODE" nillable="false" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="MAP_LABEL" nillable="false" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="FEATURE_LENGTH_M" nillable="true" type="xsd:decimal"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="GEOMETRY" nillable="true" type="gml:GeometryPropertyType"/>
+          <xsd:element maxOccurs="1" minOccurs="1" name="OBJECTID" nillable="false" type="xsd:decimal"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="SE_ANNO_CAD_DATA" nillable="true" type="xsd:hexBinary"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVW" substitutionGroup="gml:AbstractFeature" type="pub:WHSE_FOREST_TENURE.FTEN_ROAD_SEGMENT_LINES_SVWType"/>
+</xsd:schema>

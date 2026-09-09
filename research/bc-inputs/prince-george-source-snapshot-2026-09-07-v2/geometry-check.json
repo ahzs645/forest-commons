@@ -1,0 +1,24 @@
+{
+  "inventory-rank1": {
+    "features": 781,
+    "uniqueIds": true,
+    "finiteWGS84Positions": 41246,
+    "geometryBounds": [
+      -123.02934155,
+      53.9,
+      -122.79999999,
+      54.03204335
+    ]
+  },
+  "tenure-roads": {
+    "features": 10,
+    "uniqueIds": true,
+    "finiteWGS84Positions": 1407,
+    "geometryBounds": [
+      -123.00483265,
+      53.92422384,
+      -122.88417034,
+      53.99596016
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+[
+  {
+    "packedUtf16Bytes": 2582952,
+    "accessible": 10,
+    "rights": 10,
+    "cash": 3124453.6843775264,
+    "year": 1,
+    "opening": 196600,
+    "growth": 2640,
+    "harvest": 20877.5,
+    "closing": 178362.5,
+    "cashChange": 124453.6843775264,
+    "habitat": 0.7323417721518988,
+    "managedHabitat": 0.52,
+    "actions": {
+      "Q01": "thin",
+      "Q02": "thin",
+      "Q03": "thin",
+      "Q04": "thin",
+      "Q05": "thin",
+      "Q06": "thin",
+      "Q07": "thin",
+      "Q08": "thin",
+      "Q09": "thin",
+      "Q10": "thin"
+    },
+    "operatingSeason": {
+      "startCalendarWeek": 13,
+      "weeks": 12,
+      "roadsideWriteOff": 0
+    }
+  },
+  {
+    "packedUtf16Bytes": 496352,
+    "accessible": 0,
+    "rights": 10,
+    "cash": 2026093.6843775264,
+    "year": 2,
+    "opening": 178362.5,
+    "growth": 2640,
+    "harvest": 0,
+    "closing": 181002.5,
+    "cashChange": -1098360,
+    "habitat": 0.7573417721518988,
+    "managedHabitat": 0.545,
+    "actions": {},
+    "operatingSeason": {
+      "startCalendarWeek": 40,
+      "weeks": 12,
+      "roadsideWriteOff": 0
+    }
+  },
+  {
+    "packedUtf16Bytes": 497804,
+    "accessible": 0,
+    "rights": 10,
+    "cash": 919930.6843775264,
+    "year": 3,
+    "opening": 181002.5,
+    "growth": 2640,
+    "harvest": 0,
+    "closing": 183642.5,
+    "cashChange": -1106163,
+    "habitat": 0.7823417721518987,
+    "managedHabitat": 0.57,
+    "actions": {},
+    "operatingSeason": {
+      "startCalendarWeek": 52,
+      "weeks": 12,
+      "roadsideWriteOff": 0
+    }
+  }
+]

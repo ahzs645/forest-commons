@@ -1,0 +1,1 @@
+{"extends":"./tsconfig.json","compilerOptions":{"types":["node"]},"include":["server","src/simulation","src/scenarios","src/coalition.ts","src/epm.ts"]}

@@ -1,0 +1,12 @@
+import {describe,it,expect} from 'vitest';
+import {nucleolus} from './nucleolus';
+import {cost,savings,allocate} from './coalition';
+const sortedExcess=(x:Record<string,number>,v:(s:string[])=>number)=>Array.from({length:6},(_,i)=>{const s=['1','2','3'].filter((_,j)=>(i+1)&(1<<j));return v(s)-s.reduce((n,id)=>n+x[id],0);}).sort((a,b)=>b-a);
+describe('lexicographic imputation nucleolus',()=>{
+ it('splits a symmetric majority game despite the empty core',()=>{const x=nucleolus(['1','2','3'],s=>s.length>=2?1:0);for(const n of Object.values(x))expect(n).toBeCloseTo(1/3,6);});
+ it('solves asymmetric bankruptcy and preserves efficiency',()=>{const claims:Record<string,number>={'1':100,'2':200,'3':300};const v=(s:string[])=>Math.max(0,200-Object.keys(claims).filter(id=>!s.includes(id)).reduce((n,id)=>n+claims[id],0));const x=nucleolus(['1','2','3'],v);expect(x['1']).toBeCloseTo(50,6);expect(x['2']).toBeCloseTo(75,6);expect(x['3']).toBeCloseTo(75,6);});
+ it('refines a nonunique least-core face instead of freezing its arbitrary vertex',()=>{const values:Record<string,number>={'1':0,'2':0,'3':0,'12':6,'13':4,'23':2,'123':10};const v=(s:string[])=>values[[...s].sort().join('')]??0;const x=nucleolus(['1','2','3'],v);expect(x['1']).toBeCloseTo(5,6);expect(x['2']).toBeCloseTo(3,6);expect(x['3']).toBeCloseTo(2,6);const good=sortedExcess(x,v),vertex=sortedExcess({'1':4,'2':4,'3':2},v);expect(good[0]).toBeCloseTo(vertex[0],6);expect(good[1]).toBeCloseTo(vertex[1],6);expect(good[2]).toBeLessThan(vertex[2]);});
+ it('supports every source-table coalition and the allocation preset',()=>{for(const count of [4,5] as const){const ids=Array.from({length:count},(_,i)=>String(i+1));for(let mask=1;mask<2**count;mask++){const s=ids.filter((_,i)=>mask&(1<<i));const x=allocate(s,'nucleolus',count);expect(Object.values(x).reduce((n,v)=>n+v,0)).toBeCloseTo(savings(s,count),4);}}});
+ it('rejects games with an empty imputation set',()=>{expect(()=>nucleolus(['1','2'],s=>s.length===1?2:3)).toThrow('No individually rational');});
+ it('balances both original source games and is permutation invariant',()=>{for(const count of [4,5] as const){const ids=Array.from({length:count},(_,i)=>String(i+1)),v=(s:string[])=>savings(s,count),x=nucleolus(ids,v),reverse=nucleolus([...ids].reverse(),v);expect(Object.values(x).reduce((a,b)=>a+b,0)).toBeCloseTo(v(ids),4);for(const id of ids){expect(x[id]).toBeGreaterThanOrEqual(-1e-5);expect(x[id]).toBeCloseTo(reverse[id],4);expect(cost([id],count)-x[id]).toBeLessThanOrEqual(cost([id],count)+1e-5);}}});
+});

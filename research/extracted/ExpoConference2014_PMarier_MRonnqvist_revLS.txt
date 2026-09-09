@@ -1,0 +1,215 @@
+
+PAGE 1
+Le jeu de la collaboration
+Présenté par :
+Philippe Marier
+Professionnel de recherche
+Consortium de recherche FORAC – Université Laval
+Mikael Rönnqvist
+Professeur titulaire
+Département de génie mécanique - Université Laval
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+
+PAGE 2
+Introduction – Problématique de transport
+1. Coût transport représente 50% du coût d’approvisionnement 
+et 30% de ce coût est pour le carburant
+2. Coût de l’énergie à la hausse
+3. Coût de la fibre non concurrentielle
+4. Distance parcourue à vide est égale à la distance en charge
+5. Gestion décentralisée des camions 
+6. Connaissance partielle des volumes à transporter
+7. Impératif de réduire les GES
+2
+
+PAGE 3
+Objectifs du jeu
+3
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+• Démontrer les avantages de la planification 
+collaborative;
+• Connaître différentes approches de partage 
+des coûts;
+• Développer des compétences de 
+négociation et apprécier l’importance de 
+l’information dans ce processus.
+Note: jeu basé sur un cas industriel réel
+
+
+PAGE 4
+Le potentiel de la collaboration
+4
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+
+PAGE 5
+Le potentiel de la collaboration
+5
+Expo-Conférence  Université Laval, 29 janvier 2014
+2 camions
+1 camion
+
+PAGE 6
+Deux enjeux de la collaboration en transport
+6
+Construire la coalition
+Partager les ressources, les profits et les pertes
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+
+PAGE 7
+Le jeu
+7
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+• But du jeu: approvisionner les usines de votre compagnie au moindre 
+coût.
+• Chaque compagnie peut travailler individuellement et payer ses coûts 
+de transport spécifiques ou
+• Elle peut s’intégrer à une coalition (un ensemble d’entreprises 
+travaillant ensemble).
+• Les coûts de transport on été calculés grâce à un modèle d’optimisation 
+qui minimise les coûts d’approvisionnements aux usines. 
+
+PAGE 8
+Le jeu
+8
+Compagnie 1
+ Compagnie 2
+ Compagnie 3
+ Compagnie 4
+ Compagnie 5
+77 300 (m3) 301 300 (m3) 232 100 (m3) 89 300 (m3) 94 770 (m3)
+3 780 (kSEK) 14 860 (kSEK) 10 340 (kSEK) 4 960 (kSEK) 4 740 (kSEK)
+70,3 (km) 56,8 (km) 68,5 (km) 68,5 (km) 49,7 (km)
+Volume (m3)
+Coût individuel (kSEK)
+Distance moyenne (km)
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+
+PAGE 9
+Le jeu
+9
+Coût (kSEK) Coût (kSEK) Économies Amélioration
+Coalition (collaboration) (individuel) (kSEK) (%)
+C1 + C2 18 300 18 640 340 1,82
+C1 + C3 14 000 14 120 120 0,85
+C1 + C4 8 510 8 740 230 2,63
+C1 + C5 8 490 8 520 30 0,35
+C2 + C3 24 210 25 200 990 3,93
+C2 + C4 19 040 19 820 780 3,94
+C2 + C5 18 610 19 600 990 5,05
+C3 + C4 15 060 15 300 240 1,57
+C3 + C5 14 910 15 080 170 1,13
+C4 + C5 9 650 9 700 50 0,52
+C1+C2+C3 27 710 28 980 1 270 4,38
+C1+C2+C4 22 490 23 600 1 110 4,70
+C1+C2+C5 22 080 23 380 1 300 5,56
+C1+C3+C4 18 580 19 080 500 2,62
+C1+C3+C5 18 570 18 860 290 1,54
+C1+C4+C5 13 200 13 480 280 2,08
+C2+C3+C4 28 400 30 160 1 760 5,84
+C2+C3+C5 27 910 29 940 2 030 6,78
+C2+C4+C5 22 820 24 560 1 740 7,08
+C3+C4+C5 19 600 20 040 440 2,20
+C1+C2+C3+C4 32 000 33 940 1 940 5,72
+C1+C2+C3+C5 31 450 33 720 2 270 6,73
+C1+C2+C4+C5 26 300 28 340 2 040 7,20
+C1+C3+C4+C5 23 150 23 820 670 2,81
+C2+C3+C4+C5 32 170 34 900 2 730 7,82
+C1+C2+C3+C4+C5 35 690 38 680 2 990 7,73
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+
+PAGE 10
+Le jeu
+10
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+C  o  a  l  i  t  i  o  n  s
+Économies 
+totales
+Cie 1
+Cie 2
+Cie 3
+Cie 4
+Cie 5
+
+PAGE 11
+Le jeu
+11
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+C  o  a  l  i  t  i  o  n  s
+C2+C5 C2+C3+C5 C1+C2+C4
+Économies 
+totales 990 2 030 1 110
+Cie 1 250
+Cie 2 390 500 460
+Cie 3 900
+Cie 4 400
+Cie 5 600 630
+
+PAGE 12
+12
+Place au jeu!
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+
+PAGE 13
+Résultats et discussion
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+
+
+PAGE 14
+Résultats dans la pratique
+14
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+• Le potentiel d’économie est d’environ 12%;
+• 70% est pour le bois de sciage et 30% pour le bois de pâte;
+• Les économies dûes à la coordination sont d’environ 9%;  
+• La distance moyenne de transport est réduite de 18%;
+• En moyenne, la réduction des coûts par mètre cube est de 6 
+SEK;
+• La consommation énergétique peut être réduite de 18% résultant
+en une réduction de 950 tonnes de CO2.
+
+PAGE 15
+• Il est inhabituel d’avoir 8 compagnies qui 
+collaborent;
+• Des économies de 12% correspondent 
+annuellement à plus de 8 millions 
+d’Euros;
+• On peut voir un intérêt croissant des 
+compagnies forestières à coopérer due 
+au grand potentiel d’économies.
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+Remarques
+15
+
+PAGE 16
+Suites de l’étude
+• Plusieurs cas d’étude;
+• Introduction de systèmes de planification en cours dans deux 
+des entreprises;
+• Trois compagnies se sont entendues pour faire plus de tests
+▪ 2009: opérations pendant quatres mois;
+▪ Constraintes additionnelles d’ordre pratique :
+• Pas de transaction financière;
+• Responsabilité minimum plus élevée pour leurs usines;
+• Les relations à longs termes motivent le partage selon la même 
+proportion de profit.
+Expo-Conférence 
+Université Laval, 29 janvier 2014
+16
+
+PAGE 17
+17
+Expo-Conférence 
+Université Laval, 29 janvier 2014

@@ -1,0 +1,73 @@
+{
+  "kind": "Programmatic staged negotiation through isolated RoomStore",
+  "shared": [
+    "1",
+    "2",
+    "3"
+  ],
+  "estimates": {
+    "1": {
+      "before": 810,
+      "after": 1391.6666666666665
+    },
+    "2": {
+      "before": 2305,
+      "after": 1391.6666666666665
+    },
+    "3": {
+      "before": 1060,
+      "after": 1391.6666666666665
+    },
+    "4": {
+      "before": 3260,
+      "after": 1858.75
+    },
+    "5": {
+      "before": 1005,
+      "after": 1295
+    }
+  },
+  "offers": [
+    {
+      "id": 1,
+      "shares": {
+        "1": 337.6,
+        "2": 337.6,
+        "3": 337.6,
+        "4": 337.6,
+        "5": 337.6
+      },
+      "accepted": [],
+      "status": "rejected"
+    },
+    {
+      "id": 2,
+      "shares": {
+        "1": 337.6,
+        "2": 337.6,
+        "3": 337.6,
+        "4": 337.6,
+        "5": 337.6
+      },
+      "accepted": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "status": "agreed"
+    }
+  ],
+  "totalRealizedSavings": 1688,
+  "checks": [
+    "Private visibility",
+    "Authenticated explicit consent",
+    "Before/after estimates",
+    "Rejected offer",
+    "Unanimous agreement",
+    "Unshared economics remain private in debrief",
+    "Backup+restore roundtrip",
+    "Rotating recovery credential"
+  ]
+}

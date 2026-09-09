@@ -1,0 +1,910 @@
+ppt/slides/slide1.xml
+1. Introduction to production planing 
+in FORAC Harvest Arena 
+Dag Fjeld, Skogkurs, NMBU
+Philippe Marier, FORAC, 
+U.Laval
+Luc 
+LeBel
+, FORAC, 
+U.Laval
+ppt/slides/slide2.xml
+CTL 
+production
+ planning
+Goals 
+high fulfillment of production goals and harvesting capacity utilization.
+short relocation distances and minimal risk for ground damage. 
+Assumptions
+information on harvesting sites: volumes, expected production rates and bearing capacity. 
+Training aims towards
+meeting multiple targets
+being prepared for change 
+ppt/slides/slide3.xml
+A typical planning 
+cycle
+in 
+practice
+ 
+Planning
+check 
+available
+ harvesting 
+capacity
+ and 
+production
+ 
+priorities
+search for 
+suitable
+ harvesting sites (
+contracts
+)
+allocate
+ sites to teams, propose schedule.  
+Confirming schedule and re-planning
+confirm
+ 
+schedule
+ with teams
+carry on harvesting, re-plan as required. 
+ppt/slides/slide4.xml
+Simulator training for 
+production
+ management
+- 
+weekly
+ planning for 6 CTL 
+harvester
+ teams
+- 
+through
+ 12 
+weeks
+ 
+of
+ 
+varying
+ 
+weather
+ and 
+trafficability
+ 
+- 3 to 4 
+hours
+ per training run    
+ppt/slides/slide5.xml
+Basic 
+features
+Uncertainty
+ in planning 
+12 weekly planning periods (3 months; 4 weeks/month)
+weekly weather variation (prognosis vs. actual for current week)
+weekly
+ 
+weather
+ must be 
+matched
+ 
+with
+ 
+site
+ 
+bearing
+ 
+capacity
+ 
+The 
+interface
+map hover information
+: mills and harvesting sites
+production
+ goals
+: 
+monthly
+ 
+mill
+ 
+demand
+Monthly
+ KPIs
+production
+ 
+goal
+ 
+fulfillment
+; 
++/- 10 % 
+of 
+monthly
+ 
+demand
+ per  
+mill
+ 
+customer
+ 
+harvesting capacity utilization, relocation distances and risk for ground damage
+ppt/slides/slide6.xml
+12 
+week
+ planning 
+period
+Site 
+bearing
+ 
+capacity
+Outer 
+coast
+Mid
+ 
+coast
+Inner
+coast
+ppt/slides/slide7.xml
+Demo 1
+- 
+Overview
+ppt/slides/slide8.xml
+Next video: 
+2. Working in the production interface
+ppt/slides/slide9.xml
+2. Working in the production interface 
+Dag Fjeld, Skogkurs, NMBU
+Philippe Marier, FORAC, 
+U.Laval
+Luc 
+LeBel
+, FORAC, 
+U.Laval
+ppt/slides/slide10.xml
+«Drag and drop» team routing on map
+corresponding site schedule is presented on the production chart 
+production follow-up 
+per assortment and mill customer
+(
+after
+ 
+the
+ 
+mill
+ 
+destination
+ is 
+selected
+) 
+The 
+challenge
+ is to 
+select
+ 
+the
+ right 
+operations
+ 
+with
+ 
+respect
+ to 
+changing
+ 
+weather
+ and 
+mill
+ 
+customer
+ 
+demand
+Filter 
+function
+ 
+selects
+ 
+which
+ type 
+of
+ 
+sites
+ 
+are
+ 
+displayed
+ 
+on
+ 
+the
+ 
+map
+considering
+ 
+needs
+ for 
+the
+ 
+coming
+ planning 
+period
+.      
+Working in the production manager interface
+ppt/slides/slide11.xml
+Team 1: 
+production
+ 
+route
+Team 2: 
+production
+ 
+route
+Team 
+production
+ 
+schedules
+ (1-6)
+Production 
+follow
+-up
+Select 
+mill
+ 
+destination
+KPIs
+   
+mill
+  
+assortment
+   
+week
+ 
+number
+ppt/slides/slide12.xml
+Spruce
+Mill
+assortment
+m
+3
+/
+month
+Sawlogs
+(7500 m
+3
+)
+Namsos
+Sawlogs
+2500
+Steinkjer 
+Sawlogs
+ 
+3000
+Verdal 
+Sawlogs
+ 
+2000
+Selbu
+Sawlogs
+Gauldal
+Sawlogs
+Pulpwood
+(8500 m
+3
+)
+Levanger
+PG pulp (prime grade)
+7500
+Verran
+SG pulp (
+second
+ grade)
+1000
+Monthly
+ 
+production
+ goals
+- per 
+assortment
+- per 
+mill
+ 
+customer
+ppt/slides/slide13.xml
+Contracts
+Filter function 
+to help find suitable  harvesting sites
+Suitable
+range 
+of
+  
+sites
+bearing
+ 
+capacity
+(
+terrain
+ and 
+road
+)
+assortment
+ 
+distribution
+production
+ rate
+site volume
+ppt/slides/slide14.xml
+Monthly
+ 
+- 
+mill
+ 
+demand
+ (m
+3
+/
+month
+)
+- 
+required
+ team 
+production
+ (m
+3
+/
+day
+)
+Namsos
+Namsos
+Steinkjer
+Steinkjer
+Verdal
+Verdal
+Verran
+Verran
+Levanger
+Levanger
+Sum m
+3
+Sum %
+Prime grade 
+pulpwood
+7 500
+7 500
+7 500
+47 %
+Sawlogs
+2 500
+2 500
+3 000
+3 000
+2 000
+3 000
+7 500
+47 %
+Second grade 
+pulpwood
+1 000
+1 000
+1 000
+6 %
+Sum
+16 000
+m
+3
+/
+month
+Per team
+2 667
+m
+3
+/
+month
+Per team/
+day
+ (
+required
+ 
+production
+ rate)
+133
+m
+3
+/
+day
+ppt/slides/slide15.xml
+Filter: 
+daily
+ 
+production
+ (m
+3
+/
+day
+), % 
+sawlogs
+Suitable sites
+shown on map
+ppt/slides/slide16.xml
+Selecting
+ 
+mill
+ 
+destinations
+For 
+each
+ harvesting 
+site
+ 
+you
+ must 
+select
+ 
+the
+ 
+mill
+ for 
+each
+ 
+assortment
+Under 
+Production:
+a
+) 
+click
+ 
+on
+ 
+the
+ 
+site
+b) 
+check
+ 
+production
+ goal 
+fulfilment
+c) 
+click
+ 
+on
+ 
+your
+  
+selected
+ 
+destination
+Keep
+ 
+you
+ 
+eye
+ 
+on
+ 
+the
+ 
+production
+ 
+fulfillment
+per 
+assortment
+per 
+mill
+ 
+customer
+   
+mill
+  
+assortment
+demand
+ 
+fulfilled
+demand not being fulfilled
+ppt/slides/slide17.xml
+Demo 2
+- planning
+ppt/slides/slide18.xml
+Quick review
+3 steps
+1) make initial plan 
+2) select mill customers
+3) adjust plan after follow-up
+When satisfied, click   
+Step
+ 1 – initial plan
+A) Check production pace 
+B) Adjust filter to show suitable contracts
+C) Plan route between suitable harvesting sites.
+Step 2 – selecting mill customers 
+A) Production schedule (per team): click on site 
+B) Production goals (per assortment): select  mill customer   
+C) Cumulative volume: check cumulative production in relation to demand, per assortment, and per mill. 
+Step 3 – adjusting plan after follow-up
+Satisfied...?  Options:
+	- change mill destination (click on «bucking») 
+	- or delete site from schedule, and add a new one (refresh afterwards).  
+ppt/slides/slide19.xml
+Next video: 
+3. Some pointers and examples 
+ppt/slides/slide20.xml
+ 
+3. Some pointers and examples 
+Dag Fjeld, Skogkurs, NMBU
+Philippe Marier, FORAC, 
+U.Laval
+Luc 
+LeBel
+, FORAC, 
+U.Laval
+ppt/slides/slide21.xml
+ 
+5-point focus
+1) 
+fulfilling
+ 
+production
+ 
+goals
+ (+/- 10 of 
+monthly
+ 
+demand
+; per  
+mill
+ 
+customer
+)
+2) 
+avoiding
+ 
+ground
+ 
+damage
+  (
+weather
+ ; 
+think
+ 
+ahead
+)
+3) 
+effective
+ 
+relocation
+ (
+when
+ 
+can
+ 
+you
+ make a long 
+move
+?)  
+       
+Re-
+think
+; 
+where
+ 
+should
+ 
+this
+ 
+wood
+ be going?
+4) 
+production
+ is 
+half
+ the 
+battle
+; 
+consider
+  the transport 
+perspective
+5) 
+before
+ 
+starting
+, 
+allocate
+ 
+your
+ harvesting 
+capacity
+ to the right areas.
+  
+ 
+ 
+KPIs – 
+eye
+ on the ball
+ppt/slides/slide22.xml
+Start with the big orders
+Namsos
+Steinkjer
+Verdal
+Verran
+Levanger
+Sum m
+3
+Sum %
+Prime grade 
+pulpwood
+7 500
+7 500
+47 %
+Sawlogs
+2 500
+3 000
+2 000
+7 500
+47 %
+Second grade 
+pulpwood
+1 000
+1 000
+6 %
+Sum
+16 000
+m
+3
+/
+month
+1. 
+Fulfilling
+ 
+production
+ 
+goals
+ppt/slides/slide23.xml
+1100 sites
+- know your wood
+1. 
+Fulfilling
+ 
+production
+ 
+goals
+750-800 m
+3
+/site
+Many small, few large
+40-60% sawlogs
+Production rates (110-170 m
+3
+/day)
+ppt/slides/slide24.xml
+Vary 
+your filter 
+and 
+Watch 
+the map
+- how far to the next 
+right site
+?
+- can you find clusters?
+filter
+133
+47%
+5-6
+ppt/slides/slide25.xml
+How far ahead can you plan?
+- it depends on the season:
+Stable periods (mid-winter, mid-summer)
+	- up to 4 weeks
+Less predictable periods (spring thaw, fall rain)
+	- up to 2 weeks
+Safe or gamble?
+- save your best sites til you need them
+2) 
+Avoiding
+ risk  for 
+ground
+ 
+damage
+  
+(
+watch
+ the 
+weather
+ and 
+think
+ 
+ahead
+) 
+ppt/slides/slide26.xml
+Clustering of sites 
+- 
+reduces relocation km per 1000 m
+3
+otherwise:
+- clusters for stable weather; same BC
+- clusters for instable weather; mixed BC
+3) 
+Effective
+ 
+relocation
+ 
+- 
+when
+ 
+can
+ 
+you
+ make a long 
+move
+?
+Spring 
+thaw
+ 
+Fall 
+rain
+ 
+Winter 
+ 
+Summer
+ 
+ 
+10 km
+ppt/slides/slide27.xml
+Example plan  
+sawmill destination 
+(minimal transport costs for all mills)
+Sawmill
+market share
+Namsos 
+25 %
+Steinkjer 
+30 %
+Verdal 
+20 %
+4) 
+Production
+ is 
+half
+ the 
+battle
+; re-
+think
+ from a transport 
+perspective
+ppt/slides/slide28.xml
+4
+) Planning for bearing capacity; harvesting 
+and hauling
+Seasonal hauling solutions
+Stable 
+conditions
+ 
+(harvesting and 
+hauling
+)
+	- winter (frost)
+	- summer (frost-free)
+Autumn
+ (falling 
+temperatures
+, 
+sustained
+ 
+rain
+)
+	-  harvesting and hauling                        or 
+	-  
+when
+ 
+hauling
+ 
+waits
+ for frost
+Late winter 
+(rising temperatures, melting snow)
+	
+- harvesting and 
+hauling
+	- when hauling during warm periods
+	- 
+when
+ 
+hauling
+ 
+waits
+ til 
+after
+ 
+thaw
+ 
+Spring 
+thaw
+	- 
+harvesting and 
+hauling
+	- when hauling waits til after thaw
+	 
+1 – spring 
+thaw
+2 – 
+rainy
+ 
+periods
+3 – frost-free weather
+4 – frost or dry weather only   
+Harvesting (terrain)  BC classes             Hauling (road) BC classes
+Public 
+roads
+ (
+higher
+ BC)
+Forest 
+roads
+ (
+varying
+ BC)
+ppt/slides/slide29.xml
+Relocation
+ 
+distance
+ is 
+tracked
+ 
+from the 
+first
+ 
+harvested
+ site
+. 
+So 
+locate
+ 
+your
+ teams 
+before
+ 
+starting
+. 
+Consider
+:
+- 
+where
+ 
+are
+ 
+your
+ 
+main
+ 
+customers
+?
+- 
+where
+ is 
+your
+ 
+wood
+ 
+concentrated
+?
+- 
+which
+ 
+weather
+ do 
+you
+ 
+expect
+?
+5) 
+Allocate
+ 
+your
+ harvesting 
+capacity
+ to 
+preferred
+ areas
+ppt/slides/slide30.xml
+Log-on and test!
+a) Player
+b) New player
+c) Game, your name, password
+ppt/slides/slide31.xml
+Think ahead, stay sharp!
+
+LINKS
