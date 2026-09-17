@@ -390,8 +390,8 @@ export default function OperationsMap({
           <div>{game.region.products.map(p=><p key={p.id}><ProductSymbol product={p}/></p>)}</div>
           <p>{tr("Select a feature or search by its name or ID to inspect it.")}</p>
         </div></details>
-        <button onClick={() => fit()}>{tr("Fit district")}</button>
-        <button onClick={() => fit(true)}>{tr("Fit plan")}</button>
+        <button className="map-fit-control" onClick={() => fit()}>{tr("Fit district")}</button>
+        <button className="map-fit-control" onClick={() => fit(true)}>{tr("Fit plan")}</button>
         <div className="map-layer-controls-desktop">        <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
           {tr(style === "light" ? "Dark map" : "Light map")}
         </button>
@@ -405,8 +405,10 @@ export default function OperationsMap({
             {tr(id)}
           </label>
         ))}</div>
-        <details className="map-layer-menu" onKeyDown={dismissOnEscape}><summary>{language==='fr'?'Couches':'Layers'}</summary><div className="map-layer-options">
+        <details className="map-layer-menu" onKeyDown={dismissOnEscape}><summary>{language==='fr'?'Outils':'Map tools'}</summary><div className="map-layer-options">
         <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
+        <button onClick={() => fit()}>{tr("Fit district")}</button>
+        <button onClick={() => fit(true)}>{tr("Fit plan")}</button>
         <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
           {tr(style === "light" ? "Dark map" : "Light map")}
         </button>

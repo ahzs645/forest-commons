@@ -42,10 +42,10 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
         </span>;
       })}
     </div>
-    <p className="muted">{text('Forecast conditions, not authorization to operate. Route readiness does not reserve stock, truck time or mill capacity.',
-      'Conditions prévues, et non autorisation réelle. Un itinéraire disponible ne réserve ni bois, ni heures de camion, ni capacité de réception.')}</p>
     <details className="operating-checks">
       <summary>{text('What can happen here now?', 'Que peut-on faire ici maintenant?')}</summary>
+      <p className="muted">{text('Forecast conditions, not authorization to operate. Route readiness does not reserve stock, truck time or mill capacity.',
+        'Conditions prévues, et non autorisation réelle. Un itinéraire disponible ne réserve ni bois, ni heures de camion, ni capacité de réception.')}</p>
       <dl>{checks.map(check => <div key={`${check.scope}:${check.code}`} data-level={check.level}>
         <dt><span className="operating-status-word">{check.level === 'blocked' ? text('Blocked', 'Bloqué') : check.level === 'warning' ? text('Review', 'À vérifier') : text('Ready', 'Prêt')}</span> {t(check.label)}</dt>
         <dd>{t(check.message)}{check.level !== 'ready' && check.action && onNavigate &&

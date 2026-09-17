@@ -94,10 +94,6 @@ export default function MapWorkspace({
   return (
     <>
     <div className={`map-workspace adaptive-map-workspace ${workspaceView === 'list' ? 'operations-list-mode' : ''}`} data-sheet={sheetSize}>
-      <div className="mobile-workspace-controls" aria-label={language === 'fr' ? 'Affichage' : 'Workspace view'}>
-        <button aria-pressed={workspaceView === 'map'} onClick={() => setWorkspaceView('map')}>{language === 'fr' ? 'Carte' : 'Map'}</button>
-        <button aria-pressed={workspaceView === 'list'} onClick={() => setWorkspaceView('list')}>{language === 'fr' ? 'Liste' : 'List'}</button>
-      </div>
       <div className="map-stage">
         <OperationsMap
           game={game}
@@ -111,9 +107,14 @@ export default function MapWorkspace({
       <aside ref={inspectorRef} tabIndex={-1} className="map-inspector" aria-label={tr("Selected map feature")}>
         <div className="operating-sheet-controls">
           <strong>{inspect.id}</strong>
-          <button aria-expanded={sheetSize === 'full'} onClick={() => setSheetSize(sheetSize === 'half' ? 'full' : 'half')}>
-            {sheetSize === 'half' ? (language === 'fr' ? 'Développer' : 'Expand') : (language === 'fr' ? 'Réduire' : 'Collapse')}
-          </button>
+          <div className="mobile-workspace-controls" aria-label={language === 'fr' ? 'Affichage' : 'Workspace view'}>
+            <button aria-pressed={workspaceView === 'list'} onClick={() => setWorkspaceView(workspaceView === 'list' ? 'map' : 'list')}>
+              {workspaceView === 'list' ? (language === 'fr' ? 'Carte' : 'Map') : (language === 'fr' ? 'Liste' : 'List')}
+            </button>
+            <button className="operating-sheet-size" aria-expanded={sheetSize === 'full'} onClick={() => setSheetSize(sheetSize === 'half' ? 'full' : 'half')}>
+              {sheetSize === 'half' ? (language === 'fr' ? 'Développer' : 'Expand') : (language === 'fr' ? 'Réduire' : 'Collapse')}
+            </button>
+          </div>
         </div>
         <div className="operating-role-tabs" aria-label={tr("Planning role")}>
           {(['purchase', 'production', 'transport'] as const).map(value => <button key={value}

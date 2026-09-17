@@ -375,6 +375,8 @@ export default function RegionalApp() {
         <div className="district-label">
           {tr("YOUR DISTRICT")}<small>{r.name}</small>
         </div>
+        {/* On a phone the toolbar has no room for this, so the drawer hosts it. */}
+        <div className="rail-language"><LanguageSelect /></div>
         <nav aria-label={tr("Main navigation")}>
           {pages.map(([name, Icon]) => (
             <button

@@ -13,20 +13,24 @@ export function TurnReview({ game }: { game: Game }) {
   const number = (n: number) => Math.round(n).toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA');
   return <section className="operating-turn-review" aria-label={text('Plan rehearsal', 'Simulation du plan')}>
     <h3>{text('What this plan is expected to do', 'Résultats attendus de ce plan')}</h3>
-    {game.region.operations && <details><summary>{text('Lesson steps and assumptions', 'Étapes et hypothèses de la leçon')}</summary>
-      <ol>{game.region.operations.lessonSteps.map((step, i) => <li key={i}>{step}</li>)}</ol>
-      <p>{game.region.operations.scopeNote}</p>
-      {game.region.operations.planningContext.map((item, i) => <p key={i}>{item}</p>)}
-    </details>}
-    <p className="muted">{text('Uses the published forecast and revealed events. Excludes uncertain auction awards. Blocked work may be skipped by the engine; only invalid plans prevent settlement.',
-      'Utilise les prévisions publiées et les événements révélés. Exclut les adjudications incertaines. Le moteur peut ignorer des travaux bloqués; seuls les plans invalides empêchent le règlement.')}</p>
     {forecast.report ? <dl className="operating-preview-metrics">
       <div><dt>{text('Harvest', 'Récolte')}</dt><dd>{number(sum(forecast.report.harvested))} m³</dd></div>
       <div><dt>{text('Delivery', 'Livraison')}</dt><dd>{number(sum(forecast.report.delivered))} m³</dd></div>
       <div><dt>{text('Closing cash', 'Trésorerie finale')}</dt><dd>{game.region.currency} {number(forecast.report.cash)}</dd></div>
       <div><dt>{text('Waste', 'Rebuts')}</dt><dd>{number(forecast.report.waste)} m³</dd></div>
     </dl> : <p role="status">{text('Forecast unavailable:', 'Prévision indisponible :')} {forecast.problems.map(t).join(' ')}</p>}
-    <p>{text('Existing unfunded operator provisions:', 'Provisions existantes non financées de l’exploitant :')} <strong>{game.region.currency} {number(outstandingOperatorProvisions(game))}</strong>. {text('These are obligations, not free cash. The forecast ledger applies configured settlement timing.', 'Ce sont des obligations, pas des liquidités libres. Le registre prévisionnel respecte les échéances configurées.')}</p>
+    <p>{text('Unfunded operator provisions:', 'Provisions non financées de l’exploitant :')} <strong>{game.region.currency} {number(outstandingOperatorProvisions(game))}</strong></p>
+    <details><summary>{text('About this forecast', 'À propos de cette prévision')}</summary>
+      <p className="muted">{text('Uses the published forecast and revealed events. Excludes uncertain auction awards. Blocked work may be skipped by the engine; only invalid plans prevent settlement.',
+        'Utilise les prévisions publiées et les événements révélés. Exclut les adjudications incertaines. Le moteur peut ignorer des travaux bloqués; seuls les plans invalides empêchent le règlement.')}</p>
+      <p className="muted">{text('Provisions are obligations, not free cash. The forecast ledger applies configured settlement timing.', 'Les provisions sont des obligations, pas des liquidités libres. Le registre prévisionnel respecte les échéances configurées.')}</p>
+      {game.region.operations && <>
+        <h4>{text('Lesson steps and assumptions', 'Étapes et hypothèses de la leçon')}</h4>
+        <ol>{game.region.operations.lessonSteps.map((step, i) => <li key={i}>{step}</li>)}</ol>
+        <p>{game.region.operations.scopeNote}</p>
+        {game.region.operations.planningContext.map((item, i) => <p key={i}>{item}</p>)}
+      </>}
+    </details>
     <details open={exceptions.length > 0}><summary>{exceptions.length} {text('readiness findings', 'constats de préparation')}</summary>
       {!exceptions.length && <p>{text('No readiness exceptions detected. Shared inventory, sequence, handling and available hours still determine fulfillment.', 'Aucune exception détectée. Le stock partagé, la séquence, la manutention et les heures disponibles déterminent les livraisons.')}</p>}
       <div className="operating-exceptions">{exceptions.map((finding, i) => <article key={i} data-level={finding.level}>

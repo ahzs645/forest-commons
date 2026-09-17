@@ -14,8 +14,6 @@ export default function DecisionDebrief({ game, onSelect }: { game: Game; onSele
   return <section className="panel operating-debrief">
     <h3>{text('What happened in the last turn?', 'Que s’est-il passé au dernier tour?')} · {report.week}</h3>
     <p>{text('Observed conditions:', 'Conditions observées :')} {Object.entries(report.weather).map(([zone, value]) => `${zone}: ${t(value)}`).join(' · ')}</p>
-    <p className="muted">{text('Cash contributions are recorded ledger movements, not standalone block profit. Shared costs remain separate. Messages below are engine evidence, not inferred causation.',
-      'Les contributions de trésorerie sont des écritures enregistrées, pas le bénéfice autonome d’un bloc. Les coûts partagés restent séparés. Les messages proviennent du moteur; ce ne sont pas des causalités déduites.')}</p>
     <div className="operating-result-cards">{lots.map(lot => <article key={lot.id}>
       <h4>{onSelect ? <button onClick={() => onSelect(lot.id)}>{lot.id}</button> : lot.id}</h4>
       <dl className="dossier-facts"><dt>{text('Produced', 'Produit')}</dt><dd>{report.production ? `${number(lot.producedM3)} m³` : text('Not recorded', 'Non consigné')}</dd>
@@ -25,7 +23,9 @@ export default function DecisionDebrief({ game, onSelect }: { game: Game; onSele
     </article>)}</div>
     <p><strong>{text('Unallocated/shared cash movements:', 'Mouvements de trésorerie non attribués/partagés :')}</strong> {game.region.currency} {number(sharedCash)}</p>
     <p><strong>{text('Existing unfunded operator provisions:', 'Provisions existantes non financées de l’exploitant :')}</strong> {game.region.currency} {number(outstandingOperatorProvisions(game))}</p>
-    <details><summary>{text('Debrief prompts', 'Questions de bilan')}</summary>
+    <details><summary>{text('Reading the debrief', 'Lire le bilan')}</summary>
+      <p className="muted">{text('Cash contributions are recorded ledger movements, not standalone block profit. Shared costs remain separate. Messages above are engine evidence, not inferred causation.',
+        'Les contributions de trésorerie sont des écritures enregistrées, pas le bénéfice autonome d’un bloc. Les coûts partagés restent séparés. Les messages proviennent du moteur; ce ne sont pas des causalités déduites.')}</p>
       <p>{text('Which constraint changed the plan? What evidence supports that explanation? Was the limitation a right, an authorization, access, equipment, stock, time or a receiving outlet?',
         'Quelle contrainte a changé le plan? Quelle preuve appuie cette explication? S’agissait-il d’un droit, d’une autorisation, de l’accès, de l’équipement, du stock, du temps ou d’un débouché?')}</p>
       <p>{text('Would another feasible plan protect service or cash differently under the same revealed conditions? What assumption would need regional evidence before using this model for real operations?',

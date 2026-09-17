@@ -1549,8 +1549,8 @@ dialog::backdrop {
   }
 }
 
-.map-legend { position: relative; background: white; border-radius: 8px; padding: 10px; color: #173e32; font-size: 12px; }
-.map-legend summary { cursor: pointer; min-height: 24px; display: flex; align-items: center; }
+.map-legend { position: relative; padding: 0; color: #173e32; font-size: 12px; }
+.map-legend > summary { cursor: pointer; min-height: 28px; display: flex; align-items: center; padding: 6px 8px; background: #fffffff0; border-radius: 5px; box-shadow: 0 1px 5px #0001; font-size: 10px; }
 .map-legend[open] > div { position: absolute; top: 100%; left: 0; width: min(290px, 70vw); padding: 12px; background: white; border-radius: 8px; box-shadow: 0 4px 18px #173e3233; z-index: 10; }
 .map-inspector-jump { display: none; }
 @container game-main (max-width: 740px) { .map-inspector-jump { display: block; position: absolute; right: 12px; bottom: 64px; z-index: 3; min-height: 44px; box-shadow: 0 2px 8px #173e3233; } }

@@ -1,6 +1,6 @@
 /* Additive layout layer. Preserve the existing palette, typography and controls. */
 .operating-badge { display:inline-flex;align-items:center;border:1px solid #c8d5c9;border-radius:99px;padding:5px 9px;font-size:11px;line-height:1.35;background:#f4f7ed; }
-.operating-status-strip { display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;flex:0 0 auto;padding:10px 14px;border:1px solid #dfe5da;background:#fff;border-radius:10px; }
+.operating-status-strip { display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;flex:0 0 auto;padding:6px 2px; }
 .operating-status-strip>div { flex:1;min-width:160px; }
 .operating-status-strip>div>span { display:block;font-size:12px;margin-top:3px; }
 .operating-status-strip button { min-height:44px; }
@@ -60,6 +60,7 @@
 .operating-plan-dock>summary { min-height:44px;cursor:pointer;font-weight:650;align-content:center; }
 .operating-plan-link { display:none; }
 .map-panel-close { display:none; }
+.rail-language { display:none; }
 .operating-dock-resources { display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-height:190px;overflow:auto; }
 .operating-dock-resources article { border:1px solid #e0e6dc;border-radius:7px;padding:10px;min-width:0; }
 .operating-dock-resources ol { padding-left:18px; }
@@ -76,15 +77,14 @@
   .operating-plan-dock { display:none; }
   .operating-plan-link { display:block;width:100%;margin-top:12px;min-height:48px;text-align:left;font-weight:650; }
   .map-first .adaptive-map-workspace { display:grid;grid-template-columns:1fr;position:relative;height:650px;min-height:0;gap:0; }
-  .adaptive-map-workspace .mobile-workspace-controls { display:flex;gap:6px;position:absolute;left:10px;bottom:12px;z-index:7;padding:5px;background:#fff;border:1px solid #cddacb;border-radius:9px; }
+  .adaptive-map-workspace .mobile-workspace-controls { display:flex;gap:6px; }
   .mobile-workspace-controls button { min-height:44px; }
-  .mobile-workspace-controls button[aria-pressed=true] { background:#173e32;color:white; }
   /* z-index:1 from the sticky layer would make this a stacking context and trap
      the map panels below the inspector sheet. The canvas still paints under the
      sheet because it stays at the base level. */
   .map-first .adaptive-map-workspace .map-stage { position:relative;top:auto;height:100%;z-index:auto; }
   .map-first .adaptive-map-workspace .geo-map { height:100%;min-height:0; }
-  .map-first .adaptive-map-workspace .map-inspector { position:absolute;top:auto;bottom:74px;left:8px;right:8px;width:auto;max-height:45%;min-height:0;overflow:auto;z-index:5;border-radius:16px 16px 10px 10px;box-shadow:0 -5px 24px #173e3220;overscroll-behavior:contain; }
+  .map-first .adaptive-map-workspace .map-inspector { position:absolute;top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:45%;min-height:0;overflow:auto;z-index:5;border-radius:16px 16px 10px 10px;box-shadow:0 -5px 24px #173e3220;overscroll-behavior:contain; }
   .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector { max-height:85%; }
   .adaptive-map-workspace .operating-sheet-controls { display:flex;align-items:center;justify-content:space-between;gap:6px;position:sticky;top:-12px;background:white;z-index:8;padding:3px 0; }
   .operating-sheet-controls button { min-height:44px; }
@@ -94,6 +94,10 @@
      the padding that framed it. */
   .adaptive-map-workspace .selected-feature>summary { display:none; }
   .adaptive-map-workspace .selected-feature { padding-top:0; }
+  .adaptive-map-workspace .operating-readiness { border:0;padding:4px 0 0;margin-bottom:6px; }
+  .adaptive-map-workspace .operating-readiness>header .operating-badge { display:none; }
+  /* One menu holds fit, style and layers; the standalone buttons would repeat it. */
+  .adaptive-map-workspace .map-fit-control { display:none; }
   .adaptive-map-workspace .selected-feature>label:first-of-type { margin-top:0; }
   /* A half sheet is barely taller than its own chrome, so the search field
      waits for the expanded sheet and the tapped site's dossier comes first.
@@ -109,8 +113,8 @@
      window, so cap it to what the frame can actually show. */
   .adaptive-map-workspace .map-legend[open]>div { max-height:calc(100dvh - 320px);overflow-y:auto;overscroll-behavior:contain; }
   .map-first .adaptive-map-workspace.operations-list-mode .map-stage { display:none; }
-  .map-first .adaptive-map-workspace.operations-list-mode .map-inspector { position:absolute;inset:0 0 74px;max-height:none;border-radius:10px;box-shadow:none;display:flex;flex-direction:column; }
-  .operations-list-mode .operating-sheet-controls { display:none; }
+  .map-first .adaptive-map-workspace.operations-list-mode .map-inspector { position:absolute;inset:0;max-height:none;border-radius:10px;box-shadow:none;display:flex;flex-direction:column; }
+  .operations-list-mode .operating-sheet-size { display:none; }
   .operations-list-mode .operating-role-tabs { order:0; }
   .operations-list-mode .map-role-panel { order:1; }
   .operations-list-mode .selected-feature { order:2; }
@@ -132,6 +136,15 @@
   .map-first .workspace { display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;
     width:100%;margin:0;padding-bottom:calc(68px + env(safe-area-inset-bottom)); }
   .map-first .operating-status-strip,.map-first .bc-tenure-callout { display:none; }
+  /* The language picker took a third of the toolbar and wrapped everything
+     else onto extra rows. The drawer hosts it on a phone. */
+  .topbar.unified-toolbar { grid-template-columns:38px minmax(0,1fr);grid-template-areas:"menu context" "actions actions"; }
+  .unified-toolbar .language-picker { display:none; }
+  .rail-language { display:block; }
+  .rail-language .language-picker { display:grid;gap:6px;margin:22px 0 18px;color:#b7c8b6;font-size:11px;letter-spacing:.06em;text-transform:uppercase; }
+  .rail-language select { width:100%;min-height:44px;font-size:16px;padding:8px 10px;border-radius:8px;border:1px solid #2f5747;background:#1f4a3d;color:#fff; }
+  /* The compass is rarely wanted on a phone and pinch zoom already works. */
+  .map-first .maplibregl-ctrl-compass { display:none; }
   .map-first .adaptive-map-workspace { flex:1;height:auto;min-height:300px; }
   .operating-plan-link { display:none; }
   /* main carries the container query, which makes it the containing block for
