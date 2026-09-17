@@ -1,3 +1,4 @@
+import { validateOperationsProfile, validateFieldEvidence } from './operations-profile';
 import {validOfferAllocation} from './negotiation';
 import {validateBCMarketRegion,validateBCMarketState} from './bc-market';
 import {validateBCTenureRegion,validateBCTenureState} from './tenure';
@@ -160,6 +161,7 @@ export function validateRegion(value: unknown): RegionDefinition {
       m.demand.some((d) => Object.keys(d).some((p) => !(p in m.prices)))
     )
       fail(`mill ${m.id}`);
+  validateOperationsProfile(r);
   validateBCTenureRegion(r);
   validateBCMarketRegion(r);
   validateBucking(r);
@@ -384,6 +386,8 @@ export function parseGame(raw: string): Game {
   validateLinkedSeason(g);
   validateBCTenureState(g);
   validateBCMarketState(g);
+  validateFieldEvidence(g);
+  if (g.region.operations && g.linkedSeason) throw Error("Operating-profile campaigns do not support linked annual seasons.");
   const r = g.region,
     finite = (n: unknown) => typeof n === "number" && Number.isFinite(n),
     nonnegative = (n: unknown) => finite(n) && (n as number) >= 0;

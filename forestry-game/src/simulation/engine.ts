@@ -1,3 +1,4 @@
+import { profilePlanProblems, standWorkProblems, operatingProductionRate, operatingPayload, type TravelRequest } from './operations-profile';
 import {marketSnapshot, lockAwardStumpage, effectiveMarketRegion} from './bc-market';
 import { initializeBCTenure, refreshAuthorizations, harvestAuthorizationProblem, stumpageCost, accruePostHarvestObligations, settleObligationEntries, roadAuthorizationProblem } from './tenure';
 import {reciprocalProblems,runReciprocal,reciprocalDispatchableStock,reciprocalDispatchRestriction} from './reciprocal';
@@ -263,6 +264,7 @@ export function planProblems(g: Game): string[] {
     issues.push(
       "Purchase, production and transport roles must mark their plans ready.",
     );
+  issues.push(...profilePlanProblems(g));
   return [...new Set(issues)];
 }
 export function advance(input: Game): Game {
@@ -340,6 +342,11 @@ export function advance(input: Game): Game {
         report.messages.push(`${c.name}: ${s.id} is not owned.`);
         continue;
       }
+      const eligibility = standWorkProblems(g, s.id, c.id, order.treatment, w[def.zone]);
+      if (eligibility.length) {
+        report.messages.push(...eligibility.map(issue => `${c.name}: ${s.id}: ${issue.message}`));
+        continue;
+      }
       const authorizationProblem = harvestAuthorizationProblem(g, s.id);
       if (authorizationProblem) { report.messages.push(`${c.name}: ${s.id}: ${authorizationProblem}.`); continue; }
       if (!canAccess(def.terrain, w[def.zone])) {
@@ -358,12 +365,13 @@ export function advance(input: Game): Game {
         def.node,
         w,
         g.improvedRoads,
+        { kind: "crew", id: c.id },
       );
       if (!relocation) {
         report.messages.push(`${c.name}: no open road to ${s.id}.`);
         continue;
       }
-      const moveHours = relocation.km / c.relocationSpeed,
+      const moveHours = r.operations ? Math.max(relocation.hours, relocation.km / c.relocationSpeed) : relocation.km / c.relocationSpeed,
         slot = Math.min(hours, order.hours);
       if (moveHours >= slot) {
         report.messages.push(
@@ -372,11 +380,12 @@ export function advance(input: Game): Game {
         continue;
       }
       const bucking=buckingProfile(r,order.bucking),mix=recoveredMix(r,def.mix,order.bucking);
-      const productivity =
+      const unconstrainedProductivity =
           def.productivity * bucking.productivity *
           treatment.productivity *
           c.productivityFactor *
-          (w[def.zone] === "wet" ? 0.8 : w[def.zone] === "thaw" ? 0.65 : 1),
+          (w[def.zone] === "wet" ? 0.8 : w[def.zone] === "thaw" ? 0.65 : 1);
+      const productivity = operatingProductionRate(r, c.id, s.id, unconstrainedProductivity, w[def.zone]),
         volume = Math.min(available, (slot - moveHours) * productivity),
         used = volume / productivity + moveHours;
       const incident = g.region.roads.edges.filter(e => e.from === def.node || e.to === def.node);
@@ -439,7 +448,8 @@ export function advance(input: Game): Game {
       const s = g.stands.find((s) => s.id === order.stand)!,
         def = r.stands.find((s) => s.id === order.stand)!,
         mill = r.mills.find((m) => m.id === order.mill)!;
-      if (!s.owned) continue;
+      const payload = operatingPayload(r, t.id, order.product);
+      if (!s.owned || payload <= 0) continue;
       if (
         activeDisruptions(g, false).some(
           (e) => e.kind === "mill" && e.target === mill.id,
@@ -458,8 +468,10 @@ export function advance(input: Game): Game {
             def.node,
             w,
             g.improvedRoads,
+            { kind: "truck", id: t.id, product: order.product, payloadM3: 0 },
           ),
-          loaded = route(r, def.node, mill.node, w, g.improvedRoads);
+          loaded = route(r, def.node, mill.node, w, g.improvedRoads,
+            { kind: "truck", id: t.id, product: order.product, payloadM3: payload });
         if (!empty || !loaded) {
           if (!shipped)
             report.messages.push(
@@ -475,7 +487,7 @@ export function advance(input: Game): Game {
           g.truckPositions[t.id],
           def.node,
           w,
-          t.payload,
+          payload,
         );
         let settlement = partner
           ? freightSettlement(
@@ -502,7 +514,7 @@ export function advance(input: Game): Game {
         const demand = mill.demand[month(g)][order.product] ?? 0,
           delivered = g.deliveries[mill.id]?.[order.product] ?? 0,
           stock = stockAt(g, s.id)[order.product] ?? 0;
-        const available=dispatchableStock(g,order,stock),restriction=reciprocalDispatchRestriction(g,order,Math.min(t.payload,available),report);
+        const available=dispatchableStock(g,order,stock),restriction=reciprocalDispatchRestriction(g,order,Math.min(payload,available),report);
         if(restriction){
           serviceRestricted=true;
           const message=restriction.reason==='fixed'
@@ -513,7 +525,7 @@ export function advance(input: Game): Game {
           if(!report.messages.includes(message))report.messages.push(message);
         }
         const volume = Math.min(
-          t.payload,
+          payload,
           reciprocalDispatchableStock(g,order,available,report),
           contract && contractState ? Math.max(0,contract.volume-contractState.delivered) : (order.spot || order.process) ? stock : Math.max(0, demand - delivered),
         );
@@ -734,9 +746,9 @@ export function draftPlan(input: Game, settings: DraftPlanOptions = {}): Game {
   // directed journey across products, markets and trucks, including closures.
   // Keep the cache local so the next draft observes changed access conditions.
   const journeys = new Map<string, ReturnType<typeof route>>();
-  const journey = (from: string, to: string) => {
-    const key = JSON.stringify([from, to]);
-    if (!journeys.has(key)) journeys.set(key, route(r, from, to, w, g.improvedRoads));
+  const journey = (from: string, to: string, request?: TravelRequest) => {
+    const key = JSON.stringify([from, to, r.operations ? request : undefined]);
+    if (!journeys.has(key)) journeys.set(key, route(r, from, to, w, g.improvedRoads, request));
     return journeys.get(key)!;
   };
   for (const c of r.crews) {
@@ -750,17 +762,15 @@ export function draftPlan(input: Game, settings: DraftPlanOptions = {}): Game {
         return (
           state.owned &&
           !harvestAuthorizationProblem(g, s.id) &&
-          state.remaining >
-            s.volume *
-              Math.max(g.plan.retention, r.treatments?.[settings.treatment ?? "final"].retention ?? 0) +
-              1 &&
+          !standWorkProblems(g, s.id, c.id, settings.treatment, w[s.zone]).length &&
+          state.remaining > s.volume * retainedFraction(g, { stand: s.id, hours: c.hours, treatment: settings.treatment }) + 1 &&
           canAccess(s.terrain, w[s.zone]) &&
           !reserved.has(s.id)
         );
       })
       .map((s) => ({
         s,
-        path: journey(g.crewPositions[c.id], s.node),
+        path: journey(g.crewPositions[c.id], s.node, { kind: "crew", id: c.id }),
       }))
       .filter((x) => x.path)
       .sort((a, b) => a.path!.hours - b.path!.hours);
@@ -794,14 +804,14 @@ export function draftPlan(input: Game, settings: DraftPlanOptions = {}): Game {
     for (const o of g.plan.crews[c.id]) {
       const d = r.stands.find((s) => s.id === o.stand)!,
         s = g.stands.find((s) => s.id === o.stand)!,
-        path = journey(g.crewPositions[c.id], d.node)!;
+        path = journey(g.crewPositions[c.id], d.node, { kind: "crew", id: c.id })!;
+      const relocationHours = r.operations ? Math.max(path.hours, path.km / c.relocationSpeed) : path.km / c.relocationSpeed;
+      const rate = operatingProductionRate(r, c.id, d.id,
+        d.productivity * buckingProfile(r,o.bucking).productivity * treatmentFor(g, o).productivity *
+        c.productivityFactor * (w[d.zone] === "wet" ? .8 : w[d.zone] === "thaw" ? .65 : 1), w[d.zone]);
       const n = Math.min(
         s.remaining - d.volume * retainedFraction(g, o),
-        Math.max(0, o.hours - path.km / c.relocationSpeed) *
-          d.productivity * buckingProfile(r,o.bucking).productivity *
-          treatmentFor(g, o).productivity *
-          c.productivityFactor *
-          (w[d.zone] === "wet" ? 0.8 : w[d.zone] === "thaw" ? 0.65 : 1),
+        Math.max(0, o.hours - relocationHours) * rate,
       );
       for (const [p, ratio] of Object.entries(recoveredMix(r,d.mix,o.bucking)))
         add(projected[d.id], p, n * ratio);
@@ -825,7 +835,7 @@ export function draftPlan(input: Game, settings: DraftPlanOptions = {}): Game {
       const options = [];
       for (const s of r.stands)
         for (const [p, n] of Object.entries(projected[s.id]))
-          if (n >= t.payload / 2)
+          if (n >= operatingPayload(r, t.id, p) / 2)
             for (const m of markets)
               if (
                 reciprocalDispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,offtake:m.offtake,spot:m.spot},dispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,loads:1,offtake:m.offtake,spot:m.spot},n))>0 &&
@@ -834,11 +844,13 @@ export function draftPlan(input: Game, settings: DraftPlanOptions = {}): Game {
                   (e) => e.kind === "mill" && e.target === m.id,
                 )
               ) {
-                const empty = journey(position, s.node),
-                  loaded = journey(s.node, m.node);
-                if (empty && loaded) {
+                const payload = operatingPayload(r, t.id, p);
+                const empty = journey(position, s.node, { kind: "truck", id: t.id, product: p, payloadM3: 0 }),
+                  loaded = journey(s.node, m.node, { kind: "truck", id: t.id, product: p, payloadM3: payload }),
+                  returnEmpty = journey(m.node, s.node, { kind: "truck", id: t.id, product: p, payloadM3: 0 });
+                if (empty && loaded && returnEmpty && payload > 0) {
                   const cycle =
-                    loaded.hours * 2 + t.loadingHours + t.unloadingHours;
+                    returnEmpty.hours + loaded.hours + t.loadingHours + t.unloadingHours;
                   const first =
                     empty.hours +
                     loaded.hours +
@@ -847,19 +859,19 @@ export function draftPlan(input: Game, settings: DraftPlanOptions = {}): Game {
                   const loads = Math.min(
                     // The engine accepts partial loads. Include the final load
                     // so the half-payload candidate threshold can actually work.
-                    Math.ceil(reciprocalDispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,offtake:m.offtake,spot:m.spot},dispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,loads:1,offtake:m.offtake,spot:m.spot},n)) / t.payload),
-                    settings.commitmentAware ? Math.floor(demand[m.marketKey][p] / t.payload) : Math.ceil(demand[m.marketKey][p] / t.payload),
+                    Math.ceil(reciprocalDispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,offtake:m.offtake,spot:m.spot},dispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,loads:1,offtake:m.offtake,spot:m.spot},n)) / payload),
+                    settings.commitmentAware ? Math.floor(demand[m.marketKey][p] / payload) : Math.ceil(demand[m.marketKey][p] / payload),
                     first > hours ? 0 : 1 + Math.floor((hours - first) / cycle),
                   );
                   if (loads > 0) {
-                    const volume = Math.min(reciprocalDispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,offtake:m.offtake,spot:m.spot},dispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,loads,offtake:m.offtake,spot:m.spot},n)), loads*t.payload, demand[m.marketKey][p]);
+                    const volume = Math.min(reciprocalDispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,offtake:m.offtake,spot:m.spot},dispatchableStock(reservationProjection,{stand:s.id,mill:m.id,product:p,loads,offtake:m.offtake,spot:m.spot},n)), loads*payload, demand[m.marketKey][p]);
                     const committed = m.offtake ? demand[m.marketKey][p] : m.spot ? 0 : Math.max(0, (g.plan.targets[m.id]?.[p] ?? 0) * (1-r.economy.tolerance)
                       - (g.deliveries[m.id]?.[p] ?? 0) - ((m.demand[month(g)][p] ?? 0)-demand[m.marketKey][p]));
                     const avoidedPenalty = settings.salesPolicy === "penalty-aware"
                       ? Math.min(volume,committed)*(m.offtake ? r.offtakeOffers!.find(o=>o.id===m.offtake)!.shortfallM3 : r.economy.shortfallPerM3) : 0;
                     const time = first + (loads-1)*cycle;
-                    const transportCost = (empty.km + loaded.km + Math.max(0,loads-1)*loaded.km*2)*t.costKm;
-                    options.push({s,p,m,loads,time,
+                    const transportCost = (empty.km + loaded.km + Math.max(0,loads-1)*(loaded.km+returnEmpty.km))*t.costKm;
+                    options.push({s,p,m,loads,time,payload,
                       value: !settings.salesPolicy ? m.prices[p]/cycle : (m.prices[p]*volume+avoidedPenalty-transportCost)/time,
                       priority: settings.salesPolicy === "contract-first" && committed>0 ? 1 : 0,
                     });
@@ -878,7 +890,7 @@ export function draftPlan(input: Game, settings: DraftPlanOptions = {}): Game {
         loads: best.loads,
       });
       const volume = Math.min(
-        best.loads * t.payload,
+        best.loads * best.payload,
         reciprocalDispatchableStock(reservationProjection,g.plan.trucks[t.id].at(-1)!,dispatchableStock(reservationProjection,g.plan.trucks[t.id].at(-1)!,projected[best.s.id][best.p])),
         demand[best.m.marketKey][best.p],
       );

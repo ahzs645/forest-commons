@@ -48,6 +48,7 @@ export function seasonWindow(base:RegionDefinition,start:number):RegionDefinitio
  return region;
 }
 export function beginLinkedSeason(game:Game,start:number):Game {
+ if(game.region.operations)throw Error('This operating-profile lesson is a single-season case. Use the original regional preset for linked annual stewardship; its field-evidence and yield lifecycle has not been coupled to this profile.');
  if((game.region.turnDurationWeeks??1)!==1)throw Error('Annual calendar linkage is unavailable for subweekly turns.');
  if(game.linkedSeason&&!game.linkedSeason.settled)throw Error('Finish and settle the active operating window first.');
  if(game.week>1&&game.week<=game.region.weeks)throw Error('Finish the current operating campaign before linking years.');

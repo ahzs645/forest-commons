@@ -1,3 +1,6 @@
+import StandReadiness from "./operations/StandReadiness";
+import PlanDock from "./operations/PlanDock";
+import { standWorkProblems } from "./simulation/operations-profile";
 import {effectiveMarketRegion} from "./simulation/bc-market";
 import {millReceiptSummary} from './simulation/mill-receipt-summary';
 import {standSupportsProduct} from './simulation/intake-products';
@@ -40,6 +43,14 @@ export default function MapWorkspace({
     [error, setError] = useState("");
   useEffect(()=>setError(''),[game.week]);
   const [role,setRole]=useState<MapRole>('purchase');
+  const [workspaceView, setWorkspaceView] = useState<'map' | 'list'>('map');
+  const [sheetSize, setSheetSize] = useState<'half' | 'full'>('half');
+  const [treatmentChoice, setTreatmentChoice] = useState('final');
+  useEffect(() => {
+    setInspect({ kind: 'stand', id: selected });
+    if (featureRef.current) featureRef.current.open = true;
+    setSheetSize('half');
+  }, [selected]);
   const [product,setProduct]=useState('');
   const [zone,setZone]=useState('');
   const featureRef=useRef<HTMLDetailsElement>(null);
@@ -51,7 +62,9 @@ export default function MapWorkspace({
     onSelect(id);
     setInspect({ kind: "stand", id });
     if(featureRef.current) featureRef.current.open=true;
-    inspectorRef.current?.scrollTo({top:0,behavior:'smooth'});
+    if (workspaceView === 'list') {
+      requestAnimationFrame(() => featureRef.current?.scrollIntoView({ block: 'nearest' }));
+    } else inspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' });
   };
   const entities = [
     ...r.roads.edges.map(e => ({ kind: "road", id: e.id, name: e.name })),
@@ -70,8 +83,15 @@ export default function MapWorkspace({
       inspect.kind === "crew"
         ? r.crews.find((c) => c.id === inspect.id)
         : r.trucks.find((t) => t.id === inspect.id);
+  const treatments = stand && r.operations?.stands[stand.id]?.treatments;
+  const selectedTreatment = treatments && !treatments.includes(treatmentChoice) ? treatments[0] : treatmentChoice;
+  const assignmentIssues = stand ? standWorkProblems(game, stand.id, crew, selectedTreatment) : [];
   return (
-    <div className="map-workspace">
+    <div className={`map-workspace adaptive-map-workspace ${workspaceView === 'list' ? 'operations-list-mode' : ''}`} data-sheet={sheetSize}>
+      <div className="mobile-workspace-controls" aria-label={language === 'fr' ? 'Affichage' : 'Workspace view'}>
+        <button aria-pressed={workspaceView === 'map'} onClick={() => setWorkspaceView('map')}>{language === 'fr' ? 'Carte' : 'Map'}</button>
+        <button aria-pressed={workspaceView === 'list'} onClick={() => setWorkspaceView('list')}>{language === 'fr' ? 'Liste' : 'List'}</button>
+      </div>
       <div className="map-stage">
         <OperationsMap
           game={game}
@@ -83,6 +103,18 @@ export default function MapWorkspace({
         <button className="map-inspector-jump" onClick={()=>{if(featureRef.current)featureRef.current.open=true;inspectorRef.current?.focus({preventScroll:true});inspectorRef.current?.scrollIntoView({behavior:'smooth',block:'start'});}}>{tr("View selected feature ↓")}</button>
       </div>
       <aside ref={inspectorRef} tabIndex={-1} className="map-inspector" aria-label={tr("Selected map feature")}>
+        <div className="operating-sheet-controls">
+          <strong>{inspect.id}</strong>
+          <button aria-expanded={sheetSize === 'full'} onClick={() => setSheetSize(sheetSize === 'half' ? 'full' : 'half')}>
+            {sheetSize === 'half' ? (language === 'fr' ? 'Développer' : 'Expand') : (language === 'fr' ? 'Réduire' : 'Collapse')}
+          </button>
+        </div>
+        <div className="operating-role-tabs" aria-label={tr("Planning role")}>
+          {(['purchase', 'production', 'transport'] as const).map(value => <button key={value}
+            aria-pressed={role === value} onClick={() => setRole(value)}>
+            {tr(value === 'purchase' ? 'Purchase' : value === 'production' ? 'Production' : 'Transport')}
+          </button>)}
+        </div>
         <details ref={featureRef} className="selected-feature"><summary>{tr("Selected feature ·")} {inspect.id}</summary>
         
         <label>
@@ -118,6 +150,8 @@ export default function MapWorkspace({
         )}
         {inspect.kind === "stand" && stand && state && (
           <>
+            <StandReadiness key={stand.id} game={game} standId={stand.id}
+              selection={{ crew, treatment: selectedTreatment }} onChange={onChange} onNavigate={onNavigate} />
             <span className="eyebrow">{tr("SUPPLY AREA ·")} {stand.id}</span>
             <h2>{stand.name}</h2>
             {stand.sourceNote && <p className="muted">{stand.sourceNote}</p>}
@@ -151,13 +185,18 @@ export default function MapWorkspace({
                     ))}
                   </select>
                 </label>
+                <label>{tr("Treatment")}<select value={selectedTreatment} onChange={e => setTreatmentChoice(e.target.value)}>
+                  {(treatments ?? ['final', ...Object.keys(r.treatments ?? {}).filter(id => id !== 'final')]).map(id =>
+                    <option key={id} value={id}>{r.treatments?.[id]?.name ?? tr('Final harvest')}</option>)}
+                </select></label>
                 <label>{tr("Assignment hours")}<input type="number" min="1" max={r.crews.find(c=>c.id===crew)!.hours} value={hours} onChange={e=>setHours(Number(e.target.value))}/></label>
-                <button className="primary wide" onClick={() => {
+                {!!assignmentIssues.length && <p role="status">{assignmentIssues.map(issue => issue.message).join(' ')}</p>}
+                <button className="primary wide" disabled={assignmentIssues.length > 0} onClick={() => {
                   const queue = game.plan.crews[crew] ?? [];
                   const available = r.crews.find(c=>c.id===crew)!.hours - queue.reduce((n,o)=>n+o.hours,0);
                   if (!Number.isFinite(hours) || hours <= 0 || hours > available) {setError(`Choose between 1 and ${Math.max(0,available)} unassigned hours.`);return;}
                   const g = structuredClone(game);
-                  g.plan.crews[crew] = [...queue, {stand:stand.id,hours}];
+                  g.plan.crews[crew] = [...queue, {stand:stand.id,hours,treatment:selectedTreatment}];
                   g.plan.ready = {purchase:false,production:false,transport:false};
                   onChange(g); setError(`${hours} hours at ${stand.id} appended. Travel and access are checked when the week runs.`);
                 }}>{tr("Append to crew queue")}</button>
@@ -293,6 +332,7 @@ export default function MapWorkspace({
         </details>
         <MapRolePanel accessibleOnly={accessibleOnly} setAccessibleOnly={setAccessibleOnly} game={game} role={role} setRole={setRole} product={product} setProduct={setProduct} zone={zone} setZone={setZone} selected={selected} select={select} onChange={onChange} onInspect={(kind,id)=>{setInspect({kind,id});if(featureRef.current)featureRef.current.open=true;}}/>
       </aside>
+      <PlanDock game={game} selected={selected} onSelect={select} onNavigate={onNavigate} />
     </div>
   );
 }

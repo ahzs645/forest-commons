@@ -1,3 +1,7 @@
+import { bcOperatingLesson } from "./scenarios/bc-operating-lesson";
+import { ConnectivityNotice, OperationsStatus, MobileOperationsNav, LessonLauncher } from "./operations/OperationsShell";
+import { DraftReview, TurnReview } from "./operations/PlanReview";
+import DecisionDebrief from "./operations/DecisionDebrief";
 import SettledReservationResults from "./SettledReservationResults";
 import ProcurementBudget from "./ProcurementBudget";
 import BidCompositionRecord from './BidCompositionRecord';
@@ -79,11 +83,12 @@ import { parseGame, validateRegion } from "./simulation/validation";
 import { canAccess, route, weatherAt } from "./simulation/routing";
 import { quebec } from "./scenarios/quebec";
 import { princeGeorge } from "./scenarios/prince-george";
-const builtInRegions = [quebec, princeGeorge];
+const builtInRegions = [quebec, princeGeorge, bcOperatingLesson];
 import OperationsMap from "./maps/LazyMap";
 import CollaborationLab from "./CollaborationLab";
 import PlanningDesk, { LearningObjectives } from "./PlanningDesk";
 import "./regional.css";
+import "./operations/operations.css";
 const key = "forest-commons-regional-v2";
 const fmt = (n: number) => Math.round(n).toLocaleString("en-CA");
 const pages = [
@@ -166,6 +171,23 @@ export default function RegionalApp() {
     [region, setRegion] = useState<RegionDefinition>(boot.game.region),
     [weatherId, setWeatherId] = useState(boot.game.weatherId),
     [seed, setSeed] = useState(boot.game.seed);
+  const [draftReviewOpen, setDraftReviewOpen] = useState(false);
+  const [showLessonWelcome, setShowLessonWelcome] = useState(!boot.raw && !boot.error);
+  const navigate = (target: string) => {
+    if (page === "Classroom" && target !== "Classroom" && classroomPendingChanges) {
+      setNotice("Submit or discard your classroom draft, and wait for any submission to finish, before leaving this screen.");
+      return;
+    }
+    setNotice("");
+    setPage(target);
+    if (window.matchMedia("(max-width: 600px)").matches) setSidebarCollapsed(true);
+  };
+  const chooseLesson = (preset: RegionDefinition) => {
+    setRegion(structuredClone(preset));
+    setWeatherId(Object.keys(preset.weather)[0]);
+    setShowLessonWelcome(false);
+    setConfirm("new");
+  };
   const saveGuard = useRef(new StandaloneSaveGuard(boot.raw, !!boot.error));
   const [savePauseReason, setSavePauseReason] = useState(boot.error);
   const importSave = useRef<HTMLInputElement>(null),
@@ -439,7 +461,7 @@ export default function RegionalApp() {
             <div className="toolbar-actions">
               <button
                 disabled={done}
-                onClick={() => act(() => draftPlan(game))}
+                onClick={() => setDraftReviewOpen(true)}
               >
                 <Sparkles size={16} />
                 <span>{tr("Draft plan")}</span>
@@ -483,6 +505,17 @@ export default function RegionalApp() {
           />
         </header>
         <div className="workspace">
+          <ConnectivityNotice />
+          {showLessonWelcome && page === "Overview" && <LessonLauncher
+            regions={[bcOperatingLesson, princeGeorge, quebec]} welcome
+            onChoose={chooseLesson} onDismiss={() => setShowLessonWelcome(false)} />}
+          {page === "Overview" && <OperationsStatus game={game} onNavigate={navigate} onSelect={select} />}
+          {page === "Planning desk" && <section className="panel"><TurnReview game={game} />
+            <button className="primary" disabled={done} onClick={() => setConfirm("advance")}>
+              {language === "fr" ? "Examiner et exécuter le tour" : "Review and run turn"}
+            </button></section>}
+          {page === "Reports" && <DecisionDebrief game={game}
+            onSelect={id => { select(id); navigate("Overview"); }} />}
           {page !== "Overview" && (
             <div className="page-heading">
               <h1>{tr(page)}</h1>
@@ -544,7 +577,7 @@ export default function RegionalApp() {
               selected={chosen.id}
               onSelect={select}
               onChange={change}
-              onNavigate={setPage}
+              onNavigate={navigate}
             />
           )}
           {page === "Forest & timber" && (
@@ -1474,6 +1507,7 @@ export default function RegionalApp() {
           )}
           {page === "Scenario studio" && (
             <>
+              <LessonLauncher regions={[bcOperatingLesson, princeGeorge, quebec]} onChoose={chooseLesson} />
               <TurnDurationMode region={region} onChange={setRegion}/>
               <RegionalCalibration key={region.id} region={region} onChange={setRegion} />
               <section className="panel">
@@ -1690,6 +1724,10 @@ export default function RegionalApp() {
           Forest Commons · {game.region.name} {tr("· MapLibre GL + deck.gl ·\n          Simulation, not an operational forestry prescription")}
         </footer>
       </main>
+      <MobileOperationsNav page={page} onNavigate={navigate} onMenu={() => setSidebarCollapsed(false)} />
+      {draftReviewOpen && standaloneControls && <DraftReview game={game} buildDraft={draftPlan}
+        onApply={candidate => { change(candidate); setDraftReviewOpen(false); }}
+        onClose={() => setDraftReviewOpen(false)} />}
       <dialog ref={dialog} onCancel={() => setConfirm(null)}>
         <div className="dialog-body">
           <h2>
@@ -1715,6 +1753,7 @@ export default function RegionalApp() {
               <p>
                 {tr("Purchasing, production and transport will settle together. This\n                week’s actual weather is revealed in the report.")}
               </p>
+              {confirm === "advance" && <TurnReview game={game} />}
               {problems.length ? (
                 <div className="notice">
                   {problems.map((p) => (
