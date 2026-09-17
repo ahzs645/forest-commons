@@ -98,7 +98,7 @@
   .mobile-operations-nav button[aria-current=page] { background:#e4eddf;color:#173e32; }
   .regional-app .workspace { padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
   .map-first .workspace { padding-bottom:calc(80px + env(safe-area-inset-bottom)); }
-  .map-first .adaptive-map-workspace { height:calc(100dvh - 270px);min-height:420px; }
+  .map-first .adaptive-map-workspace { height:calc(100dvh - 120px);min-height:420px; }
   .operating-status-strip { gap:6px;font-size:12px;padding:8px; }
   .operating-status-strip>.operating-badge { display:none; }
   .operating-preview-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }

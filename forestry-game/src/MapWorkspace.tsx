@@ -1,4 +1,5 @@
 import StandReadiness from "./operations/StandReadiness";
+import { anchorWorkbench } from "./operations/OperationsShell";
 import PlanDock from "./operations/PlanDock";
 import { standWorkProblems } from "./simulation/operations-profile";
 import {effectiveMarketRegion} from "./simulation/bc-market";
@@ -45,6 +46,10 @@ export default function MapWorkspace({
   const [role,setRole]=useState<MapRole>('purchase');
   const [workspaceView, setWorkspaceView] = useState<'map' | 'list'>('map');
   const [sheetSize, setSheetSize] = useState<'half' | 'full'>('half');
+  useEffect(() => {
+    const frame = requestAnimationFrame(anchorWorkbench);
+    return () => cancelAnimationFrame(frame);
+  }, []);
   const [treatmentChoice, setTreatmentChoice] = useState('final');
   useEffect(() => {
     setInspect({ kind: 'stand', id: selected });

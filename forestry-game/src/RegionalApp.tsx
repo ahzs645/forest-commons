@@ -1,5 +1,5 @@
 import { bcOperatingLesson } from "./scenarios/bc-operating-lesson";
-import { ConnectivityNotice, OperationsStatus, MobileOperationsNav, LessonLauncher } from "./operations/OperationsShell";
+import { ConnectivityNotice, OperationsStatus, MobileOperationsNav, LessonLauncher, anchorWorkbench } from "./operations/OperationsShell";
 import { DraftReview, TurnReview } from "./operations/PlanReview";
 import DecisionDebrief from "./operations/DecisionDebrief";
 import SettledReservationResults from "./SettledReservationResults";
@@ -181,6 +181,10 @@ export default function RegionalApp() {
     setNotice("");
     setPage(target);
     if (window.matchMedia("(max-width: 600px)").matches) setSidebarCollapsed(true);
+    // A tab starts a screen, so it must not inherit the previous screen's scroll
+    // offset. Entering the map anchors its workbench instead, including when the
+    // map tab is tapped while already open and nothing remounts.
+    requestAnimationFrame(() => { if (!anchorWorkbench()) window.scrollTo({ top: 0 }); });
   };
   const chooseLesson = (preset: RegionDefinition) => {
     setRegion(structuredClone(preset));
@@ -508,7 +512,8 @@ export default function RegionalApp() {
           <ConnectivityNotice />
           {showLessonWelcome && page === "Overview" && <LessonLauncher
             regions={[bcOperatingLesson, princeGeorge, quebec]} welcome
-            onChoose={chooseLesson} onDismiss={() => setShowLessonWelcome(false)} />}
+            onChoose={chooseLesson}
+            onDismiss={() => { setShowLessonWelcome(false); requestAnimationFrame(anchorWorkbench); }} />}
           {page === "Overview" && <OperationsStatus game={game} onNavigate={navigate} onSelect={select} />}
           {page === "Planning desk" && <section className="panel"><TurnReview game={game} />
             <button className="primary" disabled={done} onClick={() => setConfirm("advance")}>

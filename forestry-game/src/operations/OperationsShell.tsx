@@ -17,6 +17,20 @@ export function ConnectivityNotice() {
     : 'The browser reports no connection. Use the loaded list and plan; basemap imagery may be unavailable. A classroom draft is not necessarily submitted.'}</div>;
 }
 
+/**
+ * In the narrow layouts the inspector is a sheet anchored to the bottom of the
+ * map frame, so the frame has to start at the top of the viewport before the
+ * sheet is reachable: the page chrome above it is taller than a phone viewport.
+ * Returns false when the wide layout is active and nothing needs anchoring.
+ */
+export function anchorWorkbench() {
+  const workbench = document.querySelector('.adaptive-map-workspace');
+  const controls = workbench?.querySelector('.mobile-workspace-controls');
+  if (!workbench || !controls || getComputedStyle(controls).display === 'none') return false;
+  workbench.scrollIntoView({ block: 'start' });
+  return true;
+}
+
 export function OperationsStatus({ game, onNavigate, onSelect }: {
   game: Game; onNavigate: (page: string) => void; onSelect: (id: string) => void;
 }) {
