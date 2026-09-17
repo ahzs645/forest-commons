@@ -574,7 +574,7 @@ export default function RegionalApp() {
             </article>
           </div>
           </>}
-          {page === "Overview" && game.region.bcTenure && <section className="panel"><p>{tr("BC secured timber still needs active harvesting and road authorizations. Check applications, renewals, stumpage and obligations before assigning crews or trucks.")}</p><button onClick={()=>setPage("Forest & timber")}>{tr("Review selected lot tenure and permits")}</button></section>}
+          {page === "Overview" && game.region.bcTenure && <section className="panel bc-tenure-callout"><p>{tr("BC secured timber still needs active harvesting and road authorizations. Check applications, renewals, stumpage and obligations before assigning crews or trucks.")}</p><button onClick={()=>setPage("Forest & timber")}>{tr("Review selected lot tenure and permits")}</button></section>}
           {page === "Overview" && (
             <MapWorkspace
               key={JSON.stringify([r.id,r.stands.map(s=>s.id),r.crews.map(c=>c.id),r.trucks.map(t=>t.id),r.mills.map(m=>m.id),r.products.map(p=>p.id),r.zones.map(z=>z.id)])}

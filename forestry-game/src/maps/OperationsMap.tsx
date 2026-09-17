@@ -356,6 +356,21 @@ export default function OperationsMap({
     if(bounds.isEmpty()) return;
     map.current?.fitBounds(bounds, { padding: 45, duration: 600 });
   };
+  // Both map tool panels dismiss the same way. In the narrow sheet layout an
+  // open panel covers its own summary, so it also needs an in-panel control.
+  const closeDetails = (panel: HTMLDetailsElement | null) => {
+    if (!panel) return;
+    panel.open = false;
+    panel.querySelector("summary")?.focus();
+  };
+  const closePanel = (event: React.MouseEvent<HTMLButtonElement>) =>
+    closeDetails(event.currentTarget.closest("details"));
+  const dismissOnEscape = (event: React.KeyboardEvent<HTMLDetailsElement>) => {
+    if (event.key !== "Escape" || !event.currentTarget.open) return;
+    event.preventDefault();
+    event.stopPropagation();
+    closeDetails(event.currentTarget);
+  };
   return (
     <div className="geo-map">
       <div
@@ -364,7 +379,8 @@ export default function OperationsMap({
         aria-label={`${tr("Interactive map of")} ${game.region.name}`}
       />
       <div className="geo-tools">
-        <details className="map-legend"><summary>{tr("Map legend")}</summary><div>
+        <details className="map-legend" onKeyDown={dismissOnEscape}><summary>{tr("Map legend")}</summary><div>
+          <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
           <p>{tr("Green area: secured timber · ochre: unsecured supply · purple: protected · gold: selected.")}</p>
           <p>{tr("Roads: olive = modelled open; red = seasonal, authorization or closure restriction; blue = upgraded; gray = historical access not recorded.")}</p>
           <p>{tr("Routes: amber = crew relocation; blue = truck movement. Stand labels show area IDs.")}</p>
@@ -389,14 +405,9 @@ export default function OperationsMap({
             {tr(id)}
           </label>
         ))}</div>
-        <details className="map-layer-menu" onKeyDown={event => {
-          if (event.key === "Escape" && event.currentTarget.open) {
-            event.preventDefault();
-            event.stopPropagation();
-            event.currentTarget.open = false;
-            event.currentTarget.querySelector("summary")?.focus();
-          }
-        }}><summary>{language==='fr'?'Couches':'Layers'}</summary><div className="map-layer-options">        <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
+        <details className="map-layer-menu" onKeyDown={dismissOnEscape}><summary>{language==='fr'?'Couches':'Layers'}</summary><div className="map-layer-options">
+        <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
+        <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
           {tr(style === "light" ? "Dark map" : "Light map")}
         </button>
         {Object.entries(layers).map(([id, on]) => (

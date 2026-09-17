@@ -7,7 +7,11 @@ export default function PlanDock({ game, selected, onSelect, onNavigate }: {
   const text = (en: string, fr: string) => language === 'fr' ? fr : en;
   const count = Object.values(game.plan.crews).reduce((n, q) => n + q.length, 0) +
     Object.values(game.plan.trucks).reduce((n, q) => n + q.length, 0);
-  return <details className="operating-plan-dock">
+  return <>
+    <button className="operating-plan-link" onClick={() => onNavigate('Planning desk')}>
+      {text('Current plan queue', 'File du plan actuel')} · {count} {text('orders', 'ordres')} →
+    </button>
+    <details className="operating-plan-dock">
     <summary>{text('Current plan queue', 'File du plan actuel')} · {count} {text('orders', 'ordres')}</summary>
     <p className="muted">{text('Queue order is not a simulated arrival time. Select a stop to inspect it; use the production calendar for scheduled weeks.',
       'L’ordre de la file n’est pas une heure d’arrivée simulée. Sélectionner un arrêt pour l’inspecter; utiliser le calendrier de production pour les semaines planifiées.')}</p>
@@ -24,5 +28,6 @@ export default function PlanDock({ game, selected, onSelect, onNavigate }: {
       </article>)}
     </div><button onClick={() => onNavigate('Production')}>{text('Open production calendar', 'Ouvrir le calendrier de production')}</button>
     <button onClick={() => onNavigate('Transport')}>{text('Edit dispatch', 'Modifier le transport')}</button>
-  </details>;
+  </details>
+  </>;
 }
