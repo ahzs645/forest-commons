@@ -1,0 +1,25 @@
+{
+  "format": "forest-classroom-results",
+  "version": 1,
+  "rows": [
+    {
+      "metrics": {
+        "serviceChecks": 0,
+        "serviceHits": 0,
+        "crewRelocationKm": 0,
+        "partnerSavings": 0
+      },
+      "name": "Current campaign",
+      "fingerprint": "b445a1fcea896a9486cc1c13ea8131f70978844f988ff8fbf4a1908ef0752606",
+      "currency": "CAD",
+      "weeks": 0,
+      "year": 0,
+      "startWeek": 0,
+      "scope": "campaign",
+      "delivered": 0,
+      "cash": 650000,
+      "waste": 0,
+      "emissions": 0
+    }
+  ]
+}

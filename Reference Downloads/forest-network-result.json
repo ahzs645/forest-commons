@@ -1,0 +1,478 @@
+{
+  "version": 1,
+  "run": {
+    "network": {
+      "companies": [
+        {
+          "id": "N1",
+          "name": "Network company 1 (Dolbeau sawmill)"
+        },
+        {
+          "id": "N2",
+          "name": "Network company 2 (Girardville training mill)"
+        },
+        {
+          "id": "N3",
+          "name": "Network company 3 (La Doré training mill)"
+        }
+      ],
+      "vehicles": [
+        {
+          "id": "T1",
+          "company": "N1",
+          "node": "t0",
+          "payload": 40,
+          "hours": 60,
+          "costKm": 1.85,
+          "handlingHours": 1,
+          "fixedWeekly": 600
+        },
+        {
+          "id": "T2",
+          "company": "N2",
+          "node": "t1",
+          "payload": 40,
+          "hours": 60,
+          "costKm": 1.85,
+          "handlingHours": 1,
+          "fixedWeekly": 600
+        },
+        {
+          "id": "T3",
+          "company": "N3",
+          "node": "t2",
+          "payload": 40,
+          "hours": 60,
+          "costKm": 1.85,
+          "handlingHours": 1,
+          "fixedWeekly": 600
+        }
+      ],
+      "cargo": [
+        {
+          "id": "L1-1",
+          "company": "N1",
+          "from": "t1",
+          "to": "t0",
+          "volume": 40,
+          "release": 5,
+          "deadline": 7,
+          "outsideCost": 2500
+        },
+        {
+          "id": "L1-2",
+          "company": "N1",
+          "from": "t1",
+          "to": "t0",
+          "volume": 40,
+          "release": 6,
+          "deadline": 7,
+          "outsideCost": 2600
+        },
+        {
+          "id": "L2-1",
+          "company": "N2",
+          "from": "t2",
+          "to": "t1",
+          "volume": 40,
+          "release": 5,
+          "deadline": 7,
+          "outsideCost": 2500
+        },
+        {
+          "id": "L2-2",
+          "company": "N2",
+          "from": "t2",
+          "to": "t1",
+          "volume": 40,
+          "release": 6,
+          "deadline": 7,
+          "outsideCost": 2600
+        },
+        {
+          "id": "L3-1",
+          "company": "N3",
+          "from": "t0",
+          "to": "t2",
+          "volume": 40,
+          "release": 5,
+          "deadline": 7,
+          "outsideCost": 2500
+        },
+        {
+          "id": "L3-2",
+          "company": "N3",
+          "from": "t0",
+          "to": "t2",
+          "volume": 40,
+          "release": 6,
+          "deadline": 7,
+          "outsideCost": 2600
+        }
+      ],
+      "start": 5,
+      "weeks": 3,
+      "note": "Authored ownership and six single-load transfer orders at regional mill nodes; CAD 2,500/2,600 outside-service quotes are teaching assumptions. Three-week horizon, at most two shipments per vehicle per week, wait in place, and compulsory final depot return. Weekly fixed costs apply to all available vehicles. Published forecast and revealed road closures are used; actual future weather is not read. Outside service is an exogenous guaranteed quote, not a simulated carrier. This finite lab does not alter campaign cargo, cash or consent."
+    },
+    "independent": {
+      "mode": "independent",
+      "status": "optimal-bounded-policy",
+      "cost": 6285.2176,
+      "fixedCost": 5400,
+      "itineraries": [
+        {
+          "vehicle": "T1",
+          "company": "N1",
+          "jobs": [
+            "L1-1",
+            "L1-2"
+          ],
+          "legs": [
+            {
+              "week": 5,
+              "job": null,
+              "from": "t0",
+              "to": "t0",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 6,
+              "job": null,
+              "from": "t0",
+              "to": "t0",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L1-1",
+              "from": "t0",
+              "to": "t0",
+              "emptyKm": 22.594,
+              "loadedKm": 22.594,
+              "hours": 1.6952,
+              "cost": 83.5978,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L1-2",
+              "from": "t0",
+              "to": "t0",
+              "emptyKm": 22.594,
+              "loadedKm": 22.594,
+              "hours": 1.6952,
+              "cost": 83.5978,
+              "returnKm": 0
+            }
+          ],
+          "cost": 167.1956
+        },
+        {
+          "vehicle": "T2",
+          "company": "N2",
+          "jobs": [
+            "L2-1",
+            "L2-2"
+          ],
+          "legs": [
+            {
+              "week": 5,
+              "job": null,
+              "from": "t1",
+              "to": "t1",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 6,
+              "job": null,
+              "from": "t1",
+              "to": "t1",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L2-1",
+              "from": "t1",
+              "to": "t1",
+              "emptyKm": 37.218,
+              "loadedKm": 37.218,
+              "hours": 2.145169230769231,
+              "cost": 137.7066,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L2-2",
+              "from": "t1",
+              "to": "t1",
+              "emptyKm": 37.218,
+              "loadedKm": 37.218,
+              "hours": 2.145169230769231,
+              "cost": 137.7066,
+              "returnKm": 0
+            }
+          ],
+          "cost": 275.4132
+        },
+        {
+          "vehicle": "T3",
+          "company": "N3",
+          "jobs": [
+            "L3-1",
+            "L3-2"
+          ],
+          "legs": [
+            {
+              "week": 5,
+              "job": null,
+              "from": "t2",
+              "to": "t2",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 6,
+              "job": null,
+              "from": "t2",
+              "to": "t2",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L3-1",
+              "from": "t2",
+              "to": "t2",
+              "emptyKm": 59.812000000000005,
+              "loadedKm": 59.812000000000005,
+              "hours": 2.840369230769231,
+              "cost": 221.30440000000002,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L3-2",
+              "from": "t2",
+              "to": "t2",
+              "emptyKm": 59.812000000000005,
+              "loadedKm": 59.812000000000005,
+              "hours": 2.840369230769231,
+              "cost": 221.30440000000002,
+              "returnKm": 0
+            }
+          ],
+          "cost": 442.60880000000003
+        }
+      ],
+      "outsourced": [],
+      "companyCosts": {
+        "N1": 1967.1956,
+        "N2": 2075.4132,
+        "N3": 2242.6088
+      },
+      "columns": 12
+    },
+    "pooled": {
+      "mode": "pooled",
+      "status": "optimal-bounded-policy",
+      "cost": 5842.6088,
+      "fixedCost": 5400,
+      "itineraries": [
+        {
+          "vehicle": "T1",
+          "company": "N1",
+          "jobs": [
+            "L3-1",
+            "L2-1",
+            "L1-1",
+            "L3-2",
+            "L2-2",
+            "L1-2"
+          ],
+          "legs": [
+            {
+              "week": 5,
+              "job": "L3-1",
+              "from": "t0",
+              "to": "t2",
+              "emptyKm": 0,
+              "loadedKm": 59.812000000000005,
+              "hours": 1.9201846153846156,
+              "cost": 110.65220000000001,
+              "returnKm": 0
+            },
+            {
+              "week": 5,
+              "job": "L2-1",
+              "from": "t2",
+              "to": "t1",
+              "emptyKm": 0,
+              "loadedKm": 37.218,
+              "hours": 1.5725846153846155,
+              "cost": 68.8533,
+              "returnKm": 0
+            },
+            {
+              "week": 6,
+              "job": "L1-1",
+              "from": "t1",
+              "to": "t0",
+              "emptyKm": 0,
+              "loadedKm": 22.594,
+              "hours": 1.3476,
+              "cost": 41.7989,
+              "returnKm": 0
+            },
+            {
+              "week": 6,
+              "job": "L3-2",
+              "from": "t0",
+              "to": "t2",
+              "emptyKm": 0,
+              "loadedKm": 59.812000000000005,
+              "hours": 1.9201846153846156,
+              "cost": 110.65220000000001,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L2-2",
+              "from": "t2",
+              "to": "t1",
+              "emptyKm": 0,
+              "loadedKm": 37.218,
+              "hours": 1.5725846153846155,
+              "cost": 68.8533,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": "L1-2",
+              "from": "t1",
+              "to": "t0",
+              "emptyKm": 0,
+              "loadedKm": 22.594,
+              "hours": 1.3476,
+              "cost": 41.7989,
+              "returnKm": 0
+            }
+          ],
+          "cost": 442.6088
+        },
+        {
+          "vehicle": "T2",
+          "company": "N2",
+          "jobs": [],
+          "legs": [
+            {
+              "week": 5,
+              "job": null,
+              "from": "t1",
+              "to": "t1",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 6,
+              "job": null,
+              "from": "t1",
+              "to": "t1",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": null,
+              "from": "t1",
+              "to": "t1",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            }
+          ],
+          "cost": 0
+        },
+        {
+          "vehicle": "T3",
+          "company": "N3",
+          "jobs": [],
+          "legs": [
+            {
+              "week": 5,
+              "job": null,
+              "from": "t2",
+              "to": "t2",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 6,
+              "job": null,
+              "from": "t2",
+              "to": "t2",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            },
+            {
+              "week": 7,
+              "job": null,
+              "from": "t2",
+              "to": "t2",
+              "emptyKm": 0,
+              "loadedKm": 0,
+              "hours": 0,
+              "cost": 0,
+              "returnKm": 0
+            }
+          ],
+          "cost": 0
+        }
+      ],
+      "outsourced": [],
+      "companyCosts": {
+        "N1": 2242.6088,
+        "N2": 1800,
+        "N3": 1800
+      },
+      "columns": 192
+    },
+    "context": "Lac-Saint-Jean, Québec, normal, forecast known at week 5"
+  },
+  "offer": null
+}
