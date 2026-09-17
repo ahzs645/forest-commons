@@ -515,17 +515,17 @@ export default function RegionalApp() {
             onChoose={chooseLesson}
             onDismiss={() => { setShowLessonWelcome(false); requestAnimationFrame(anchorWorkbench); }} />}
           {page === "Overview" && <OperationsStatus game={game} onNavigate={navigate} onSelect={select} />}
+          {page !== "Overview" && (
+            <div className="page-heading">
+              <h1>{tr(page)}</h1>
+            </div>
+          )}
           {page === "Planning desk" && <section className="panel"><TurnReview game={game} />
             <button className="primary" disabled={done} onClick={() => setConfirm("advance")}>
               {language === "fr" ? "Examiner et exécuter le tour" : "Review and run turn"}
             </button></section>}
           {page === "Reports" && <DecisionDebrief game={game}
             onSelect={id => { select(id); navigate("Overview"); }} />}
-          {page !== "Overview" && (
-            <div className="page-heading">
-              <h1>{tr(page)}</h1>
-            </div>
-          )}
           {savePaused && savePauseReason && <div className="notice" role="alert">{tr(savePauseReason)}</div>}
           {notice && (
             <div className="notice" role="status">

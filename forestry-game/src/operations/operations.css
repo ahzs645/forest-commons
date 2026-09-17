@@ -56,7 +56,7 @@
 .operating-role-tabs button[aria-pressed=true] { background:#173e32;color:#fff; }
 .adaptive-map-workspace .map-role-panel .role-tabs { display:none; }
 .adaptive-map-workspace .selected-feature>summary { position:relative; }
-.operating-plan-dock { grid-column:1/-1;min-width:0;border:1px solid #dce5da;border-radius:9px;padding:8px 12px;background:white; }
+.operating-plan-dock { min-width:0;margin-top:12px;border:1px solid #dce5da;border-radius:9px;padding:8px 12px;background:white; }
 .operating-plan-dock>summary { min-height:44px;cursor:pointer;font-weight:650;align-content:center; }
 .operating-dock-resources { display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-height:190px;overflow:auto; }
 .operating-dock-resources article { border:1px solid #e0e6dc;border-radius:7px;padding:10px;min-width:0; }
@@ -77,11 +77,14 @@
   .map-first .adaptive-map-workspace .geo-map { height:100%;min-height:0; }
   .map-first .adaptive-map-workspace .map-inspector { position:absolute;top:auto;bottom:74px;left:8px;right:8px;width:auto;max-height:45%;min-height:0;overflow:auto;z-index:5;border-radius:16px 16px 10px 10px;box-shadow:0 -5px 24px #173e3220;overscroll-behavior:contain; }
   .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector { max-height:85%; }
-  .adaptive-map-workspace .operating-sheet-controls { display:flex;justify-content:flex-end;gap:6px;position:sticky;top:-12px;background:white;z-index:8;padding:6px 0; }
+  .adaptive-map-workspace .operating-sheet-controls { display:flex;align-items:center;justify-content:space-between;gap:6px;position:sticky;top:-12px;background:white;z-index:8;padding:6px 0; }
   .operating-sheet-controls button { min-height:44px; }
   .adaptive-map-workspace .operating-role-tabs { position:relative;top:auto;padding:8px 0; }
   .adaptive-map-workspace .map-inspector-jump { display:none; }
-  .adaptive-map-workspace .operating-plan-dock { display:none; }
+  /* Inline layer checkboxes wrap into several rows in this map column and
+     collide with the overlays, so use the collapsed menu here as well. */
+  .adaptive-map-workspace .map-layer-controls-desktop { display:none; }
+  .adaptive-map-workspace .map-layer-menu { display:block; }
   .map-first .adaptive-map-workspace.operations-list-mode .map-stage { display:none; }
   .map-first .adaptive-map-workspace.operations-list-mode .map-inspector { position:absolute;inset:0 0 74px;max-height:none;border-radius:10px;box-shadow:none;display:flex;flex-direction:column; }
   .operations-list-mode .operating-sheet-controls { display:none; }
@@ -107,6 +110,7 @@
   .operating-readiness textarea,.operating-readiness input,.operating-readiness select { font-size:16px;min-height:44px; }
   .operating-draft-dialog .dialog-body { padding:18px; }
   .operating-lesson-cards { grid-template-columns:1fr; }
+  .operating-plan-dock { display:none; }
 }
 @media (prefers-reduced-motion:reduce) {
   .adaptive-map-workspace * { scroll-behavior:auto!important;transition:none!important; }

@@ -1609,48 +1609,51 @@ dialog::backdrop {
 }
 
 .map-layer-controls-desktop { display: contents; }
-.map-layer-menu { display: none; }
+/* The collapsed layer menu keeps its appearance here and stays hidden until a
+   breakpoint swaps the two `display` rules; the narrow map workbench swaps the
+   same pair from its own container query. */
+.map-layer-menu {
+  display: none;
+  position: static;
+  margin: 0;
+  color: #173e32;
+  font-size: 12px;
+}
+.map-layer-menu > summary {
+  min-height: 44px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 1px 5px #0001;
+}
+.map-layer-menu[open] > .map-layer-options {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: min(230px, 65vw);
+  max-height: clamp(120px, calc(45dvh - 120px), 260px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+  background: white;
+  box-shadow: 0 4px 18px #173e3233;
+  border-radius: 8px;
+  z-index: 12;
+}
+.map-layer-options > button,
+.map-layer-options > label {
+  min-height: 44px;
+  box-sizing: border-box;
+  margin: 0;
+  width: 100%;
+}
+.map-layer-options input[type="checkbox"] {width:20px;height:20px;flex-shrink:0;}
 @media (pointer: coarse), (max-width: 600px) {
   .map-layer-controls-desktop { display: none; }
-  .map-layer-menu {
-    display: block;
-    position: static;
-    margin: 0;
-    color: #173e32;
-    font-size: 12px;
-  }
-  .map-layer-menu > summary {
-    min-height: 44px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: white;
-    box-shadow: 0 1px 5px #0001;
-  }
-  .map-layer-menu[open] > .map-layer-options {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: min(230px, 65vw);
-    max-height: clamp(120px, calc(45dvh - 120px), 260px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding: 8px;
-    background: white;
-    box-shadow: 0 4px 18px #173e3233;
-    border-radius: 8px;
-    z-index: 12;
-  }
-  .map-layer-options > button,
-  .map-layer-options > label {
-    min-height: 44px;
-    box-sizing: border-box;
-    margin: 0;
-    width: 100%;
-  }
-  .map-layer-options input[type="checkbox"] {width:20px;height:20px;flex-shrink:0;}
+  .map-layer-menu { display: block; }
 }
 
 .map-layer-menu > summary { cursor: pointer; gap: 8px; }

@@ -92,6 +92,7 @@ export default function MapWorkspace({
   const selectedTreatment = treatments && !treatments.includes(treatmentChoice) ? treatments[0] : treatmentChoice;
   const assignmentIssues = stand ? standWorkProblems(game, stand.id, crew, selectedTreatment) : [];
   return (
+    <>
     <div className={`map-workspace adaptive-map-workspace ${workspaceView === 'list' ? 'operations-list-mode' : ''}`} data-sheet={sheetSize}>
       <div className="mobile-workspace-controls" aria-label={language === 'fr' ? 'Affichage' : 'Workspace view'}>
         <button aria-pressed={workspaceView === 'map'} onClick={() => setWorkspaceView('map')}>{language === 'fr' ? 'Carte' : 'Map'}</button>
@@ -337,7 +338,8 @@ export default function MapWorkspace({
         </details>
         <MapRolePanel accessibleOnly={accessibleOnly} setAccessibleOnly={setAccessibleOnly} game={game} role={role} setRole={setRole} product={product} setProduct={setProduct} zone={zone} setZone={setZone} selected={selected} select={select} onChange={onChange} onInspect={(kind,id)=>{setInspect({kind,id});if(featureRef.current)featureRef.current.open=true;}}/>
       </aside>
-      <PlanDock game={game} selected={selected} onSelect={select} onNavigate={onNavigate} />
     </div>
+    <PlanDock game={game} selected={selected} onSelect={select} onNavigate={onNavigate} />
+    </>
   );
 }
