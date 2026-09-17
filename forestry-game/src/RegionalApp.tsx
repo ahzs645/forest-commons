@@ -375,8 +375,18 @@ export default function RegionalApp() {
         <div className="district-label">
           {tr("YOUR DISTRICT")}<small>{r.name}</small>
         </div>
-        {/* On a phone the toolbar has no room for this, so the drawer hosts it. */}
+        {/* On a phone the toolbar keeps only the turn action; the drawer hosts
+            the language picker and the campaign file actions. */}
         <div className="rail-language"><LanguageSelect /></div>
+        {standaloneControls && <div className="rail-campaign">
+          <span>{tr("Campaign")}</span>
+          <button onClick={() => download(`forest-campaign-week-${game.week}.json`, game)}>
+            <Download size={17} /> {tr("Export save")}
+          </button>
+          <button onClick={() => importSave.current?.click()}>
+            <Upload size={17} /> {tr("Import save")}
+          </button>
+        </div>}
         <nav aria-label={tr("Main navigation")}>
           {pages.map(([name, Icon]) => (
             <button
@@ -466,6 +476,7 @@ export default function RegionalApp() {
           {standaloneControls && (
             <div className="toolbar-actions">
               <button
+                className="toolbar-draft"
                 disabled={done}
                 onClick={() => setDraftReviewOpen(true)}
               >
@@ -523,9 +534,14 @@ export default function RegionalApp() {
             </div>
           )}
           {page === "Planning desk" && <section className="panel"><TurnReview game={game} />
-            <button className="primary" disabled={done} onClick={() => setConfirm("advance")}>
-              {language === "fr" ? "Examiner et exécuter le tour" : "Review and run turn"}
-            </button></section>}
+            <div className="button-row">
+              {standaloneControls && <button className="operating-phone-only" disabled={done} onClick={() => setDraftReviewOpen(true)}>
+                <Sparkles size={16} /><span>{tr("Draft plan")}</span>
+              </button>}
+              <button className="primary" disabled={done} onClick={() => setConfirm("advance")}>
+                {language === "fr" ? "Examiner et exécuter le tour" : "Review and run turn"}
+              </button>
+            </div></section>}
           {page === "Reports" && <DecisionDebrief game={game}
             onSelect={id => { select(id); navigate("Overview"); }} />}
           {savePaused && savePauseReason && <div className="notice" role="alert">{tr(savePauseReason)}</div>}

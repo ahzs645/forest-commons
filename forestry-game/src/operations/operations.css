@@ -60,7 +60,7 @@
 .operating-plan-dock>summary { min-height:44px;cursor:pointer;font-weight:650;align-content:center; }
 .operating-plan-link { display:none; }
 .map-panel-close { display:none; }
-.rail-language { display:none; }
+.rail-language,.rail-campaign,.operating-phone-only { display:none; }
 .operating-dock-resources { display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-height:190px;overflow:auto; }
 .operating-dock-resources article { border:1px solid #e0e6dc;border-radius:7px;padding:10px;min-width:0; }
 .operating-dock-resources ol { padding-left:18px; }
@@ -87,7 +87,12 @@
   .map-first .adaptive-map-workspace .map-inspector { position:absolute;top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:45%;min-height:0;overflow:auto;z-index:5;border-radius:16px 16px 10px 10px;box-shadow:0 -5px 24px #173e3220;overscroll-behavior:contain; }
   .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector { max-height:85%; }
   .adaptive-map-workspace .operating-sheet-controls { display:flex;align-items:center;justify-content:space-between;gap:6px;position:sticky;top:-12px;background:white;z-index:8;padding:3px 0; }
-  .operating-sheet-controls button { min-height:44px; }
+  .operating-sheet-controls button { min-height:44px;border:0;background:transparent;padding:0 10px;font-weight:650;color:#173e32; }
+  .adaptive-map-workspace .operating-role-tabs { gap:0;border:1px solid #cddacb;border-radius:9px;padding:3px;margin:0 0 8px; }
+  .adaptive-map-workspace .operating-role-tabs button { min-height:38px;border:0;border-radius:7px;background:transparent;color:#173e32;font-size:12px; }
+  .adaptive-map-workspace .operating-role-tabs button[aria-pressed=true] { background:#e4eddf;color:#173e32;font-weight:700; }
+  /* Map pills are secondary on a phone; keep the target, lose the weight. */
+  .adaptive-map-workspace .geo-tools>button,.adaptive-map-workspace .geo-tools .map-legend>summary,.adaptive-map-workspace .map-layer-menu>summary { box-shadow:none;background:#ffffffe0; }
   .adaptive-map-workspace .operating-role-tabs { position:relative;top:auto;padding:3px 0 6px; }
   /* The sheet header already names the selected feature, and the sheet's own
      expand control replaces this disclosure, so drop a 44px duplicate row and
@@ -138,8 +143,13 @@
   .map-first .operating-status-strip,.map-first .bc-tenure-callout { display:none; }
   /* The language picker took a third of the toolbar and wrapped everything
      else onto extra rows. The drawer hosts it on a phone. */
-  .topbar.unified-toolbar { grid-template-columns:38px minmax(0,1fr);grid-template-areas:"menu context" "actions actions"; }
-  .unified-toolbar .language-picker { display:none; }
+  .topbar.unified-toolbar { grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"context actions";align-items:center;gap:10px;padding:8px 12px; }
+  .unified-toolbar .language-picker,.unified-toolbar .sidebar-toggle,.unified-toolbar .toolbar-draft,.unified-toolbar .save-actions { display:none; }
+  .unified-toolbar .toolbar-actions { width:auto; }
+  .unified-toolbar .toolbar-actions>button.primary { flex:none;min-height:40px;padding:0 14px;font-size:12px; }
+  .operating-phone-only { display:inline-flex;align-items:center;gap:6px; }
+  .rail-campaign { display:grid;gap:8px;margin:0 0 22px;color:#b7c8b6;font-size:11px;letter-spacing:.06em;text-transform:uppercase; }
+  .rail-campaign button { display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid #2f5747;background:#1f4a3d;color:#fff;font-size:13px;letter-spacing:0;text-transform:none; }
   .rail-language { display:block; }
   .rail-language .language-picker { display:grid;gap:6px;margin:22px 0 18px;color:#b7c8b6;font-size:11px;letter-spacing:.06em;text-transform:uppercase; }
   .rail-language select { width:100%;min-height:44px;font-size:16px;padding:8px 10px;border-radius:8px;border:1px solid #2f5747;background:#1f4a3d;color:#fff; }
