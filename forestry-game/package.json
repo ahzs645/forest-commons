@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
+    "test:operations": "tsx --test tests/operations.node-test.ts",
     "server": "tsx server/index.ts"
   },
   "dependencies": {

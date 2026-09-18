@@ -1,3 +1,4 @@
+import { roadTravelRule, travelGrossTonnes, type TravelRequest } from "./operations-profile";
 import type { Game, RegionDefinition, Route, Weather } from "./types";
 export const canAccess = (bearing: number, weather: Weather) =>
   bearing <= { thaw: 1, wet: 2, normal: 3, frozen: 4 }[weather];
@@ -22,7 +23,9 @@ export function route(
   to: string,
   weather: Record<string, Weather>,
   improved: string[] = [],
+  request?: TravelRequest,
 ): Route | null {
+  if (!Number.isFinite(travelGrossTonnes(region, request))) return null;
   if (from === to) {
     const node = region.roads.nodes.find((n) => n.id === from);
     return node
@@ -48,13 +51,15 @@ export function route(
     visited.add(current);
     for (const edge of region.roads.edges) {
       if (edge.from !== current && edge.to !== current) continue;
+      const operating = roadTravelRule(region, edge.id, weather[edge.zone], request);
+      if (!operating.allowed) continue;
       if (
         !improved.includes(edge.id) &&
         !canAccess(edge.bearing, weather[edge.zone])
       )
         continue;
       const next = edge.from === current ? edge.to : edge.from,
-        value = best + edge.km / edge.speed;
+        value = best + edge.km / (edge.speed * operating.speedFactor) + operating.delayHours;
       if (value < (distances.get(next) ?? Infinity)) {
         distances.set(next, value);
         previous.set(next, { node: current, edge });

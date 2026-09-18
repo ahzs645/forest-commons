@@ -1,3 +1,4 @@
+import { operatingPayload } from './simulation/operations-profile';
 import {reciprocalDispatchRestriction} from './simulation/reciprocal';
 import ReciprocalService from "./ReciprocalService";
 import {standSupportsProduct} from './simulation/intake-products';
@@ -26,7 +27,7 @@ export default function MapRolePanel({game,role,setRole,product,setProduct,zone,
  const haulProduct=product||r.products.find(p=>destination?.prices[p.id]!==undefined)?.id||'';
  const restriction=chosen?reciprocalDispatchRestriction(game,{stand:selected,mill,product:haulProduct},Math.min(stockAt(game,selected)[haulProduct]??0,(vehicle?.payload??0)*loads)):null;
  const fixedDestination=restriction?.reason==='fixed';
- const access=chosen&&vehicle&&destination&&route(op,game.truckPositions[truck],chosen.node,weather,game.improvedRoads)&&route(op,chosen.node,destination.node,weather,game.improvedRoads)&&!activeDisruptions(game).some(e=>(e.kind==='truck'&&e.target===truck)||(e.kind==='mill'&&e.target===mill));
+ const access=chosen&&vehicle&&destination&&route(op,game.truckPositions[truck],chosen.node,weather,game.improvedRoads,{kind:'truck',id:truck,product:haulProduct,payloadM3:0})&&route(op,chosen.node,destination.node,weather,game.improvedRoads,{kind:'truck',id:truck,product:haulProduct,payloadM3:operatingPayload(r,truck,haulProduct)})&&!activeDisruptions(game).some(e=>(e.kind==='truck'&&e.target===truck)||(e.kind==='mill'&&e.target===mill));
  function changeQueue(kind:'crew'|'truck',id:string,index:number,remove:boolean){const next=structuredClone(game);const queue=kind==='crew'?next.plan.crews[id]:next.plan.trucks[id];if(remove)queue.splice(index,1);else if(index>0)[queue[index-1],queue[index]]=[queue[index],queue[index-1]];next.plan.ready={purchase:false,production:false,transport:false};onChange(next);}
  return <section className="map-role-panel" aria-label={tr("Map planning workbench")}>
  <div className="role-tabs" aria-label={tr("Planning role")}>{(['purchase','production','transport'] as const).map(v=><button key={v} aria-pressed={role===v} onClick={()=>setRole(v)}>{v==='purchase'?tr("Purchase"):v==='production'?tr("Production"):tr("Transport")}</button>)}</div>

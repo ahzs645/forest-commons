@@ -1,3 +1,4 @@
+import type { OperationsProfile, FieldEvidenceRecord } from './operations-profile';
 import type {BCMarketDefinition, BCMarketState, BCMarketSnapshot} from './bc-market';
 import type { BCTenureRegion, BCTenureState } from './tenure';
 import type {ReciprocalPair,ReciprocalAgreement} from './reciprocal';
@@ -108,6 +109,7 @@ export interface OfftakeOffer {
 }
 export interface OfftakeState { acceptedWeek: number; delivered: number; settled: boolean }
 export interface RegionDefinition {
+  operations?: OperationsProfile;
   bcMarket?: BCMarketDefinition;
   bcTenure?: BCTenureRegion;
   reciprocalPairs?:ReciprocalPair[];
@@ -325,6 +327,7 @@ export interface Negotiation {
   phase: "pairs" | "open";
 }
 export interface Game {
+  fieldEvidence?: FieldEvidenceRecord[];
   bcMarket?: BCMarketState;
   bcTenure?: BCTenureState;
   authoredReciprocal?: {ids:string[];originallyAbsent:boolean};

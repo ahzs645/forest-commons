@@ -1,3 +1,4 @@
+import { operatingRetention } from "./operations-profile";
 import type { Game, CrewOrder } from "./types";
 export const standardTreatment = {
   name: "Final harvest",
@@ -12,5 +13,5 @@ export function treatmentFor(game: Game, order: CrewOrder) {
   );
 }
 export function retainedFraction(game: Game, order: CrewOrder) {
-  return Math.max(game.plan.retention, treatmentFor(game, order).retention);
+  return operatingRetention(game.region, order.stand, Math.max(game.plan.retention, treatmentFor(game, order).retention));
 }

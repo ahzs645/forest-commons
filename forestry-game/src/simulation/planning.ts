@@ -1,3 +1,4 @@
+import { operatingRetention, standWorkProblems } from "./operations-profile";
 import { operatingRegion } from "./disruptions";
 import { harvestAuthorizationProblem } from "./tenure";
 import type { Game } from "./types";
@@ -41,8 +42,10 @@ export function supplyBalance(game: Game) {
       const state = game.stands.find((t) => t.id === s.id)!;
       return (
         n +
-        (state.owned && !harvestAuthorizationProblem(game, s.id) && canAccess(s.terrain, w[s.zone])
-          ? Math.max(0, state.remaining - s.volume * game.plan.retention) *
+        (state.owned && !harvestAuthorizationProblem(game, s.id) && canAccess(s.terrain, w[s.zone]) &&
+          (!r.operations || r.crews.some(c => (r.operations!.stands[s.id]?.treatments ?? ['final']).some(t =>
+            !standWorkProblems(game, s.id, c.id, t, w[s.zone]).length)))
+          ? Math.max(0, state.remaining - s.volume * operatingRetention(r, s.id, game.plan.retention)) *
             (s.mix[p.id] ?? 0)
           : 0)
       );
