@@ -55,5 +55,32 @@ These follow the sources but are optional, not the Québec default:
 
 - Physical phone touch, native file pickers and printing. Headless rendering here was also unreliable once the basemap style failed to load through the proxy, so the phone map fit was verified from camera values rather than screenshots.
 - **Classroom readiness races:** when two roles mark ready within the same refresh, the second is rejected as a stale revision ("Room refreshed… try again"). This is the intended revision check, but it will be common in a real class. Consider accepting a readiness-only change against an unchanged plan.
-- Engine messages print raw numbers without currency or thousands separators ("rival bid 51431 won").
 - Every phone planning screen opens with the same four KPI cards before its own content.
+
+## Follow-up: message numbers and map interaction
+
+**Message numbers.** Auction outcomes now read "Won Q21 for CAD 47,200" and "Q21: rival bid CAD 51,431 won". The ledger lines for royalties, partner cargo, processing, transfers and reciprocal sales now group thousands and use one decimal. French display reformats captured amounts, for example "51 431 CAD" and "1 234,5 m³". Messages in older saves still translate unchanged. Debrief headline totals are whole numbers.
+
+**Map at different zooms and on touch.** Screenshots in this headless environment leave part of the WebGL canvas stale, so the map was checked from direct canvas captures.
+
+Before this pass:
+
+- Stands were drawn only as their outlines, a few pixels wide at district zoom, so on a phone only the 12 px text label could realistically be tapped.
+- Every stand label was drawn, so labels overlapped heavily at the fitted phone zoom.
+- Mill and fleet icons stayed 32–36 px at every zoom, so zooming out produced one blob.
+- Each layer handled its own clicks, so the top layer won and overlapping features were unreachable.
+
+Changes:
+
+- Each stand has a dot marker in its supply colour; the selected stand's dot is larger and outlined.
+- Taps use a 14 px touch radius, or 5 px with a mouse, and are resolved in one map handler. A tap that covers several stands, mills or vehicles lists them in the sheet ("2 features here · choose one"). A single hit opens that feature, and roads are chosen only when nothing else is under the finger.
+- Phone sheet:
+  - Tapping empty map lowers the sheet to a header-only peek, so the whole map is visible.
+  - Tapping a feature, or the header, raises it to half height, scrolled to the top.
+  - The header names the feature type and name, for example "Truck · Truck 1" or "Q01 · Mistassini 1".
+- Stand labels are decluttered after every pan and zoom. The selected and planned stands are placed first, and labels that would overlap them are skipped.
+- Below the region's authored zoom, equipment icons shrink to as little as half size, and the small status tags are hidden.
+- The initial phone fit keeps icons clear of the sheet.
+- Crew and truck locations name the mill or stand instead of a road-node ID.
+
+Tested with touch taps: empty map → peek; stand cluster → chooser → chosen stand; truck icon → truck sheet. Desktop clicks, and zoom levels from 1.5 below to 3.5 above the fitted view, were also tested. Physical-device gestures remain unverified.

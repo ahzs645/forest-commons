@@ -53,6 +53,10 @@ export function blankPlan(region: RegionDefinition, m = 0): Plan {
     ready: { purchase: false, production: false, transport: false },
   };
 }
+/** Presentation of amounts inside English operating messages and ledger text;
+ * French display reformats them in i18n-runtime. */
+const messageMoney = (r: RegionDefinition, n: number) => `${r.currency} ${Math.round(n).toLocaleString("en-CA")}`;
+const messageM3 = (n: number) => n.toLocaleString("en-CA", { maximumFractionDigits: 1 });
 export function createGame(
   region: RegionDefinition,
   weatherId = Object.keys(region.weather)[0],
@@ -400,7 +404,7 @@ export function advance(input: Game): Game {
       if (stumpage > 0) post("stumpage", `${s.id} · authored Interior teaching rates`, -stumpage, s.id);
       accruePostHarvestObligations(g, s.id, volume);
       if ((!r.bcTenure && r.economy.timberPayment === "harvest-royalty") && (s.royaltyM3 ?? s.purchasePaid/def.volume)>0)
-        post("royalty",`${s.id} · ${volume.toFixed(2)} m³ harvested`, -volume*(s.royaltyM3 ?? s.purchasePaid/def.volume), s.id);
+        post("royalty",`${s.id} · ${messageM3(volume)} m³ harvested`, -volume*(s.royaltyM3 ?? s.purchasePaid/def.volume), s.id);
       for (const [p, ratio] of Object.entries(mix)) {
         const n = volume * ratio;
         s.stock.push({ product: p, volume: n, week: g.week, quality: 1 });
@@ -585,11 +589,11 @@ export function advance(input: Game): Game {
             (repositionKm - empty.km);
           post(
             "cooperation",
-            `${t.id} · ${partner.job.company} · ${partner.volume} m³ · ${partner.job.id}`,
+            `${t.id} · ${partner.job.company} · ${messageM3(partner.volume)} m³ · ${partner.job.id}`,
             settlement!.payment,
           );
           report.messages.push(
-            `${t.id}: carried ${Math.round(partner.volume)} m³ partner cargo on ${partner.job.id}; additional handling and travel consumed ${(repositionHours - empty.hours + t.loadingHours + t.unloadingHours).toFixed(1)} h.`,
+            `${t.id}: carried ${messageM3(partner.volume)} m³ partner cargo on ${partner.job.id}; additional handling and travel consumed ${(repositionHours - empty.hours + t.loadingHours + t.unloadingHours).toFixed(1)} h.`,
           );
         }
         report.emissions += (repositionKm + loaded.km) * r.ecology.haulKgCO2Km;
@@ -634,13 +638,13 @@ export function advance(input: Game): Game {
       s.purchasePaid = bid;
       lockAwardStumpage(g,id,r);
       if((!r.bcTenure && r.economy.timberPayment === "harvest-royalty"))s.royaltyM3=bid/d.volume;
-      post("auction", `Won ${id}${r.bcTenure ? " (upfront teaching sale premium; stumpage additional)" : ""}; rival ${Math.round(rival)}`, (!r.bcTenure && r.economy.timberPayment === "harvest-royalty") ? 0 : -bid, id);
+      post("auction", `Won ${id}${r.bcTenure ? " (upfront teaching sale premium; stumpage additional)" : ""}; rival ${messageMoney(r, rival)}`, (!r.bcTenure && r.economy.timberPayment === "harvest-royalty") ? 0 : -bid, id);
       report.messages.push(
-        `Won ${id} for ${Math.round(bid)}. Available next week; refusal window lasts one week.`,
+        `Won ${id} for ${messageMoney(r, bid)}. Available next week; refusal window lasts one week.`,
       );
     } else
       report.messages.push(
-        `${id}: ${(!!r.bcTenure || r.economy.timberPayment !== "harvest-royalty") && g.cash + (r.economy.procurementCreditLimit ?? 0) < bid ? "insufficient cash and credit at settlement" : "rival bid " + Math.round(rival) + " won"}.`,
+        `${id}: ${(!!r.bcTenure || r.economy.timberPayment !== "harvest-royalty") && g.cash + (r.economy.procurementCreditLimit ?? 0) < bid ? "insufficient cash and credit at settlement" : "rival bid " + messageMoney(r, rival) + " won"}.`,
       );
   }
   post("overhead", "Regional weekly operating costs", -r.economy.fixedWeekly);

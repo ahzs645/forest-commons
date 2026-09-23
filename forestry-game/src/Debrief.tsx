@@ -16,7 +16,7 @@ export default function Debrief({game,onNavigate}:{game:Game;onNavigate:(p:strin
  const reportIndex=selectedWeek===null?game.history.length-1:game.history.findIndex(h=>h.week===selectedWeek);
  const activeIndex=reportIndex<0?game.history.length-1:reportIndex;
  const report=game.history[activeIndex],findings=diagnose(game,activeIndex),summary=resultsSummary(game);
- const number=(n:number)=>n.toLocaleString(language==='fr'?'fr-CA':'en-CA',{maximumFractionDigits:1});
+ const number=(n:number)=>n.toLocaleString(language==='fr'?'fr-CA':'en-CA',{maximumFractionDigits:0});
  const period=tr((game.region.turnDurationWeeks??1)!==1?'turn':'week');
  const evidence=(id:string,text:string)=>language==='fr'&&report?(id==='freshness'?`${Math.round(report.degraded)} m³ déclassés; ${Math.round(report.waste)} m³ expirés.`:id==='service'?`${report.targetHits} engagements respectés sur ${report.targetChecks}.`:id==='secured-supply'?securedSupplyFrench(game):id==='authorization'?text.replace(/^(\S+): (.+)\.$/,(_,stand:string,problem:string)=>`${stand} : ${tr(problem)}.`):tr(text)):tr(text);
  const lesson=lessons[value.step];

@@ -86,6 +86,14 @@
   .map-first .adaptive-map-workspace .geo-map { height:100%;min-height:0; }
   .map-first .adaptive-map-workspace .map-inspector { position:absolute;top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:45%;min-height:0;overflow:auto;z-index:5;border-radius:16px 16px 10px 10px;box-shadow:0 -5px 24px #173e3220;overscroll-behavior:contain; }
   .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector { max-height:85%; }
+  /* Tapping empty map lowers the sheet to its header so the whole map shows;
+     tapping a feature or the header raises it again. */
+  .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector { max-height:62px;overflow:hidden; }
+  .adaptive-map-workspace .map-inspector::before { content:"";display:block;width:36px;height:4px;border-radius:2px;background:#cddacb;margin:-4px auto 2px; }
+  .operations-list-mode .map-inspector::before { display:none; }
+  .adaptive-map-workspace .operating-sheet-title { flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:0 4px; }
+  .adaptive-map-workspace .operating-sheet-title small { font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5b6d62;font-weight:650; }
+  .adaptive-map-workspace .operating-sheet-title strong { max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .adaptive-map-workspace .operating-sheet-controls { display:flex;align-items:center;justify-content:space-between;gap:6px;position:sticky;top:-12px;background:white;z-index:8;padding:3px 0; }
   .operating-sheet-controls button { min-height:44px;border:0;background:transparent;padding:0 10px;font-weight:650;color:#173e32; }
   .adaptive-map-workspace .operating-role-tabs { gap:0;border:1px solid #cddacb;border-radius:9px;padding:3px;margin:0 0 8px; }
@@ -181,3 +189,10 @@
 @media (prefers-reduced-motion:reduce) {
   .adaptive-map-workspace * { scroll-behavior:auto!important;transition:none!important; }
 }
+
+/* Several features under one tap: list them instead of guessing the top one. */
+.map-nearby { display:grid;gap:6px;margin:0 0 10px;padding:8px;border:1px solid #e0c46b;border-radius:10px;background:#fffaf0; }
+.map-nearby p { margin:0;font-size:13px;font-weight:650;color:#173e32; }
+.map-nearby button { min-height:44px;text-align:left;justify-content:flex-start;background:white; }
+.map-nearby button small { display:inline-block;min-width:52px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5b6d62; }
+.operating-sheet-title { background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer; }

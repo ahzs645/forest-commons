@@ -10,11 +10,27 @@ import {
   PathLayer,
   IconLayer,
   TextLayer,
+  ScatterplotLayer,
 } from "@deck.gl/layers";
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Game, Position } from "../simulation/types";
 import { route, weatherAt, canAccess } from "../simulation/routing";
 import { stockAt, sum } from "../simulation/engine";
+export type MapPick = { kind: "stand" | "mill" | "crew" | "truck" | "road"; id: string; name: string };
+const pickKinds: Record<string, MapPick["kind"] | "fleet"> = { stands: "stand", "stand-points": "stand", labels: "stand", mills: "mill", fleet: "fleet", "fleet-status": "fleet", network: "road" };
+/** Stand labels drawn at the current zoom: the selected and planned sites win, then any label that does not overlap one already placed. */
+export function declutteredLabels(m: maplibregl.Map, stands: { id: string; position: Position }[], priority: Set<string>) {
+  const { clientWidth: w, clientHeight: h } = m.getContainer();
+  const placed: [number, number, number, number][] = [], shown = new Set<string>();
+  for (const s of [...stands].sort((a, b) => Number(priority.has(b.id)) - Number(priority.has(a.id)))) {
+    const p = m.project(s.position as [number, number]);
+    if (p.x < -40 || p.y < -40 || p.x > w + 40 || p.y > h + 40) continue;
+    const half = s.id.length * 3.8 + 5, box: [number, number, number, number] = [p.x - half, p.y - 30, p.x + half, p.y - 8];
+    if (placed.some(o => box[0] < o[2] && box[2] > o[0] && box[1] < o[3] && box[3] > o[1])) continue;
+    placed.push(box); shown.add(s.id);
+  }
+  return shown;
+}
 export default function OperationsMap({
   game,
   selected,
@@ -22,6 +38,8 @@ export default function OperationsMap({
   replay,
   visibleStandIds,
   onInspect,
+  onPick,
+  onBackgroundTap,
 }: {
   game: Game;
   selected: string;
@@ -29,6 +47,10 @@ export default function OperationsMap({
   replay?: number;
   visibleStandIds?: string[];
   onInspect?: (kind: "mill" | "crew" | "truck" | "road", id: string) => void;
+  /** Several features under one tap; without it the top feature is selected. */
+  onPick?: (items: MapPick[]) => void;
+  /** A tap that hit no feature. */
+  onBackgroundTap?: () => void;
 }) {
   const {t:tr,language}=useLanguage();
   const camera=useRef<{region:string;center:Position;zoom:number;bearing:number;pitch:number}|null>(null);
@@ -36,6 +58,16 @@ export default function OperationsMap({
   // because a development double mount saves the camera before the fit runs.
   const fitted=useRef<string|null>(null);
   const autoFit=useRef(false);
+  const [viewTick, setViewTick] = useState(0);
+  // The map is created once per region, so its tap handler reads the latest
+  // callbacks and names from this ref.
+  const handlers = useRef({ onSelect, onInspect, onPick, onBackgroundTap, name: (_kind: MapPick["kind"], id: string) => id });
+  handlers.current = { onSelect, onInspect, onPick, onBackgroundTap, name: (kind, id) => {
+    const r = game.region;
+    const entity = kind === "stand" ? r.stands.find(x => x.id === id) : kind === "mill" ? r.mills.find(x => x.id === id)
+      : kind === "crew" ? r.crews.find(x => x.id === id) : kind === "truck" ? r.trucks.find(x => x.id === id) : r.roads.edges.find(x => x.id === id);
+    return entity?.name ?? id;
+  } };
   const container = useRef<HTMLDivElement>(null),
     map = useRef<maplibregl.Map | null>(null),
     overlay = useRef<MapboxOverlay | null>(null),
@@ -76,6 +108,7 @@ export default function OperationsMap({
     map.current = m;
     const deck = new MapboxOverlay({
       interleaved: true,
+      pickingRadius: window.matchMedia("(pointer: coarse)").matches ? 14 : 5,
       useDevicePixels: true,
       layers: [],
     });
@@ -84,6 +117,30 @@ export default function OperationsMap({
     m.addControl(new maplibregl.NavigationControl(), "top-right");
     m.addControl(new maplibregl.ScaleControl(), "bottom-left");
     m.on("load", () => setReady(true));
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    // One handler resolves every tap: a finger covers several small features,
+    // so everything within the touch radius is collected and the caller can
+    // offer a choice instead of guessing the top layer.
+    m.on("click", (e) => {
+      const h = handlers.current, picker = overlay.current;
+      if (!picker) return;
+      let infos: { layer?: { id: string } | null; object?: unknown }[] = [];
+      try { infos = picker.pickMultipleObjects({ x: e.point.x, y: e.point.y, radius: coarse ? 14 : 5, depth: 12 }); } catch { /* picking needs a drawn frame */ }
+      const seen = new Map<string, MapPick>();
+      for (const info of infos) {
+        const layerKind = pickKinds[info.layer?.id ?? ""], object = info.object as { id?: string; kind?: string } | undefined;
+        if (!layerKind || !object?.id) continue;
+        const kind = layerKind === "fleet" ? object.kind as "crew" | "truck" : layerKind;
+        if (!seen.has(`${kind}:${object.id}`)) seen.set(`${kind}:${object.id}`, { kind, id: object.id, name: h.name(kind, object.id) });
+      }
+      const features = [...seen.values()], specific = features.filter(f => f.kind !== "road");
+      const items = specific.length ? specific : features.slice(0, 1);
+      if (!items.length) { h.onBackgroundTap?.(); return; }
+      if (items.length > 1 && h.onPick) { h.onPick(items); return; }
+      const [f] = items;
+      if (f.kind === "stand") h.onSelect(f.id); else h.onInspect?.(f.kind, f.id);
+    });
+    m.on("moveend", () => setViewTick(t => t + 1));
     // The authored centre/zoom suits a desktop frame. A phone frame is much
     // narrower and partly covered by the inspector sheet, so the first view of
     // a region is fitted to its stands and mills. The frame can still change
@@ -102,7 +159,7 @@ export default function OperationsMap({
       fitted.current = game.region.id;
       try {
         m.fitBounds(bounds, { duration: 0, maxZoom: game.region.zoom + 1, padding: w < 700
-          ? { top: 70, left: 24, right: 24, bottom: Math.max(24, Math.min(h * 0.45, h - 160)) }
+          ? { top: 64, left: 28, right: 28, bottom: Math.max(24, Math.min(h * 0.45 + 48, h - 160)) }
           : { top: 70, left: 45, right: 45, bottom: 45 } });
       } catch { /* keep the authored view if the frame is too small to fit */ }
     };
@@ -200,6 +257,27 @@ export default function OperationsMap({
         }
       }
     }
+    const standColor = (d: { id: string; supply: string }): [number, number, number, number] =>
+      d.id === selected
+        ? [232, 174, 51, 220]
+        : d.supply === "protected"
+          ? [136, 93, 160, 150]
+          : view.stands.find((s) => s.id === d.id)?.owned
+            ? [34, 124, 79, 185]
+            : [205, 149, 89, 165];
+    const standData = layers.stands
+      ? r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id)).map((s) => ({
+          ...s,
+          tooltip: `${s.id} · ${s.name}\n${Math.round(view.stands.find((t) => t.id === s.id)!.remaining).toLocaleString()} m³ standing · ${Math.round(sum(stockAt(view, s.id)))} m³ roadside\n${s.zone} · ${s.supply}`,
+        }))
+      : [];
+    const planned = new Set([selected, ...Object.values(game.plan.crews).flat().map(o => o.stand), ...Object.values(game.plan.trucks).flat().map(o => o.stand)]);
+    const labelStands = r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id));
+    const shownLabels = map.current ? declutteredLabels(map.current, labelStands, planned) : null;
+    // Equipment icons are fixed-pixel; below the region's authored zoom they
+    // would pile into one blob over the stands, so they shrink with the view.
+    const zoom = map.current?.getZoom() ?? game.region.zoom;
+    const iconScale = Math.min(1, Math.max(0.5, 1 - 0.3 * (game.region.zoom - zoom)));
     overlay.current.setProps({
       getTooltip: ({ object }: { object?: Record<string, unknown> }) =>
         object
@@ -232,34 +310,33 @@ export default function OperationsMap({
           jointRounded: true,
           capRounded: true,
           pickable: true,
-          onClick: info => { if (info.object) onInspect?.("road", info.object.id); },
         }),
         new PolygonLayer({
           id: "stands",
-          data: layers.stands
-            ? r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id)).map((s) => ({
-                ...s,
-                tooltip: `${s.id} · ${s.name}\n${Math.round(view.stands.find((t) => t.id === s.id)!.remaining).toLocaleString()} m³ standing · ${Math.round(sum(stockAt(view, s.id)))} m³ roadside\n${s.zone} · ${s.supply}`,
-              }))
-            : [],
+          data: standData,
           getPolygon: (d) => d.polygon,
-          getFillColor: (d) =>
-            d.id === selected
-              ? [232, 174, 51, 220]
-              : d.supply === "protected"
-                ? [136, 93, 160, 150]
-                : view.stands.find((s) => s.id === d.id)?.owned
-                  ? [34, 124, 79, 185]
-                  : [205, 149, 89, 165],
+          getFillColor: standColor,
           getLineColor: (d) =>
             d.id === selected ? [255, 242, 159] : [255, 255, 255],
           getLineWidth: 2,
           lineWidthUnits: "pixels",
           stroked: true,
           pickable: true,
-          onClick: (info) => {
-            if (info.object) onSelect(info.object.id);
-          },
+        }),
+        // Outlines are a few pixels wide at district zoom; a marker keeps
+        // every stand visible and large enough to tap.
+        new ScatterplotLayer({
+          id: "stand-points",
+          data: standData,
+          getPosition: (d) => d.position,
+          getRadius: (d) => (d.id === selected ? 8 : 5.5),
+          radiusUnits: "pixels",
+          getFillColor: standColor,
+          getLineColor: (d) => (d.id === selected ? [255, 242, 159] : [255, 255, 255]),
+          getLineWidth: (d) => (d.id === selected ? 2.5 : 1.5),
+          lineWidthUnits: "pixels",
+          stroked: true,
+          pickable: true,
         }),
         new PathLayer({
           id: "routes",
@@ -278,12 +355,9 @@ export default function OperationsMap({
           data: r.mills,
           getPosition: (d) => d.position,
           getIcon: () => ({url:`${import.meta.env.BASE_URL}icons/mill.svg`,width:48,height:48,anchorY:24}),
-          getSize: 36,
+          getSize: 36 * iconScale,
           sizeUnits: "pixels",
           pickable: true,
-          onClick: (info) => {
-            if (info.object) onInspect?.("mill", info.object.id);
-          },
         }),
         new IconLayer({
           id: "fleet",
@@ -309,32 +383,28 @@ export default function OperationsMap({
             : [],
           getPosition: (d) => d.position,
           getIcon: (d) => ({url:`${import.meta.env.BASE_URL}icons/${d.kind === "crew" ? "harvester" : "log-truck"}.svg`,width:48,height:48,anchorY:24}),
-          getSize: 32,
+          getSize: 32 * iconScale,
           sizeUnits: "pixels",
           getPixelOffset: (d) => {
             const positions = d.kind === "crew" ? view.crewPositions : view.truckPositions;
             const group = Object.keys(positions).filter(id=>positions[id]===positions[d.id]).sort();
-            return [(group.indexOf(d.id)-(group.length-1)/2)*40,d.kind === "crew" ? -36 : 36];
+            return [(group.indexOf(d.id)-(group.length-1)/2)*40*iconScale,(d.kind === "crew" ? -36 : 36)*iconScale];
           },
           pickable: true,
-          onClick: (info) => {
-            if (info.object) onInspect?.(info.object.kind, info.object.id);
-          },
         }),
         new TextLayer({
           id: "fleet-status",
           characterSet: "auto",
-          data: layers.fleet&&!historical ? [...r.crews.map(c=>({id:c.id,kind:'crew' as const})),...r.trucks.map(t=>({id:t.id,kind:'truck' as const}))] : [],
+          data: layers.fleet&&!historical&&iconScale>0.7 ? [...r.crews.map(c=>({id:c.id,kind:'crew' as const})),...r.trucks.map(t=>({id:t.id,kind:'truck' as const}))] : [],
           getPosition:d=>r.roads.nodes.find(n=>n.id===(d.kind==='crew'?view.crewPositions:view.truckPositions)[d.id])!.position,
           getText:d=>`${equipmentStatus(game,d.kind,d.id)==='Unavailable'?'⊘':equipmentStatus(game,d.kind,d.id)==='Scheduled'?'▣':equipmentStatus(game,d.kind,d.id)==='Season complete'?'✓':'○'} ${d.id}`,
-          getPixelOffset:d=>{const positions=d.kind==='crew'?view.crewPositions:view.truckPositions;const group=Object.keys(positions).filter(id=>positions[id]===positions[d.id]).sort();return [(group.indexOf(d.id)-(group.length-1)/2)*40,d.kind==='crew'?-15:57];},
+          getPixelOffset:d=>{const positions=d.kind==='crew'?view.crewPositions:view.truckPositions;const group=Object.keys(positions).filter(id=>positions[id]===positions[d.id]).sort();return [(group.indexOf(d.id)-(group.length-1)/2)*40*iconScale,(d.kind==='crew'?-15:57)*iconScale];},
           getSize:11,getColor:[25,50,40],background:true,getBackgroundColor:[255,255,255,230],backgroundPadding:[3,2],pickable:true,
-          onClick:info=>{if(info.object)onInspect?.(info.object.kind,info.object.id);},
         }),
         new TextLayer({
           id: "labels",
           characterSet: "auto",
-          data: layers.labels ? r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id)) : [],
+          data: layers.labels ? labelStands.filter(s => !shownLabels || shownLabels.has(s.id)) : [],
           getPosition: (d) => d.position,
           getText: (d) => d.id,
           getColor: [21, 44, 32],
@@ -345,13 +415,10 @@ export default function OperationsMap({
           getBackgroundColor: [255, 255, 255, 220],
           backgroundPadding: [3, 2],
           pickable: true,
-          onClick: (info) => {
-            if (info.object) onSelect(info.object.id);
-          },
         }),
       ],
     });
-  }, [language,game, selected, onSelect, onInspect, layers, ready, replay, visibleStandIds]);
+  }, [language,game, selected, layers, ready, replay, visibleStandIds, viewTick]);
   const fit = (planOnly = false) => {
     autoFit.current = false;
     const bounds = new maplibregl.LngLatBounds();

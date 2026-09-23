@@ -282,5 +282,11 @@
   "authorization expired; renewal required": "autorisation expirée; renouvellement requis",
   "Join your assigned role": "Rejoindre le rôle attribué",
   "Instructor tools": "Outils de l’enseignant",
-  "The five-company rows sum to 795,190 m³; the printed total is 795,200 m³. Calculations use the individual rows of the English five-company handout. The four-company handout and the French printed map sheet give 77,300 and 301,300 m³ for companies 1 and 2.": "Les lignes des cinq entreprises totalisent 795 190 m³; le total imprimé est de 795 200 m³. Les calculs utilisent les lignes individuelles du document anglais à cinq entreprises. Le document à quatre entreprises et la carte imprimée française indiquent 77 300 et 301 300 m³ pour les entreprises 1 et 2."
+  "The five-company rows sum to 795,190 m³; the printed total is 795,200 m³. Calculations use the individual rows of the English five-company handout. The four-company handout and the French printed map sheet give 77,300 and 301,300 m³ for companies 1 and 2.": "Les lignes des cinq entreprises totalisent 795 190 m³; le total imprimé est de 795 200 m³. Les calculs utilisent les lignes individuelles du document anglais à cinq entreprises. Le document à quatre entreprises et la carte imprimée française indiquent 77 300 et 301 300 m³ pour les entreprises 1 et 2.",
+  "Stand": "Peuplement",
+  "Mill": "Usine",
+  "Road": "Route",
+  "Features at this spot": "Éléments à cet endroit",
+  "features here · choose one": "éléments ici · choisissez-en un",
+  "road junction": "carrefour routier"
 }
