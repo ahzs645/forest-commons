@@ -16,21 +16,9 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import type { Game, Position } from "../simulation/types";
 import { route, weatherAt, canAccess } from "../simulation/routing";
 import { stockAt, sum } from "../simulation/engine";
+import { layoutSymbols } from "./symbol-layout";
 export type MapPick = { kind: "stand" | "mill" | "crew" | "truck" | "road"; id: string; name: string };
-const pickKinds: Record<string, MapPick["kind"] | "fleet"> = { stands: "stand", "stand-points": "stand", labels: "stand", mills: "mill", fleet: "fleet", "fleet-status": "fleet", network: "road" };
-/** Stand labels drawn at the current zoom: the selected and planned sites win, then any label that does not overlap one already placed. */
-export function declutteredLabels(m: maplibregl.Map, stands: { id: string; position: Position }[], priority: Set<string>) {
-  const { clientWidth: w, clientHeight: h } = m.getContainer();
-  const placed: [number, number, number, number][] = [], shown = new Set<string>();
-  for (const s of [...stands].sort((a, b) => Number(priority.has(b.id)) - Number(priority.has(a.id)))) {
-    const p = m.project(s.position as [number, number]);
-    if (p.x < -40 || p.y < -40 || p.x > w + 40 || p.y > h + 40) continue;
-    const half = s.id.length * 3.8 + 5, box: [number, number, number, number] = [p.x - half, p.y - 30, p.x + half, p.y - 8];
-    if (placed.some(o => box[0] < o[2] && box[2] > o[0] && box[1] < o[3] && box[3] > o[1])) continue;
-    placed.push(box); shown.add(s.id);
-  }
-  return shown;
-}
+const pickKinds: Record<string, MapPick["kind"] | "fleet"> = { stands: "stand", "stand-points": "stand", labels: "stand", mills: "mill", fleet: "fleet", "fleet-count": "fleet", "fleet-status": "fleet", network: "road" };
 export default function OperationsMap({
   game,
   selected,
@@ -128,10 +116,11 @@ export default function OperationsMap({
       try { infos = picker.pickMultipleObjects({ x: e.point.x, y: e.point.y, radius: coarse ? 14 : 5, depth: 12 }); } catch { /* picking needs a drawn frame */ }
       const seen = new Map<string, MapPick>();
       for (const info of infos) {
-        const layerKind = pickKinds[info.layer?.id ?? ""], object = info.object as { id?: string; kind?: string } | undefined;
+        const layerKind = pickKinds[info.layer?.id ?? ""], object = info.object as { id?: string; kind?: string; members?: { id: string; kind: "mill" | "crew" | "truck" }[] } | undefined;
         if (!layerKind || !object?.id) continue;
-        const kind = layerKind === "fleet" ? object.kind as "crew" | "truck" : layerKind;
-        if (!seen.has(`${kind}:${object.id}`)) seen.set(`${kind}:${object.id}`, { kind, id: object.id, name: h.name(kind, object.id) });
+        const entries = object.members ?? [{ id: object.id, kind: layerKind === "fleet" ? object.kind as "crew" | "truck" : layerKind }];
+        for (const { id, kind } of entries)
+          if (!seen.has(`${kind}:${id}`)) seen.set(`${kind}:${id}`, { kind, id, name: h.name(kind, id) });
       }
       const features = [...seen.values()], specific = features.filter(f => f.kind !== "road");
       const items = specific.length ? specific : features.slice(0, 1);
@@ -169,11 +158,14 @@ export default function OperationsMap({
     m.on("rotatestart", stopAutoFit);
     m.on("pitchstart", stopAutoFit);
     const fitFrame = requestAnimationFrame(() => { m.resize(); fitRegion(); });
-    m.on("error", () =>
-      setError(
-        "Some basemap tiles could not load. Game roads and operations remain available.",
-      ),
-    );
+    // Every failed tile raises an error event; announce it once per map as a
+    // brief notice instead of re-covering the map after each dismissal.
+    let tileNoticeShown = false;
+    m.on("error", () => {
+      if (tileNoticeShown) return;
+      tileNoticeShown = true;
+      setError("Some basemap tiles could not load. Game roads and operations remain available.");
+    });
     const observer = new ResizeObserver(() => { m.resize(); fitRegion(); });
     observer.observe(container.current);
     return () => {
@@ -187,6 +179,11 @@ export default function OperationsMap({
     };
     // Remount only for a different region; plan changes update overlay data below.
   }, [game.region.id,language]);
+  useEffect(() => {
+    if (!error.startsWith("Some basemap")) return;
+    const timer = setTimeout(() => setError(e => e.startsWith("Some basemap") ? "" : e), 8000);
+    return () => clearTimeout(timer);
+  }, [error]);
   useEffect(() => {
     if (map.current && ready)
       map.current.setStyle(
@@ -273,11 +270,30 @@ export default function OperationsMap({
       : [];
     const planned = new Set([selected, ...Object.values(game.plan.crews).flat().map(o => o.stand), ...Object.values(game.plan.trucks).flat().map(o => o.stand)]);
     const labelStands = r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id));
-    const shownLabels = map.current ? declutteredLabels(map.current, labelStands, planned) : null;
     // Equipment icons are fixed-pixel; below the region's authored zoom they
     // would pile into one blob over the stands, so they shrink with the view.
     const zoom = map.current?.getZoom() ?? game.region.zoom;
     const iconScale = Math.min(1, Math.max(0.5, 1 - 0.3 * (game.region.zoom - zoom)));
+    const nodePosition = (node: string) => r.roads.nodes.find(n => n.id === node)!.position;
+    const fleetMembers = layers.fleet ? [
+      ...r.crews.map(c => ({ id: c.id, kind: "crew" as const, node: view.crewPositions[c.id], position: nodePosition(view.crewPositions[c.id]) })),
+      ...r.trucks.map(t => ({ id: t.id, kind: "truck" as const, node: view.truckPositions[t.id], position: nodePosition(view.truckPositions[t.id]) })),
+    ] : [];
+    const container = map.current?.getContainer();
+    const symbols = map.current ? layoutSymbols({
+      map: map.current, frame: { w: container?.clientWidth ?? 0, h: container?.clientHeight ?? 0 }, scale: iconScale,
+      mills: r.mills, fleet: fleetMembers, stands: layers.labels ? labelStands : [], priority: planned, keep: selected,
+      showTags: !historical && iconScale > 0.7,
+    }) : { symbols: [...r.mills.map(m => ({ kind: "mill" as const, id: m.id, position: m.position })), ...fleetMembers]
+      .map(f => ({ kind: f.kind, members: [{ id: f.id, kind: f.kind }], position: f.position, offset: [0, 0] as [number, number] })), tags: [], labels: [] };
+    const symbolName = (kind: "mill" | "crew" | "truck", id: string) => {
+      if (kind === "mill") return r.mills.find(m => m.id === id)?.name ?? id;
+      const resource = kind === "crew" ? r.crews.find(c => c.id === id) : r.trucks.find(t => t.id === id);
+      return `${resource?.name ?? id} · ${historical ? tr("recorded location") : tr(equipmentStatus(game, kind, id))}`;
+    };
+    // One entry per drawn icon: a single feature, or a cluster whose tap lists every member.
+    const symbolData = (kind: "mill" | "fleet") => symbols.symbols.filter(f => (f.kind === "mill") === (kind === "mill"))
+      .map(f => ({ ...f, id: f.members[0].id, name: f.members.map(m => symbolName(m.kind, m.id)).join("\n") }));
     overlay.current.setProps({
       getTooltip: ({ object }: { object?: Record<string, unknown> }) =>
         object
@@ -352,7 +368,7 @@ export default function OperationsMap({
         }),
         new IconLayer({
           id: "mills",
-          data: r.mills,
+          data: symbolData("mill"),
           getPosition: (d) => d.position,
           getIcon: () => ({url:`${import.meta.env.BASE_URL}icons/mill.svg`,width:48,height:48,anchorY:24}),
           getSize: 36 * iconScale,
@@ -361,55 +377,45 @@ export default function OperationsMap({
         }),
         new IconLayer({
           id: "fleet",
-          data: layers.fleet
-            ? [
-                ...r.crews.map((c) => ({
-                  id: c.id,
-                  kind: "crew",
-                  position: r.roads.nodes.find(
-                    (n) => n.id === view.crewPositions[c.id],
-                  )!.position,
-                  name: `${c.name} · ${historical ? tr("recorded location") : tr(equipmentStatus(game,"crew",c.id))}`,
-                })),
-                ...r.trucks.map((t) => ({
-                  id: t.id,
-                  kind: "truck",
-                  position: r.roads.nodes.find(
-                    (n) => n.id === view.truckPositions[t.id],
-                  )!.position,
-                  name: `${t.name} · ${historical ? tr("recorded location") : tr(equipmentStatus(game,"truck",t.id))}`,
-                })),
-              ]
-            : [],
+          data: symbolData("fleet"),
           getPosition: (d) => d.position,
           getIcon: (d) => ({url:`${import.meta.env.BASE_URL}icons/${d.kind === "crew" ? "harvester" : "log-truck"}.svg`,width:48,height:48,anchorY:24}),
           getSize: 32 * iconScale,
           sizeUnits: "pixels",
-          getPixelOffset: (d) => {
-            const positions = d.kind === "crew" ? view.crewPositions : view.truckPositions;
-            const group = Object.keys(positions).filter(id=>positions[id]===positions[d.id]).sort();
-            return [(group.indexOf(d.id)-(group.length-1)/2)*40*iconScale,(d.kind === "crew" ? -36 : 36)*iconScale];
-          },
+          getPixelOffset: (d) => d.offset,
+          pickable: true,
+        }),
+        new TextLayer({
+          id: "fleet-count",
+          characterSet: "auto",
+          data: symbols.symbols.filter(f => f.members.length > 1).map(f => ({ ...f, id: f.members[0].id })),
+          getPosition: (d) => d.position,
+          getText: (d) => `×${d.members.length}`,
+          // Matches the badge box used by layoutSymbols.
+          getPixelOffset: (d) => [d.offset[0] + 14 * iconScale, d.offset[1] - 14 * iconScale],
+          getSize: 11, getColor: [255, 255, 255], fontWeight: 700,
+          background: true, getBackgroundColor: [23, 62, 50, 240], backgroundPadding: [4, 2],
           pickable: true,
         }),
         new TextLayer({
           id: "fleet-status",
           characterSet: "auto",
-          data: layers.fleet&&!historical&&iconScale>0.7 ? [...r.crews.map(c=>({id:c.id,kind:'crew' as const})),...r.trucks.map(t=>({id:t.id,kind:'truck' as const}))] : [],
-          getPosition:d=>r.roads.nodes.find(n=>n.id===(d.kind==='crew'?view.crewPositions:view.truckPositions)[d.id])!.position,
+          data: symbols.tags,
+          getPosition: (d) => d.position,
           getText:d=>`${equipmentStatus(game,d.kind,d.id)==='Unavailable'?'⊘':equipmentStatus(game,d.kind,d.id)==='Scheduled'?'▣':equipmentStatus(game,d.kind,d.id)==='Season complete'?'✓':'○'} ${d.id}`,
-          getPixelOffset:d=>{const positions=d.kind==='crew'?view.crewPositions:view.truckPositions;const group=Object.keys(positions).filter(id=>positions[id]===positions[d.id]).sort();return [(group.indexOf(d.id)-(group.length-1)/2)*40*iconScale,(d.kind==='crew'?-15:57)*iconScale];},
+          getPixelOffset: (d) => d.offset,
           getSize:11,getColor:[25,50,40],background:true,getBackgroundColor:[255,255,255,230],backgroundPadding:[3,2],pickable:true,
         }),
         new TextLayer({
           id: "labels",
           characterSet: "auto",
-          data: layers.labels ? labelStands.filter(s => !shownLabels || shownLabels.has(s.id)) : [],
+          data: symbols.labels,
           getPosition: (d) => d.position,
           getText: (d) => d.id,
           getColor: [21, 44, 32],
           getSize: 12,
-          getPixelOffset: [0, -18],
+          getPixelOffset: (d) => d.offset,
+          getTextAnchor: (d) => d.anchor,
           fontFamily: "system-ui",
           background: true,
           getBackgroundColor: [255, 255, 255, 220],
@@ -529,7 +535,7 @@ export default function OperationsMap({
         {game.region.sources.some(s => s.note.includes("Open Government Licence")) && <span> {tr("· Data: Province of British Columbia (OGL–BC)")}</span>}
       </div>
       {error && (
-        <button className="map-error" onClick={() => setError("")}>
+        <button className={`map-error${error.startsWith("Some basemap") ? " map-notice" : ""}`} onClick={() => setError("")}>
           {tr(error)} ×
         </button>
       )}

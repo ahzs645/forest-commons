@@ -84,3 +84,23 @@ Changes:
 - Crew and truck locations name the mill or stand instead of a road-node ID.
 
 Tested with touch taps: empty map → peek; stand cluster → chooser → chosen stand; truck icon → truck sheet. Desktop clicks, and zoom levels from 1.5 below to 3.5 above the fitted view, were also tested. Physical-device gestures remain unverified.
+
+### Symbol overlap
+
+A phone capture still showed overlaps:
+
+- crew and truck icons stacked on mills;
+- status tags running into neighbouring icons;
+- stand labels under equipment;
+- a basemap-tile banner across the map.
+
+The first overlap fix only kept labels apart from each other. `maps/symbol-layout.ts` now places every fixed-pixel symbol in screen space after each view change:
+
+- Equipment at a node fans out only while its row stays clear of other nodes.
+- Any icon that would land on one already drawn joins it as a cluster. This covers a neighbouring stand's crew, the other equipment kind, and nearby mills. An icon under a cluster's count badge joins it as well.
+- A cluster shows its most significant member (mill, then crew, then truck) with a ×N badge, and tapping it lists every member.
+- Status tags appear only where they cover nothing.
+- Each stand label tries above, below, right and left of its dot, inside the frame. A label with no free position is hidden until you zoom in; planned and selected stands are placed first, and no label is forced. The sheet header names the selection.
+- The tile-failure message is shown once per map, as a compact notice that clears after eight seconds.
+
+Direct canvas captures at 3× of the Québec and Prince George phone views show no remaining symbol overlap.

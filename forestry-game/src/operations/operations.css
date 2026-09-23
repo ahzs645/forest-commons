@@ -86,6 +86,8 @@
   .map-first .adaptive-map-workspace .geo-map { height:100%;min-height:0; }
   .map-first .adaptive-map-workspace .map-inspector { position:absolute;top:auto;bottom:8px;left:8px;right:8px;width:auto;max-height:45%;min-height:0;overflow:auto;z-index:5;border-radius:16px 16px 10px 10px;box-shadow:0 -5px 24px #173e3220;overscroll-behavior:contain; }
   .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector { max-height:85%; }
+  /* The foot of the map is under the sheet here, so the tile notice sits below the map tools. */
+  .map-first .adaptive-map-workspace .map-error.map-notice { top:62px;bottom:auto; }
   /* Tapping empty map lowers the sheet to its header so the whole map shows;
      tapping a feature or the header raises it again. */
   .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector { max-height:62px;overflow:hidden; }
