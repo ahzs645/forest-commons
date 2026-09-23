@@ -65,7 +65,7 @@ The English five-company workbook's Valeurs!C11:D11 instead says 38,690 and 3,00
 
 The English workbook labels monetary values kNOK; Word and printable handouts label them kSEK. The learning lab follows the handouts' kSEK. Campaign values are synthetic CAD and are never added to these collaboration figures.
 
-Company volume descriptors also differ across handout versions (for example C1/C2). The implemented allocation methods use standalone costs and coalition costs, not those inconsistent volumes. A volume-weighted method should wait for a selected authoritative volume table.
+Company volume descriptors also differ across handout versions (for example C1/C2). The cost-based allocation methods use standalone and coalition costs only. The later **Volume-weighted total cost** method uses the English five-company handout rows (77,360 / 301,660 m³ for C1/C2, closest to Frisk et al. 2010); the four-company handout and the French printed map sheet give 77,300 / 301,300 m³, which the lab notes.
 
 ## Combined game design
 

@@ -5,11 +5,24 @@ import type {Game} from './types';
 import {sum} from './engine';
 import {cost,savings,stability} from '../coalition';
 import {resultsExplanation} from './results-summary';
+import {securedAwaitingAuthorization} from './tenure';
 export function diagnose(game:Game,index=game.history.length-1){const report=game.history[index];if(!report)return [];
  const groups=[{id:'access',title:'Weather and access',pattern:/terrain|closed road|no open road/i,action:'Compare forecast and actual conditions; move work to accessible areas or improve the specific road.'},{id:'capacity',title:'Resource capacity',pattern:/relocation exceeds|no delivery/i,action:'Check travel, handling hours and demand before adding crews or loads.'},{id:'procurement',title:'Supply ownership',pattern:/not owned|rival|insufficient cash/i,action:'Secure timber before assigning it and reserve enough cash for settlement.'}];
  const findings=groups.map(g=>({...g,evidence:report.messages.filter(m=>g.pattern.test(m))})).filter(g=>g.evidence.length);
  if(report.waste>0||report.degraded>0)findings.push({id:'freshness',title:'Inventory lost value',pattern:/.*/,action:'Prioritize older roadside batches and compare haul orders against stock age.',evidence:[`${Math.round(report.degraded)} m³ downgraded; ${Math.round(report.waste)} m³ expired.`]});
+ const latest=index===game.history.length-1,awaiting=latest&&game.week<=game.region.weeks?securedAwaitingAuthorization(game):[];
+ if(awaiting.length)findings.push({id:'authorization',title:'Secured timber awaiting authorization',pattern:/.*/,action:'Apply for the harvest authorization on the tenure desk in Forest & timber. The draft plan skips these lots until the application is approved.',evidence:awaiting.map(a=>`${a.id}: ${a.problem}.`)});
+ const supply=latest?securedSupply(game):null;
+ if(supply&&supply.harvestable<supply.weeklyHarvest&&(sum(report.harvested)<supply.weeklyHarvest/2||report.targetChecks>report.targetHits))findings.push({id:'secured-supply',title:'Secured timber exhausted',pattern:/.*/,action:'Buy private lots or bid on upcoming auctions in Forest & timber before owned supply runs out, and set next month’s commitments to volume you can still supply.',evidence:[`${Math.round(supply.harvestable).toLocaleString('en-CA')} m³ harvestable on secured lots; recent harvest averaged ${Math.round(supply.weeklyHarvest).toLocaleString('en-CA')} m³ per ${(game.region.turnDurationWeeks??1)===1?'week':'turn'}.`]});
  if(report.targetChecks>report.targetHits)findings.push({id:'service',title:'Commitments missed',pattern:/.*/,action:'Inspect the per-mill ledger and remaining product mix. Aggregate district supply does not guarantee deliveries to each mill.',evidence:[`${report.targetHits} of ${report.targetChecks} commitments achieved.`]});return findings;}
+/** Standing volume still harvestable on owned lots above the retention floor, and the average harvest per turn so far. */
+export function securedSupply(game:Game){
+ const volume=new Map(game.region.stands.map(s=>[s.id,s.volume]));
+ const blocked=new Set(securedAwaitingAuthorization(game).map(a=>a.id));
+ const harvestable=game.stands.filter(s=>s.owned&&!blocked.has(s.id)).reduce((total,s)=>total+Math.max(0,s.remaining-(volume.get(s.id)??0)*game.plan.retention),0);
+ const weeklyHarvest=game.history.length?game.history.reduce((total,h)=>total+sum(h.harvested),0)/game.history.length:0;
+ return {harvestable,weeklyHarvest};
+}
 export function debriefMarkdown(g:Game,language:"en"|"fr"="en"){if(language==="fr")return debriefFrench(g);const lines=[`# Forest Commons — ${g.region.name}`,`${(g.region.turnDurationWeeks??1)!==1?'Turn':'Week'} ${Math.min(g.week,g.region.weeks)} / ${g.region.weeks}; ${(g.region.turnDurationWeeks??1).toLocaleString("en-CA",{maximumFractionDigits:3})} physical weeks per turn; auction seed ${g.seed}.`,`Scenario: ${g.weatherId}. Currency: ${g.region.currency}.`,`\n## Operating record`,`| ${(g.region.turnDurationWeeks??1)!==1?'Turn':'Week'} | Harvest m³ | Delivery m³ | Cash | Waste m³ | Targets |`,`|---|---:|---:|---:|---:|---|`,...g.history.map(h=>`| ${h.week} | ${Math.round(sum(h.harvested))} | ${Math.round(sum(h.delivered))} | ${Math.round(h.cash)} | ${Math.round(h.waste)} | ${h.targetChecks ? `${h.targetHits}/${h.targetChecks}` : 'Not evaluated'} |`)];
  lines.push('\n## Reading these results',...resultsExplanation(g));if(!g.history.length)lines.push((g.region.turnDurationWeeks??1)===1?'No completed weeks yet. Run a week to record operating results.':'No completed turns yet. Run a turn to record operating results.');
  for(const [i,h]of g.history.entries()){lines.push(`\n## ${(g.region.turnDurationWeeks??1)!==1?'Turn':'Week'} ${h.week} debrief`);for(const f of diagnose(g,i))lines.push(`### ${f.title}`,f.evidence.join('\n\n'),f.action);lines.push(`Partner cargo: ${Object.values(h.partnerDeliveries??{}).reduce((a,b)=>a+b,0)} m³. Reference standalone km avoided: ${(h.partnerAvoidedKm??0).toFixed(1)}.`);}
@@ -18,6 +31,7 @@ export function debriefMarkdown(g:Game,language:"en"|"fr"="en"){if(language==="f
  lines.push('\n## Reflection','1. Which failures came from access, capacity, inventory or procurement?','2. What did you change after a forecast error?','3. Which agreement was accepted despite an incentive to break away?','4. What would you change in the next run, keeping the same scenario and seed?','\nTraining parameters and synthetic scenarios do not certify operational forestry performance.');return lines.join('\n\n').replace(/\|\n\n(?=\|)/g,'|\n');}
 export function worksheetCSV(g:Game,language:"en"|"fr"="en"){const cells=(v:unknown)=>`"${String(v).replace(/"/g,'""')}"`;const rows:unknown[][]=[language==='fr'?['proposition','statut','phase','entreprise','groupe','cout_independant_kSEK','economies_kSEK','cout_attribue_kSEK','accepte']:['proposal','status','phase','company','group','standalone_kSEK','savings_kSEK','allocated_cost_kSEK','accepted']];for(const o of g.negotiation.offers??[])for(let i=0;i<o.count;i++){const c=String(i+1);rows.push([o.id,o.status,o.phase??'unknown',c,o.groups[i],cost([c],o.count),o.shares[c],cost([c],o.count)-o.shares[c],o.accepted.includes(c)]);}return rows.map(r=>r.map(cells).join(',')).join('\n');}
 
+export function securedSupplyFrench(game:Game){const {harvestable,weeklyHarvest}=securedSupply(game);return `${Math.round(harvestable).toLocaleString('fr-CA')} m³ récoltables sur les lots sécurisés; récolte récente moyenne de ${Math.round(weeklyHarvest).toLocaleString('fr-CA')} m³ par ${(game.region.turnDurationWeeks??1)===1?'semaine':'tour'}.`;}
 /** Human-readable French report; numeric saves and machine identifiers remain language-neutral. */
 export function debriefFrench(g:Game){
  const period=(g.region.turnDurationWeeks??1)===1?'Semaine':'Tour';
@@ -29,7 +43,7 @@ export function debriefFrench(g:Game){
   lines.push(`## ${period} ${h.week}`);
   for(const finding of diagnose(g,index)){
    const tr=(text:string)=>(teachingFrench as Record<string,string>)[text]??translateRuntime(text)??text;
-   const evidence=finding.id==='freshness'?[`${Math.round(h.degraded)} m³ déclassés; ${Math.round(h.waste)} m³ expirés.`]:finding.id==='service'?[`${h.targetHits} engagements respectés sur ${h.targetChecks}.`]:finding.evidence.map(tr);
+   const evidence=finding.id==='freshness'?[`${Math.round(h.degraded)} m³ déclassés; ${Math.round(h.waste)} m³ expirés.`]:finding.id==='service'?[`${h.targetHits} engagements respectés sur ${h.targetChecks}.`]:finding.id==='secured-supply'?[securedSupplyFrench(g)]:finding.id==='authorization'?finding.evidence.map(e=>e.replace(/^(\S+): (.+)\.$/,(_,stand:string,problem:string)=>`${stand} : ${tr(problem)}.`)):finding.evidence.map(tr);
    lines.push(`### ${tr(finding.title)}`,...evidence,tr(finding.action));
   }
   lines.push(`Engagements respectés : ${h.targetHits}/${h.targetChecks}. Bois déclassé : ${Math.round(h.degraded)} m³; bois expiré : ${Math.round(h.waste)} m³.`,`Fret partenaire : ${Object.values(h.partnerDeliveries??{}).reduce((a,b)=>a+b,0)} m³. Distance indépendante évitée (référence) : ${(h.partnerAvoidedKm??0).toFixed(1)} km.`, 'Messages opérationnels conservés dans leur langue d’origine pour préserver la trace :',...h.messages);

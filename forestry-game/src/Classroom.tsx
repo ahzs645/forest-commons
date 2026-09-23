@@ -190,10 +190,35 @@ export default function Classroom({ region, onPendingChanges }: { region: Game["
     return (
       <section className="panel">
         <h2>{tr("Classroom rooms")}</h2>
-        <CohortMonitor />
         <p>
           {tr("Each participant joins an assigned role. The server owns the campaign,\n          keeps submitted bids private until settlement, and requires purchase,\n          production and transport readiness before the instructor advances. The\n          standalone campaign remains separate.")}
         </p>
+        {/* Participants outnumber instructors, so joining comes first; room
+            creation and monitoring are grouped below as instructor tools. */}
+        <h3>{tr("Join your assigned role")}</h3>
+        <label>
+          {tr("Room ID")}
+          <input
+            value={roomId}
+            onChange={(e) => setRoomId(e.target.value.trim())}
+          />
+        </label>
+        <label>
+          {tr("Role credential")}
+          <input
+            type="password"
+            value={token}
+            onChange={(e) => setToken(e.target.value.trim())}
+            autoComplete="off"
+          />
+        </label>
+        <button
+          disabled={!roomId || !token}
+          onClick={() => join({ id: roomId, token })}
+        >
+          {tr("Join assigned role")}
+        </button>
+        <h3>{tr("Instructor tools")}</h3>
         <label><input type="checkbox" checked={hideAuctions} onChange={e => setHideAuctions(e.target.checked)} /> {tr("Release auction quantities only when each auction opens")}</label>
         <p className="muted">{tr("When enabled, the server draws each auction’s volume and asking price independently within 80–120% of the teaching preset (or the imported policy ranges). Unreleased lots are excluded from participant maps and totals. Instructor access remains complete; standalone campaigns are not secret.")}</p>
         <label>{tr("Room creation administrator credential")}<input type="password" autoComplete="off" value={adminToken} onChange={e=>setAdminToken(e.target.value)}/></label>
@@ -226,29 +251,8 @@ export default function Classroom({ region, onPendingChanges }: { region: Game["
             </button>
           )}
         </div>
-        <label>
-          {tr("Room ID")}
-          <input
-            value={roomId}
-            onChange={(e) => setRoomId(e.target.value.trim())}
-          />
-        </label>
-        <label>
-          {tr("Role credential")}
-          <input
-            type="password"
-            value={token}
-            onChange={(e) => setToken(e.target.value.trim())}
-            autoComplete="off"
-          />
-        </label>
-        <button
-          disabled={!roomId || !token}
-          onClick={() => join({ id: roomId, token })}
-        >
-          {tr("Join assigned role")}
-        </button>
         <details><summary>{tr("Recover instructor access")}</summary><p>{tr("Enter the room ID above and your offline recovery credential. This replaces the instructor and recovery credentials.")}</p><input aria-label={tr("Recovery credential")} type="password" autoComplete="off" value={recovery} onChange={e=>setRecovery(e.target.value)}/><button disabled={!roomId || !recovery} onClick={async()=>{try{const s=await request(`/api/rooms/${roomId}/recover`,{}, {id:roomId,token:recovery});setRecoveryKey(s.recoveryToken);setRecovery("");await join(s);}catch(e){setError(String(e));}}}>{tr("Recover instructor role")}</button></details>
+        <CohortMonitor />
         {error && <p role="alert">{tr(error)}</p>}
         <p className="muted">
           {tr("The classroom service must be running alongside the app. Invitations\n          grant access to one role; the instructor can replace a lost\n          credential. This is role authentication, not identity verification.")}

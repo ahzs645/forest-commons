@@ -4,7 +4,7 @@ import {useState} from 'react';
 import {resultsSummary,resultsExplanation} from './simulation/results-summary';
 import './results.css';
 import type {Game} from './simulation/types';
-import {diagnose,debriefMarkdown,worksheetCSV} from './simulation/debrief';
+import {diagnose,debriefMarkdown,worksheetCSV,securedSupplyFrench} from './simulation/debrief';
 import {LESSON_KEY,lessons,notesPacket,parseNotes,persistLocal,type LessonNotes} from './simulation/classroom-learning';
 function save(name:string,text:string,type:string){const url=URL.createObjectURL(new Blob([text],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 export default function Debrief({game,onNavigate}:{game:Game;onNavigate:(p:string)=>void}){
@@ -18,7 +18,7 @@ export default function Debrief({game,onNavigate}:{game:Game;onNavigate:(p:strin
  const report=game.history[activeIndex],findings=diagnose(game,activeIndex),summary=resultsSummary(game);
  const number=(n:number)=>n.toLocaleString(language==='fr'?'fr-CA':'en-CA',{maximumFractionDigits:1});
  const period=tr((game.region.turnDurationWeeks??1)!==1?'turn':'week');
- const evidence=(id:string,text:string)=>language==='fr'&&report?(id==='freshness'?`${Math.round(report.degraded)} m³ déclassés; ${Math.round(report.waste)} m³ expirés.`:id==='service'?`${report.targetHits} engagements respectés sur ${report.targetChecks}.`:tr(text)):tr(text);
+ const evidence=(id:string,text:string)=>language==='fr'&&report?(id==='freshness'?`${Math.round(report.degraded)} m³ déclassés; ${Math.round(report.waste)} m³ expirés.`:id==='service'?`${report.targetHits} engagements respectés sur ${report.targetChecks}.`:id==='secured-supply'?securedSupplyFrench(game):id==='authorization'?text.replace(/^(\S+): (.+)\.$/,(_,stand:string,problem:string)=>`${stand} : ${tr(problem)}.`):tr(text)):tr(text);
  const lesson=lessons[value.step];
  const reflection=lessons.map(l=>`## ${tr(l.title)}\n\n${value.notes[l.id]||tr('No explanation recorded.')}`).join('\n\n');
  return <section className="panel"><h2>{tr("Campaign results & guided debrief")}</h2>

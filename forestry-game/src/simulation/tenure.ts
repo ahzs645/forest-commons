@@ -50,6 +50,15 @@ export function harvestAuthorizationProblem(g: Game,id: string): string | null {
   if(d.harvest.kind==='prohibited')return 'protected area: harvesting prohibited';
   return authorizationProblem(g,d.harvest,g.bcTenure?.harvest[id]);
 }
+/** Secured lots with harvestable volume above the retention floor that no crew can cut until a harvest authorization is applied for or renewed. */
+export function securedAwaitingAuthorization(g: Game): {id: string; problem: string}[] {
+  if(!g.region.bcTenure)return [];
+  return g.stands.flatMap(s=>{
+    const d=g.region.stands.find(x=>x.id===s.id);
+    const problem=harvestAuthorizationProblem(g,s.id);
+    return s.owned && d && problem && !problem.startsWith('protected') && !problem.startsWith('authorization pending') && s.remaining-d.volume*g.plan.retention>1 ? [{id:s.id,problem}] : [];
+  });
+}
 export function roadAuthorizationProblem(g: Game,id: string): string | null {
   const d=g.region.bcTenure?.roads[id];
   return d ? authorizationProblem(g,d,g.bcTenure?.roads[id]) : null;

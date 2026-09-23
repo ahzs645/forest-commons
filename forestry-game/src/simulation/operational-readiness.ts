@@ -72,8 +72,14 @@ export function siteReadiness(game: Game, standId: string, selection: ReadinessS
   const stock = stockAt(game, standId);
   add('haul', 'secured', 'Shipment rights', owned ? 'ready' : 'blocked',
     owned ? 'Timber is secured in the exercise.' : 'This timber is not available for ordinary dispatch.', 'permits');
-  add('haul', 'stock', 'Roadside stock now', products.some(p => (stock[p] ?? 0) > 0) ? 'ready' : 'warning',
-    `${Math.round(products.reduce((n, p) => n + (stock[p] ?? 0), 0)).toLocaleString('en-CA')} m³ now. Same-turn harvest may add stock; rehearsal checks fulfillment.`, 'production');
+  // Empty roadside stock is expected when this turn's crew plan cuts the site
+  // first; flagging every such haul hides the orders that really have no timber.
+  const stocked = products.some(p => (stock[p] ?? 0) > 0);
+  const harvestedThisTurn = Object.values(game.plan.crews).some(orders => orders.some(o => o.stand === standId && o.hours > 0));
+  const now = Math.round(products.reduce((n, p) => n + (stock[p] ?? 0), 0)).toLocaleString('en-CA');
+  add('haul', 'stock', 'Roadside stock now', stocked || harvestedThisTurn ? 'ready' : 'warning',
+    stocked || !harvestedThisTurn ? `${now} m³ now. Same-turn harvest may add stock; rehearsal checks fulfillment.`
+      : `${now} m³ now; this turn’s crew plan harvests here first. Rehearsal checks fulfillment.`, 'production');
   const millClosed = (id: string) => activeDisruptions(game).some(d => d.kind === 'mill' && d.target === id);
   const marketOpen = (m: typeof mills[number], p: string) => p in m.prices && !millClosed(m.id) &&
     (m.demand[month(game)][p] ?? 0) > (game.deliveries[m.id]?.[p] ?? 0);

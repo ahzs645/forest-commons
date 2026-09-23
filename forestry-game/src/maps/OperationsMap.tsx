@@ -32,6 +32,10 @@ export default function OperationsMap({
 }) {
   const {t:tr,language}=useLanguage();
   const camera=useRef<{region:string;center:Position;zoom:number;bearing:number;pitch:number}|null>(null);
+  // Region whose first view has been fitted; kept apart from the saved camera
+  // because a development double mount saves the camera before the fit runs.
+  const fitted=useRef<string|null>(null);
+  const autoFit=useRef(false);
   const container = useRef<HTMLDivElement>(null),
     map = useRef<maplibregl.Map | null>(null),
     overlay = useRef<MapboxOverlay | null>(null),
@@ -80,14 +84,43 @@ export default function OperationsMap({
     m.addControl(new maplibregl.NavigationControl(), "top-right");
     m.addControl(new maplibregl.ScaleControl(), "bottom-left");
     m.on("load", () => setReady(true));
+    // The authored centre/zoom suits a desktop frame. A phone frame is much
+    // narrower and partly covered by the inspector sheet, so the first view of
+    // a region is fitted to its stands and mills. The frame can still change
+    // size after mounting (the phone case chooser collapses it), so the fit
+    // follows resizes until the player moves the map. It does not wait for
+    // "load", which never fires while basemap tiles are unreachable.
+    autoFit.current = fitted.current !== game.region.id;
+    const fitRegion = () => {
+      const frame = container.current;
+      if (!autoFit.current || !frame || map.current !== m) return;
+      const { clientWidth: w, clientHeight: h } = frame;
+      const bounds = new maplibregl.LngLatBounds();
+      for (const s of game.region.stands) bounds.extend(s.position);
+      for (const mill of game.region.mills) bounds.extend(mill.position);
+      if (bounds.isEmpty() || w <= 0 || h <= 0) return;
+      fitted.current = game.region.id;
+      try {
+        m.fitBounds(bounds, { duration: 0, maxZoom: game.region.zoom + 1, padding: w < 700
+          ? { top: 70, left: 24, right: 24, bottom: Math.max(24, Math.min(h * 0.45, h - 160)) }
+          : { top: 70, left: 45, right: 45, bottom: 45 } });
+      } catch { /* keep the authored view if the frame is too small to fit */ }
+    };
+    const stopAutoFit = (event: { originalEvent?: unknown }) => { if (event.originalEvent) autoFit.current = false; };
+    m.on("dragstart", stopAutoFit);
+    m.on("zoomstart", stopAutoFit);
+    m.on("rotatestart", stopAutoFit);
+    m.on("pitchstart", stopAutoFit);
+    const fitFrame = requestAnimationFrame(() => { m.resize(); fitRegion(); });
     m.on("error", () =>
       setError(
         "Some basemap tiles could not load. Game roads and operations remain available.",
       ),
     );
-    const observer = new ResizeObserver(() => m.resize());
+    const observer = new ResizeObserver(() => { m.resize(); fitRegion(); });
     observer.observe(container.current);
     return () => {
+      cancelAnimationFrame(fitFrame);
       observer.disconnect();
       camera.current={region:game.region.id,center:m.getCenter().toArray() as Position,zoom:m.getZoom(),bearing:m.getBearing(),pitch:m.getPitch()};
       m.removeControl(deck);
@@ -320,6 +353,7 @@ export default function OperationsMap({
     });
   }, [language,game, selected, onSelect, onInspect, layers, ready, replay, visibleStandIds]);
   const fit = (planOnly = false) => {
+    autoFit.current = false;
     const bounds = new maplibregl.LngLatBounds();
     const ids = new Set([
       ...Object.values(game.plan.crews)

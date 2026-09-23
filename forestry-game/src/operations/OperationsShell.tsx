@@ -27,6 +27,10 @@ export function anchorWorkbench() {
   const workbench = document.querySelector('.adaptive-map-workspace');
   const controls = workbench?.querySelector('.mobile-workspace-controls');
   if (!workbench || !controls || getComputedStyle(controls).display === 'none') return false;
+  // The first-visit case chooser sits above the map; anchoring would scroll a
+  // new player past its heading before they have picked a case.
+  const launcher = document.querySelector('.operating-lesson-launcher');
+  if (launcher) { launcher.scrollIntoView({ block: 'start' }); return true; }
   workbench.scrollIntoView({ block: 'start' });
   return true;
 }
