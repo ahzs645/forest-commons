@@ -87,11 +87,13 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
       auctionWeek: row.id === 'BC20' ? 1 : source.auctionWeek,
       sourceNote: 'Inventory outline, area, species, age and projected live volume (17.5 cm) come from VRI 2025 via the pilot. Net treatment area, exclusions, the product split and the volume range below are authored teaching assumptions. No treatment/exclusion boundary has been surveyed or mapped.' };
   });
-  region.crews = region.crews.slice(0, 3).map((c, i) => ({ ...c, hours: 40,
+  // The lesson's own fleet and road speeds predate the pilot's BC-sourced rates; keep them.
+  for (const edge of region.roads.edges) edge.speed = edge.id.startsWith('access-') ? 15 : edge.id.startsWith('fsr-') ? 35 : edge.speed;
+  region.crews = region.crews.slice(0, 3).map((c, i) => ({ ...c, hours: 40, relocationSpeed: 40, relocationCostKm: 8,
     name: i === 1 ? 'CTL crew · teaching system' : `Full-tree crew ${i === 0 ? 1 : 2} · teaching system`,
     productivityFactor: 1, hourlyCost: i === 1 ? 72 : 65 }));
   region.trucks = region.trucks.slice(0, 3).map((t, i) => ({ ...t, name: `Teaching truck ${i + 1}`,
-    hours: 40, payload: [22, 30, 34][i], fixedWeekly: 350 }));
+    hours: 40, payload: [22, 30, 34][i], fixedWeekly: 350, costKm: 1.85, loadingHours: .6, unloadingHours: .4 }));
   if (region.mills.length < 3 || region.crews.length < 3 || region.trucks.length < 3)
     throw Error('BC lesson requires three receiving yards, crews and trucks in its source.');
   // Each yard keeps its authored outlets; monthly intake (2,200 m³ in total)

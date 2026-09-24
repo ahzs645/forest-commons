@@ -37,20 +37,20 @@ Two problems made the first preset hard to learn from. Its seven yards were plac
 
   BC24 stays the conservation area. The 19 offered stands are ranked in source order: eight secured, six private and five at auction (weeks 1, 3, 5, 7 and 9).
 - **Product mix (teaching mapping):**
-  - Conifers (SX, BL, FDI, PLI, SB and others) split 70/30 between sawlog and pulp.
+  - Conifers (SX, BL, FDI, PLI, SB and others) split 75/25 between sawlog and pulp (70/30 until the 24 September evidence pass; see below).
   - Paper birch (EP) splits 15/85 between hardwood sawlog and hardwood pulp.
   - Aspen and cottonwood (AT, AC) go to the poplar/panel assortment.
 
   The district is about one-third hardwood, mostly birch.
-- **Productivity (teaching assumption):** 3 + (m³/ha ÷ 70) m³/h, limited to 4.5–8.5.
+- **Productivity:** superseded by the evidence pass below.
 - **Receiving businesses:** the mapped network ends at Pilot Mountain Road, north of Prince George.
   - The connector now follows real public roads, taken from cached OSRM car routes (`research/bc-inputs/pg-connector-osrm/`, built by `scripts/build-prince-george-connector.py`, OpenStreetMap ODbL). The route is Pilot Mountain Road → Chief Lake Road → John Hart Highway (BC 97): 15.2 km to a junction in the city.
   - Street routes of 3.0–7.9 km then lead to five fictional businesses in general industrial areas: sawmills A and B, pulp mills A and B, and a panel plant. They are 20–26 km from the stands.
   - Edge speed is the OSRM car average, capped at 70 km/h for loaded trucks. It is not a certified heavy-truck route or a permitted haul.
   - Two fictional yards sit at the northern network ends, 27 km and 61 km away, and pay CAD 6–10 more per m³.
   - Public connector roads need no FSR road-use permit.
-- **Demand:** 55% of the offered volume of each product over the season, split across the yards that buy it, with the monthly pattern 1.0 / 1.1 / 0.9. The season total is 59,910 m³. The delivery objective is half the demand, 30,000 m³.
-- **Starting positions:** crews start at landings inside the stand block and trucks at the yards. Québec's numerical temperature curves are no longer attached; the frozen, thaw and wet access schedules remain.
+- **Demand:** superseded by the evidence pass below. At the rebuild it was 55% of the offered volume of each product, 59,910 m³ in the season, with a 30,000 m³ delivery objective.
+- **Starting positions:** crews start at landings inside the stand block and trucks at the yards. Québec's numerical temperature curves are no longer attached.
 
 The authored operating lesson is built from this pilot. It keeps its own tenure, single zone, yard nodes, map view and roads.
 
@@ -68,6 +68,29 @@ Engine replays (seed 2026, normal weather, draft plan every week), before → af
 - **Active play** (permits, purchases, 125% auction bids): delivered 33,638 → 54,230 m³; targets met 14/30 → 29/33. Waste of 18,248 m³ remains because the draft keeps harvesting after a month's demand is filled.
 
 Saves: longer hauls roughly doubled the stored route geometry. Save format 4 writes consecutive dictionary indices as runs, which shrinks a full-season Prince George save from 1.98M to 0.88M characters. Formats 1–3 remain readable.
+
+## Evidence pass (24 September 2026)
+
+A desk search for published BC figures replaced the Québec operating values; see [coefficient evidence](bc-coefficient-evidence-2026-09-24.md). The pilot now uses:
+
+- **Crews:** four full-tree crews on single 10-hour shifts at a CAD 800/h system rate. Stand productivity is 22–45 m³ per scheduled hour, and stump-to-truck works out to about CAD 25–30/m³.
+- **Trucks:** six 8-axle B-trains carrying 45 m³, with 1.3 h of terminal time per cycle.
+- **Speeds:** FSR 40 km/h and spurs 12 km/h.
+- **Products and prices:** the conifer split is 75/25. Log prices follow the Interior Log Market Report, and the aspen and birch prices are marked unverified or fictional.
+- **Weather:** Prince George February–April schedules built from the 1991–2020 normals and load-restriction timing.
+- **Demand:** 40% of the offered volume (43,560 m³), weighted towards the February winter haul; the delivery objective is 22,000 m³.
+
+Every sourced item is recorded as *source-identified* in the in-app evidence worksheet. None is marked reviewed.
+
+Engine replays (seed 2026, draft plan every week):
+
+| Weather | Delivered | Targets met | Closing cash |
+|---|---|---|---|
+| Typical | 29,303 m³ | 19/33 | CAD 1,038,496 |
+| Early break-up | 22,032 m³ | 14/33 | CAD 623,964 |
+| Late, dry break-up | 29,859 m³ | 19/33 | CAD 1,147,110 |
+
+Buying and bidding on every lot delivers less and ends below the starting cash, because timber bought after the winter haul cannot be moved before break-up.
 
 ## Verification
 
