@@ -51,17 +51,15 @@ Snow depth at month end is 26 cm (Feb), 12 cm (Mar) and 0 cm (Apr).
 
 ## Resulting play
 
-Engine replays, draft plan every week (the draft has no random element, so every seed gives the same result):
+Engine replays, seed 2026, draft plan every week, applying for permits on owned stands:
 
-| Weather | Cash change | Delivered | Targets met |
-|---|---|---|---|
-| Typical | +420k | 27,706 m³ | 15 / 33 |
-| Early break-up | +139k | 21,917 m³ | 13 / 33 |
-| Late, dry break-up | +560k | 29,981 m³ | 19 / 33 |
+| Weather | No buying | Best buying found |
+|---|---|---|
+| Typical | +325k | +423k (buy BC11) |
+| Early break-up | −131k | +60k (buy BC11 and BC08) |
+| Late, dry break-up | +349k | +651k (buy BC11 and BC08, win BC23) |
 
-Before the TSA rules and lot prices, the draft plan gave +388k, about −26k and +497k.
-
-Buying every private lot and bidding on every auction still ends at a loss in every weather. Timber bought after the winter haul cannot be moved before break-up. This is a deliberate teaching point. The [pilot notes](prince-george-playable-pilot.md) give the bidding comparison.
+Buying every private lot loses money in every weather. The [pilot notes](prince-george-playable-pilot.md) give the full comparison, and explain why the secured base was reduced to four stands.
 
 ## Sources
 
@@ -176,7 +174,7 @@ Checked against the pilot:
   - the average billed rate across the province was $60.85/m³;
   - developed timber cost $12.30/m³, and access $11.29/m³ sold.
 
-These figures give context for the auction share and price level only. The pilot's 5 auction lots out of 17 offered are a teaching ratio.
+These figures give context for the auction share and price level only. The pilot's 5 auction lots, 8 private lots and 4 secured stands out of 17 offered are a teaching ratio.
 
 ### Cranbrook TSA timber supply analysis report v3 (2004)
 

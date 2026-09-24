@@ -109,7 +109,7 @@ Three changes use documents found in the Legislative Library of BC (see the [evi
   - Each stand feeds it from its VRI record: conifer share, hemlock and balsam share, cedar, m³/ha, volume per tree (volume ÷ `VRI_LIVE_STEMS_PER_HA`, now copied by the extract script) and lot volume. Cycle time comes from the road network to the nearest yard, and the Prince George average of 3.6 bidders is used.
   - Market inputs are assumed, so only the ratio between lots is used. Offered timber still averages about 9 $/m³ (8.89 after clamping), with each lot between 0.4× and 1.8× of that.
   - Rival bids stay the engine's 86–121% of the asking price, so they now follow the lot's value too.
-- **Supply ranking.** 17 stands are offered, ranked in source order: the last five go to auction (weeks 1, 3, 5, 7 and 9), the five before them are private, and the first seven are secured.
+- **Supply ranking.** 17 stands are offered, ranked in source order: the last five go to auction (weeks 1, 3, 5, 7 and 9), the five before them are private, and the first seven are secured. (Superseded below: four secured, eight private.)
 - **Demand** stays at 43,560 m³ for the season, the level sized to six trucks. It is split by product in proportion to the offered volume. Holding it at 40% of the smaller offered volume would have cut it by 16% although the fleet is unchanged.
 
 ### Lot prices
@@ -161,6 +161,60 @@ What this shows:
   - Choosing which secured stands to cut in the three winter weeks matters more than before.
 
 The guided lesson is unchanged: its replay is identical (5,051 m³ delivered, 16 of 24 targets).
+
+## Buying, planning signals and lot explanations (24 September 2026)
+
+### Why buying never paid
+
+With seven secured stands, targeted purchases still lost money in every weather:
+
+| Plan (typical weather) | Cash change |
+|---|---|
+| No buying | +394,176 |
+| Buy BC17 in week 1 | +168,418 |
+| Win BC19 at 125% | +132,862 |
+
+The secured stands held about 41,000 m³ above retention, but six trucks deliver only about 28,000–31,000 m³ a season. Bought wood took truck time from wood already owned, so the purchase price and extra harvest cost were pure loss.
+
+### What changed
+
+- **Four secured stands** (BC02, BC03, BC06 and BC07, all birch–balsam mixedwood) hold about 26,000 m³ above retention, less than the fleet can move.
+- **Eight private and five auction lots.** BC08, BC09 and BC11, the sawlog-rich stands, are now for sale.
+- **Permit teaching cases kept.** BC07 starts without a cutting permit and BC06's permit lapses after six weeks.
+  - These roles were tied to source positions 8–10, which are now private. `bcTeachingTenure` now takes the stands by name.
+  - The guided lesson keeps its default, and its replay is unchanged.
+
+### Replays
+
+Seed 2026, draft plan every week, applying for permits on owned stands:
+
+| Plan | Typical | Early break-up | Late, dry |
+|---|---|---|---|
+| No buying | +325,437 | −131,083 | +349,090 |
+| Buy BC11 | **+422,544** | −203,552 | +431,170 |
+| Buy BC11 and BC08 | +354,295 | **+60,175** | +494,901 |
+| Buy BC11 and BC08, win BC23 at 130% | +301,006 | −100,001 | **+650,563** |
+| Buy every private lot | +2,842 | −598,401 | +119,745 |
+
+- The right amount to buy now depends on the weather.
+- Buying everything still loses money in every weather.
+- With no buying, 23,397 m³ is delivered in typical weather, just above the 22,000 m³ delivery objective.
+
+### New interface signals (all scenarios)
+
+- **Haul-window warning** in the plan review and draft review. It flags any stand this turn's crews cut when no road to a buyer is forecast open in time: before its sawlogs become pulp (3 turns) or its pulp becomes waste (4 turns). It uses the published forecast only.
+  - In Prince George early break-up it fires in weeks 4–6.
+  - In the guided lesson it fires in weeks 6–7, on BC04.
+- **Season outlook by product** on the Planning desk: buyers' remaining demand, roadside stock, secured standing volume above retention, the shortfall or surplus, and what is still offered to buy.
+  - At the start of Prince George, sawlog is short by about 12,300 m³ against 36,500 m³ on offer.
+- **Why this asking price** in the lot appraisal: each bid-equation attribute's effect against the district average, largest first.
+  - BC21: aspen and birch share 48% (district 33%), −1.91 $/m³; volume per tree 0.36 m³ (district 0.59), −0.89 $/m³.
+
+### Appraisal fix
+
+The lot appraisal routed only over roads already authorized. A lot not yet owned, whose access road still needed a permit, showed no route to any buyer, and its margin equalled minus the price in every weather. BC21 showed −32,274.
+
+It now values a lot as if its own access road were authorized, because the buyer applies for that permit after acquiring the lot. It still excludes fleet capacity and competition for demand, as its text says.
 
 ## Verification
 

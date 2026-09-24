@@ -49,7 +49,8 @@ describe('Prince George FSR teaching scenario', () => {
   expect(byId.BC01.unavailableReason).toBe('Below 182 m³/ha (TSA minimum)');
   const offered=princeGeorge.stands.filter(s=>s.supply!=='protected');
   expect(offered.filter(s=>s.supply==='auction')).toHaveLength(5);
-  expect(offered.filter(s=>s.supply==='private')).toHaveLength(5);
+  expect(offered.filter(s=>s.supply==='private')).toHaveLength(8);
+  expect(offered.filter(s=>s.supply==='guaranteed').map(s=>s.id)).toEqual(['BC02','BC03','BC06','BC07']);
   // Asking prices average the pilot's 9 $/m³ over offered volume but vary by lot.
   const perM3=offered.map(s=>s.askingPrice/s.volume);
   expect(offered.reduce((n,s)=>n+s.askingPrice,0)/offered.reduce((n,s)=>n+s.volume,0)).toBeCloseTo(PG_ASKING_M3,0);

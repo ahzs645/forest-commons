@@ -30,8 +30,20 @@ it('balances rest-of-season demand by product against secured wood',async()=>{
  expect(Object.values(rows).reduce((n,b)=>n+b.demand,0)).toBe(princeGeorge.mills.reduce((n,m)=>n+m.demand.reduce((t,d)=>t+Object.values(d).reduce((a,v)=>a+v,0),0),0));
  const owned=princeGeorge.stands.filter(s=>s.supply==='guaranteed');
  expect(rows['soft-saw'].secured).toBeCloseTo(owned.reduce((n,s)=>n+s.volume*(1-.121)*(s.mix['soft-saw']??0),0),6);
- // The secured stands grow too little sawlog and more hardwood pulp than buyers want.
- expect(rows['soft-saw'].balance).toBeLessThan(0);
- expect(rows['hard-pulp'].balance).toBeGreaterThan(0);
+ // The four secured birch–balsam stands grow barely half the sawlog buyers want; the lots on offer could cover it.
+ expect(rows['soft-saw'].balance).toBeLessThan(-10000);
  expect(rows['soft-saw'].available).toBeGreaterThan(-rows['soft-saw'].balance);
+ // Hardwood pulp is close to balanced: secured birch covers it.
+ expect(Math.abs(rows['hard-pulp'].balance)).toBeLessThan(.05*rows['hard-pulp'].demand);
+});
+
+it('appraises an unowned lot as if its own access road were authorized',async()=>{
+ const {appraise}=await import('./appraisal');
+ const g=createGame(princeGeorge,'normal',2026);
+ // BC21 is an auction lot whose access road needs a permit the buyer applies for after winning.
+ expect(g.region.bcTenure!.roads['access-BC21'].initialStatus).toBe('required');
+ const a=appraise(g,'BC21');
+ // Buyers are reachable in frozen and normal weather; thaw closes the FSRs.
+ expect(a.cases.filter(c=>c.weather==='frozen'||c.weather==='normal').every(c=>c.products.some(p=>p.offers.length>0))).toBe(true);
+ expect(a.cases[1].capped).toBeGreaterThan(-a.purchase);
 });

@@ -9,28 +9,28 @@ it('enforces tenure role ownership, persists applications, and clears readiness'
   const dir = mkdtempSync(join(tmpdir(), 'forest-tenure-'));
   try {
     const region = structuredClone(princeGeorge);
-    region.bcTenure!.roads['access-BC09'].initialStatus = 'required';
+    region.bcTenure!.roads['access-BC07'].initialStatus = 'required';
     const store = new RoomStore(dir), owner = store.create(region);
     const act = (action: string, payload: unknown = {}, token = owner.token) => store.mutate(owner.id, token, store.view(owner.id, token).revision, action, payload);
     const purchase = act('invite', {role:'purchase'}).credential!;
     const transport = act('invite', {role:'transport'}).credential!;
     const production = act('invite', {role:'production'}).credential!;
-    expect(() => act('tenure-harvest', {id:'BC09'}, transport)).toThrow('cannot perform');
-    expect(() => act('tenure-road', {id:'access-BC09'}, purchase)).toThrow('cannot perform');
+    expect(() => act('tenure-harvest', {id:'BC07'}, transport)).toThrow('cannot perform');
+    expect(() => act('tenure-road', {id:'access-BC07'}, purchase)).toThrow('cannot perform');
     expect(() => act('tenure-settle', {id:'BC01'}, purchase)).toThrow('cannot perform');
     act('ready', {ready:true}, production);
-    act('tenure-harvest', {id:'BC09'}, purchase);
-    act('tenure-road', {id:'access-BC09'}, transport);
+    act('tenure-harvest', {id:'BC07'}, purchase);
+    act('tenure-road', {id:'access-BC07'}, transport);
     const loaded = new RoomStore(dir).view(owner.id, production).game;
-    expect(loaded.bcTenure!.harvest.BC09.status).toBe('pending');
-    expect(loaded.bcTenure!.roads['access-BC09'].status).toBe('pending');
+    expect(loaded.bcTenure!.harvest.BC07.status).toBe('pending');
+    expect(loaded.bcTenure!.roads['access-BC07'].status).toBe('pending');
     expect(loaded.plan.ready).toEqual({purchase:false,production:false,transport:false});
-    expect(() => act('tenure-harvest', {id:'BC09'}, purchase)).toThrow('pending');
+    expect(() => act('tenure-harvest', {id:'BC07'}, purchase)).toThrow('pending');
     for (const token of [purchase,transport,production]) act('ready', {ready:true}, token);
     act('advance');
     const after = store.view(owner.id, purchase).game;
-    expect(after.bcTenure!.harvest.BC09.status).toBe('approved');
-    expect(after.bcTenure!.roads['access-BC09'].status).toBe('approved');
+    expect(after.bcTenure!.harvest.BC07.status).toBe('approved');
+    expect(after.bcTenure!.roads['access-BC07'].status).toBe('approved');
   } finally { rmSync(dir, {recursive:true,force:true}); }
 });
 

@@ -159,9 +159,11 @@ const priceBasis = (lot: BidInputs, bid: number): PriceBasis => {
   };
 };
 let offered = 0;
-const auctionLots = 5, privateLots = 5, secured = offeredInputs.length - auctionLots - privateLots;
+// Four secured stands hold less wood than the six trucks can move in a season,
+// so buying the right lots adds deliveries; buying everything still loses money.
+const secured = 4, auctionLots = 5, privateLots = offeredInputs.length - secured - auctionLots;
 const stands: RegionDefinition['stands'] = standInputs.map(({ s, i, inv, perHa, volume, lot, bid, minimum, merchantable }) => {
-  // Offered stands are ranked in source order: the last five go to auction, the five before them are private, the rest are secured.
+  // Offered stands are ranked in source order: the first four are secured, the last five go to auction, the rest are private.
   const rank = merchantable ? offered++ : -1;
   const supply = !merchantable ? 'protected' : rank < secured ? 'guaranteed' : rank < secured + privateLots ? 'private' : 'auction';
   return {
@@ -274,7 +276,8 @@ export const princeGeorge: RegionDefinition = {
 };
 // Québec numerical temperature curves are not reused for BC (REGION-PACKAGES.md); the access schedules remain.
 delete princeGeorge.weatherCharts;
-princeGeorge.bcTenure = bcTeachingTenure(princeGeorge);
+// Of the four secured stands, BC07 starts without a cutting permit and BC06's permit lapses after six weeks.
+princeGeorge.bcTenure = bcTeachingTenure(princeGeorge, { permitRequired: ['BC07'], shortPermit: 'BC06' });
 princeGeorge.bcMarket = bcTeachingMarket();
 princeGeorge.sources.push(
   { title: 'BC harvesting and road authorizations', url: 'https://www2.gov.bc.ca/gov/content/industry/forestry/forest-tenures/timber-harvesting-rights/cutting-permit-road-tenure-administration', note: 'CP, RP and industrial FSR road-use distinctions inform the exercise. Authored eligibility, approval times and statuses are not real permits.' },
