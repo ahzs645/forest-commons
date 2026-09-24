@@ -1,4 +1,5 @@
-import { princeGeorge } from './prince-george';
+import { princeGeorge, legacyPilotSupply } from './prince-george';
+import { bcTeachingTenure } from './bc-tenure';
 import { emptyCalibration } from '../simulation/regional-calibration';
 import type { RegionDefinition, Weather } from '../simulation/types';
 import type { StandDossier, OperationsProfile, HarvestSystem } from '../simulation/operations-profile';
@@ -52,6 +53,21 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'wet', 'frozen'], retention: .8, ready: 1,
       rationale: 'Source geometry remains visible, but the entire area is excluded from the modelled treatment area. No acquisition or harvesting is permitted.' },
   ];
+  // This lesson was authored on the first pilot: every source stand in one zone,
+  // the original supply categories and three yards on these trunk nodes. The
+  // pilot has since taken VRI volumes, species and new yards; pin the lesson's
+  // inherited inputs so its cases keep their meaning.
+  const pilotOrder = region.stands.map(s => s.id);
+  if (pilotOrder.length !== 24) throw Error('BC lesson expects the 24-stand pilot source.');
+  region.roads = { nodes: region.roads.nodes.filter(n => !n.id.startsWith('pg-')), edges: region.roads.edges.filter(e => !e.id.startsWith('pg-')) };
+  region.stands = region.stands.map(({ unavailableReason: _, ...s }, i) => ({ ...s, name: `${s.id} · ${s.name.replace(' (not merchantable)', '')}`, zone: 'north', supply: legacyPilotSupply(i), auctionWeek: 1 + i % 5 * 2 }));
+  region.zones = [{ id: 'north', name: 'Pilot forest operating zone' }, { id: 'south', name: 'Illustrative comparison zone' }];
+  region.bcTenure = bcTeachingTenure(region);
+  const lessonYardNodes = ['bc-road-0', 'bc-road-7', 'bc-road-14'];
+  region.mills = region.mills.slice(0, 3).map((m, i) => ({ ...m, node: lessonYardNodes[i], position: region.roads.nodes.find(n => n.id === lessonYardNodes[i])!.position }));
+  region.center = [-122.91, 54.095];
+  region.zoom = 11.5;
+  region.sources = region.sources.map(src => src.title === 'BC VRI 2025 Rank 1' ? { ...src, note: 'Open Government Licence – British Columbia. Whole single-ring polygon geometry and area retained. Polygon selection does not establish tenure or timber availability. Lesson volumes, species and ages are authored teaching values (see the operating profile), not VRI values.' } : src);
   const byId = new Map(region.stands.map(s => [s.id, s]));
   for (const row of profileRows) if (!byId.has(row.id)) throw Error(`BC lesson source is missing ${row.id}.`);
   const products = ['soft-saw', 'soft-pulp', 'hard-saw', 'hard-pulp', 'poplar'];

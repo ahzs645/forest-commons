@@ -18,9 +18,46 @@ Inventory came from [VRI 2025 Rank 1](https://catalogue.data.gov.bc.ca/dataset/2
 
 ## Teaching assumptions
 
-Source geometry does not establish a right to harvest, current road access or bridge capacity. Road speeds and bearing classes, forest spurs, receiving-yard locations, product recovery, weather, prices, equipment and ecological coefficients are authored teaching values. Supply categories and refusal/auction mechanics are instructional rules, not a representation of BC tenure law. The forest density is explicitly **120 m³/ha**, not a silently misinterpreted VRI utilization field. Current professional calibration status stays unreviewed.
+Source geometry does not establish a right to harvest, current road access or bridge capacity. Road speeds and bearing classes, forest spurs, receiving-yard locations, the species-to-product split, weather, prices, equipment and ecological coefficients are authored teaching values. Supply categories and refusal/auction mechanics are instructional rules; BC tenure is modelled separately in `BC-TENURE.md`. Stand volume, species and age now come from VRI (see *Data-driven rebuild* below); the original 120 m³/ha density applied until 24 September 2026. Current professional calibration status stays unreviewed.
 
 The pilot reuses the existing operating mechanisms and optional annual model. A new BC yield model, actual mill capacity, restrictions and local procurement terms are outside the claims of this teaching preset.
+
+## Data-driven rebuild (24 September 2026)
+
+Two problems made the first preset hard to learn from. Its seven yards were placed by node-list index, so five sat 0–1 km from the stands and hauling to them was nearly free. Its demand was Québec's product mix scaled by 0.7: 14,700 m³ of hardwood sawlog demand against 3,044 m³ in the district. With active purchasing and bidding, 32% of the harvest expired and 14 of 30 monthly targets were met.
+
+`scripts/extract-prince-george-vri.py` copies each stand's VRI attributes from the cached snapshot into `src/data/prince-george-vri.json`, with no network request. The copied fields are FEATURE_ID, LIVE_STAND_VOLUME_175, DEAD_STAND_VOLUME_175, PROJ_AGE_1, BCLCS_LEVEL_4 and species codes and percentages. `src/scenarios/prince-george.ts` then derives:
+
+- **Volume:** projected live volume at 17.5 cm × polygon area. District total 117,458 m³, against 60,871 m³ at 120 m³/ha. This is an inventory projection with no decay, waste or breakage deduction, not a cruise.
+- **Merchantability:** stands below 60 m³/ha are not offered and are labelled *Not merchantable (VRI)*:
+  - BC05, black spruce, 0 m³/ha;
+  - BC10, 30 years old, 4 m³/ha;
+  - BC15, 40 m³/ha;
+  - BC18, 44 m³/ha.
+
+  BC24 stays the conservation area. The 19 offered stands are ranked in source order: eight secured, six private and five at auction (weeks 1, 3, 5, 7 and 9).
+- **Product mix (teaching mapping):**
+  - Conifers (SX, BL, FDI, PLI, SB and others) split 70/30 between sawlog and pulp.
+  - Paper birch (EP) splits 15/85 between hardwood sawlog and hardwood pulp.
+  - Aspen and cottonwood (AT, AC) go to the poplar/panel assortment.
+
+  The district is about one-third hardwood, mostly birch.
+- **Productivity (teaching assumption):** 3 + (m³/ha ÷ 70) m³/h, limited to 4.5–8.5.
+- **Receiving businesses:** the mapped network ends about 13 km short of Prince George.
+  - A labelled teaching connector (public road, bearing class 1, 70 km/h, straight-line distance × 1.3) runs from the southern FSR exit, `bc-road-30`, to a modelled mill district with five fictional businesses: sawmills A and B, pulp mills A and B, and a panel plant. They are about 19–22 km from the stands.
+  - Two fictional yards sit at the northern network ends, 27 km and 61 km away, and pay CAD 6–10 more per m³.
+  - Public connector roads need no FSR road-use permit.
+- **Demand:** 55% of the offered volume of each product over the season, split across the yards that buy it, with the monthly pattern 1.0 / 1.1 / 0.9. The season total is 59,910 m³. The delivery objective is half the demand, 30,000 m³.
+- **Starting positions:** crews start at landings inside the stand block and trucks at the yards. Québec's numerical temperature curves are no longer attached; the frozen, thaw and wet access schedules remain.
+
+The authored operating lesson is built from this pilot. It keeps its previous supply categories, tenure, single zone, yard nodes, map view and roads, so its region definition is unchanged apart from a corrected source note.
+
+Engine replays (seed 2026, normal weather, draft plan every week), before → after:
+
+- **Draft only:** 35,365 m³ delivered and 526 m³ waste. Supply runs out mid-season unless timber is bought.
+- **Active play** (permits, purchases, 125% auction bids): delivered 33,638 → 54,230 m³; targets met 14/30 → 29/33. Waste of 18,248 m³ remains because the draft keeps harvesting after a month's demand is filled.
+
+Saves: longer hauls roughly doubled the stored route geometry. Save format 4 writes consecutive dictionary indices as runs, which shrinks a full-season Prince George save from 1.98M to 0.88M characters. Formats 1–3 remain readable.
 
 ## Verification
 

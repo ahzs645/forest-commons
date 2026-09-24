@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { princeGeorge } from '../scenarios/prince-george';
+import { princeGeorge, PG_MERCHANTABLE_M3_PER_HA } from '../scenarios/prince-george';
+import vri from '../data/prince-george-vri.json';
 import { quebec } from '../scenarios/quebec';
 import { validateRegion, parseGame } from './validation';
 import { createGame, draftPlan, advance, sum, stockAt } from './engine';
@@ -16,11 +17,24 @@ describe('Prince George FSR teaching scenario', () => {
   expect(r.mills.every(m=>m.name.includes('fictional'))).toBe(true);
   const g=createGame(r);
   for(const stand of r.stands){
-   expect(stand.volume).toBe(Math.round(stand.hectares*120));
+   // Volume is VRI projected live volume at 17.5 cm × area; stands below the merchantability threshold are not offered.
+   const inv=(vri.stands as Record<string,{liveM3PerHa175:number}>)[stand.id];
+   expect(stand.volume).toBe(Math.max(1,Math.round(inv.liveM3PerHa175*stand.hectares)));
+   if(inv.liveM3PerHa175<PG_MERCHANTABLE_M3_PER_HA)expect(stand.supply).toBe('protected');
+   expect(Object.values(stand.mix).reduce((a,b)=>a+b,0)).toBeCloseTo(1,9);
    expect(stand.polygon.length).toBeGreaterThan(5);
    expect(route(r,r.mills[0].node,stand.node,weatherAt(g))).not.toBeNull();
   }
   expect(quebec.roads.nodes.some(n=>n.id.startsWith('bc-'))).toBe(false);
+  // Receiving businesses are off the stand spurs: every stand hauls at least 15 km to its nearest yard.
+  for(const stand of r.stands.filter(s=>s.supply!=='protected'))
+   expect(Math.min(...r.mills.map(m=>route(r,stand.node,m.node,weatherAt(g))?.km??Infinity))).toBeGreaterThan(15);
+  // Season demand for each product stays within what the offered stands grow.
+  for(const p of r.products){
+   const supply=r.stands.filter(s=>s.supply!=='protected').reduce((n,s)=>n+s.volume*(s.mix[p.id]??0),0);
+   const demand=r.mills.reduce((n,m)=>n+m.demand.reduce((t,month)=>t+(month[p.id]??0),0),0);
+   expect(demand).toBeLessThanOrEqual(supply*.6);
+  }
  });
  it.each(Object.keys(princeGeorge.weather))('finishes %s with conserved stock/cash and regional save roundtrips', weather => {
   let g=createGame(princeGeorge,weather,47);

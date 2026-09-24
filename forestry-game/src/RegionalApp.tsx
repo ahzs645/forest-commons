@@ -827,7 +827,7 @@ export default function RegionalApp() {
                                 {s.supply === "auction"
                                   ? `${tr("Auction")} ${tr(periodLabel).toLowerCase()} ${s.auctionWeek}`
                                   : s.supply === "protected"
-                                    ? tr("Conservation")
+                                    ? tr(s.unavailableReason ?? "Conservation")
                                     : tr("Now")}
                               </td>
                             </tr>

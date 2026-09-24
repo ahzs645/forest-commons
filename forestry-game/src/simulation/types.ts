@@ -37,6 +37,8 @@ export interface RoadEdge {
 }
 export interface StandDefinition {
   sourceNote?: string;
+  /** Why a protected stand is not offered, shown instead of "Conservation" (e.g. not merchantable). */
+  unavailableReason?: string;
   id: string;
   name: string;
   position: Position;

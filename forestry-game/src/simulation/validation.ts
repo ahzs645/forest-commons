@@ -136,6 +136,7 @@ export function validateRegion(value: unknown): RegionDefinition {
       !positive(s.volume, true) ||
       !positive(s.hectares) ||
       (s.sourceNote !== undefined && !text(s.sourceNote)) ||
+      (s.unavailableReason !== undefined && (!text(s.unavailableReason) || s.supply !== "protected")) ||
       !positive(s.productivity) ||
       !positive(s.harvestCost, true) ||
       !positive(s.askingPrice, true) ||

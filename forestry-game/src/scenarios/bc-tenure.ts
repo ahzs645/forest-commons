@@ -25,7 +25,8 @@ export function bcTeachingTenure(region: RegionDefinition): NonNullable<RegionDe
         ],
       }];
     })),
-    roads: Object.fromEntries(region.roads.edges.map(edge => {
+    // Public roads (the modelled Prince George connector) need no FSR road-use permit.
+    roads: Object.fromEntries(region.roads.edges.filter(edge => edge.roadClass !== 'public').map(edge => {
       const stand = region.stands.find(s => edge.id === `access-${s.id}`);
       return [edge.id, {
         kind: !stand ? 'road-use-permit' : stand.supply === 'private' ? 'owner-consent' : 'road-permit',
