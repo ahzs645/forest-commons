@@ -103,6 +103,16 @@
   .adaptive-map-workspace .operating-role-tabs button[aria-pressed=true] { background:#e4eddf;color:#173e32;font-weight:700; }
   /* Map pills are secondary on a phone; keep the target, lose the weight. */
   .adaptive-map-workspace .geo-tools>button,.adaptive-map-workspace .geo-tools .map-legend>summary,.adaptive-map-workspace .map-layer-menu>summary { box-shadow:none;background:#ffffffe0; }
+  /* Compact pills over the map: 30px drawn, with an invisible band that keeps
+     the 44px touch target without covering more of the map. */
+  .map-first .adaptive-map-workspace .geo-tools .map-legend>summary,
+  .map-first .adaptive-map-workspace .geo-tools .map-layer-menu>summary { position:relative;min-height:30px;height:30px;padding:0 10px;border-radius:15px;font-size:11.5px;font-weight:600;gap:4px;box-shadow:0 1px 3px #173e3226; }
+  .map-first .adaptive-map-workspace .geo-tools .map-legend>summary::before,
+  .map-first .adaptive-map-workspace .geo-tools .map-layer-menu>summary::before { content:"";position:absolute;inset:-7px -2px; }
+  .map-first .adaptive-map-workspace .geo-tools .map-layer-menu>summary::after { font-size:9px; }
+  /* Zoom buttons sized to sit with the pills instead of towering over them. */
+  .map-first .adaptive-map-workspace .maplibregl-ctrl-group { border-radius:10px;box-shadow:0 1px 3px #173e3226; }
+  .map-first .adaptive-map-workspace .maplibregl-ctrl-group > button { width:36px;height:36px;min-height:36px; }
   .adaptive-map-workspace .operating-role-tabs { position:relative;top:auto;padding:3px 0 6px; }
   /* The sheet header already names the selected feature, and the sheet's own
      expand control replaces this disclosure, so drop a 44px duplicate row and
