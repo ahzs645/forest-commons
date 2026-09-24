@@ -2,7 +2,7 @@ import data from '../data/prince-george.json';
 import vri from '../data/prince-george-vri.json';
 import connector from '../data/prince-george-connector.json';
 import { quebec } from './quebec';
-import type { RegionDefinition, Position, Weather } from '../simulation/types';
+import type { RegionDefinition, Position, Weather, PriceBasis, PriceFactor } from '../simulation/types';
 import { emptyCalibration } from '../simulation/regional-calibration';
 import { bcTeachingTenure } from './bc-tenure';
 import { bcTeachingMarket } from './bc-market';
@@ -109,32 +109,58 @@ function hoursToNearestYard() {
 const yardHours = hoursToNearestYard();
 // Truck load plus unload at the landing and yard (see pgTrucks).
 const HANDLING_HOURS = 0.75 + 0.55;
+// Attributes the bid equation reads from a stand's VRI record and haul.
+interface BidInputs { conifer: number; perHa: number; volume: number; m3PerTree: number; hembal: number; cedar: number; beetleAttack: number; cycleHours: number }
+// 2010 Interior bid equation per m³ of coniferous volume, spread over the
+// whole lot (the equation gives deciduous volume no value).
+const lotValue = (a: BidInputs) => estimatedWinningBid({
+  coniferM3: Math.max(1, a.volume * a.conifer), coniferM3PerHa: Math.max(1, a.perHa * a.conifer), m3PerTree: a.m3PerTree,
+  hembal: a.hembal, cedar: a.cedar, beetleAttack: a.beetleAttack, ...PG_BID_SITE, cycleHours: a.cycleHours, danb: PRINCE_GEORGE_DANB,
+}, PG_BID_MARKET) * a.conifer;
 const standInputs = data.stands.map((s, i) => {
   const inv = inventory[s.id];
   const perHa = inv.liveM3PerHa175;
   const volume = Math.max(1, Math.round(perHa * s.hectares));
-  // 2010 Interior bid equation per m³ of coniferous volume, spread over the
-  // whole lot (the equation gives deciduous volume no value).
   const conifer = inv.species.filter(([c]) => !isDeciduous(c)).reduce((n, [, p]) => n + p, 0) / 100;
   const ofConifer = (test: (c: string) => boolean) => conifer ? inv.species.filter(([c]) => !isDeciduous(c) && test(c)).reduce((n, [, p]) => n + p, 0) / 100 / conifer : 0;
-  const bid = estimatedWinningBid({
-    coniferM3: Math.max(1, volume * conifer), coniferM3PerHa: Math.max(1, perHa * conifer),
-    m3PerTree: inv.liveStemsPerHa ? perHa / inv.liveStemsPerHa : 0.1,
+  const lot: BidInputs = {
+    conifer, perHa, volume, m3PerTree: inv.liveStemsPerHa ? perHa / inv.liveStemsPerHa : 0.1,
     hembal: ofConifer(c => c.startsWith('B') || c.startsWith('H')), cedar: ofConifer(c => c === 'CW'),
-    beetleAttack: inv.deadM3PerHa175 / Math.max(1, inv.liveM3PerHa175 + inv.deadM3PerHa175), ...PG_BID_SITE,
-    cycleHours: 2 * (yardHours.get(s.node) ?? 0) + HANDLING_HOURS, danb: PRINCE_GEORGE_DANB,
-  }, PG_BID_MARKET) * conifer;
+    beetleAttack: inv.deadM3PerHa175 / Math.max(1, inv.liveM3PerHa175 + inv.deadM3PerHa175),
+    cycleHours: 2 * (yardHours.get(s.node) ?? 0) + HANDLING_HOURS,
+  };
   const minimum = pgMinimumM3PerHa(inv.species);
-  return { s, i, inv, perHa, volume, bid, minimum, merchantable: perHa >= minimum && i !== 23 };
+  return { s, i, inv, perHa, volume, lot, bid: lotValue(lot), minimum, merchantable: perHa >= minimum && i !== 23 };
 });
 // Asking prices keep the pilot's 9 $/m³ average over offered timber, spread
 // between lots in proportion to the estimated bid.
 const offeredInputs = standInputs.filter(x => x.merchantable);
 const meanBid = offeredInputs.reduce((n, x) => n + x.bid * x.volume, 0) / offeredInputs.reduce((n, x) => n + x.volume, 0);
 const askingIndex = (bid: number) => Math.min(PG_ASKING_RANGE[1], Math.max(PG_ASKING_RANGE[0], bid / meanBid));
+// Why each lot's price differs from the average: set one attribute at a time to
+// its volume-weighted offered-timber average and see how far the price moves.
+const offeredVolume = offeredInputs.reduce((n, x) => n + x.volume, 0);
+const averageLot = Object.fromEntries((Object.keys(offeredInputs[0].lot) as (keyof BidInputs)[]).map(k =>
+  [k, offeredInputs.reduce((n, x) => n + x.lot[k] * x.volume, 0) / offeredVolume])) as unknown as BidInputs;
+const priceFactors: [PriceFactor, keyof BidInputs, (a: BidInputs) => number][] = [
+  ['deciduous', 'conifer', a => 1 - a.conifer], ['tree-size', 'm3PerTree', a => a.m3PerTree], ['hembal', 'hembal', a => a.hembal],
+  ['density', 'perHa', a => a.perHa], ['lot-size', 'volume', a => a.volume], ['haul', 'cycleHours', a => a.cycleHours],
+];
+const priceBasis = (lot: BidInputs, bid: number): PriceBasis => {
+  const index = bid / meanBid;
+  return {
+    averageM3: PG_ASKING_M3,
+    ...(index > PG_ASKING_RANGE[1] ? { capped: 'upper' as const } : index < PG_ASKING_RANGE[0] ? { capped: 'lower' as const } : {}),
+    factors: priceFactors.map(([factor, key, shown]) => ({
+      factor, value: Math.round(shown(lot) * 1000) / 1000, average: Math.round(shown(averageLot) * 1000) / 1000,
+      // `+ 0` turns a rounded −0 into 0, which saved games store as 0.
+      effect: Math.round((bid - lotValue({ ...lot, [key]: averageLot[key] })) * PG_ASKING_M3 / meanBid * 100) / 100 + 0,
+    })).sort((a, b) => Math.abs(b.effect) - Math.abs(a.effect)),
+  };
+};
 let offered = 0;
 const auctionLots = 5, privateLots = 5, secured = offeredInputs.length - auctionLots - privateLots;
-const stands: RegionDefinition['stands'] = standInputs.map(({ s, i, inv, perHa, volume, bid, minimum, merchantable }) => {
+const stands: RegionDefinition['stands'] = standInputs.map(({ s, i, inv, perHa, volume, lot, bid, minimum, merchantable }) => {
   // Offered stands are ranked in source order: the last five go to auction, the five before them are private, the rest are secured.
   const rank = merchantable ? offered++ : -1;
   const supply = !merchantable ? 'protected' : rank < secured ? 'guaranteed' : rank < secured + privateLots ? 'private' : 'auction';
@@ -155,6 +181,7 @@ const stands: RegionDefinition['stands'] = standInputs.map(({ s, i, inv, perHa, 
     // harvestCost covers landing and road upkeep; crew time carries the system rate.
     productivity: Math.round(Math.min(45, Math.max(22, 15 + perHa / 12)) * 10) / 10, harvestCost: 3,
     askingPrice: Math.round(volume * PG_ASKING_M3 * (merchantable ? askingIndex(bid) : 1)),
+    ...(merchantable ? { priceBasis: priceBasis(lot, bid) } : {}),
     supply, auctionWeek: supply === 'auction' ? [1, 3, 5, 7, 9][(rank - secured - privateLots) % 5] : 1 + i % 5 * 2,
   };
 });

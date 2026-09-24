@@ -111,9 +111,51 @@ export function siteReadiness(game: Game, standId: string, selection: ReadinessS
   return checks;
 }
 
+/**
+ * Wood cut this turn that the published forecast gives no way to move before
+ * it loses value. Roadside sawlogs become pulp after their fresh window and
+ * pulp becomes waste after its own (see advance), so a stand is flagged when
+ * no loaded route to any buyer is forecast open in time. Access only: truck
+ * hours and demand can still leave stock behind in an open week.
+ */
+export function haulWindowFindings(game: Game): OperatingFinding[] {
+  const region = operatingRegion(game), schedule = region.weather[game.weatherId];
+  const product = (id: string) => region.products.find(p => p.id === id)!;
+  // Turns from harvest until a product becomes waste, including any downgraded window.
+  const life = (id: string): number => { const p = product(id); return p.maxFreshWeeks + (p.downgradeTo ? life(p.downgradeTo) : 0); };
+  const findings: OperatingFinding[] = [];
+  const cut = new Set(Object.values(game.plan.crews).flat().map(o => o.stand));
+  for (const id of cut) {
+    const def = region.stands.find(s => s.id === id);
+    if (!def) continue;
+    const products = Object.entries(def.mix).filter(([, share]) => share > 0).map(([p]) => p);
+    const open = (turn: number) => {
+      const weather = Object.fromEntries(region.zones.map(z => [z.id, schedule.forecast[z.id][turn - 1]]));
+      return region.mills.some(m => products.some(p => p in m.prices && region.trucks.some(t => route(region, def.node, m.node, weather,
+        game.improvedRoads, { kind: 'truck', id: t.id, product: p, payloadM3: operatingPayload(region, t.id, p) }))));
+    };
+    let next: number | undefined;
+    for (let turn = game.week; turn <= region.weeks && next === undefined; turn++) if (open(turn)) next = turn;
+    const wait = next === undefined ? Infinity : next - game.week;
+    const nextText = next === undefined ? 'none this season' : String(next);
+    const wasted = products.filter(p => wait >= life(p));
+    if (wasted.length === products.length)
+      findings.push({ code: 'haul-window', subject: id, level: 'warning', action: 'transport',
+        message: `${id}: no haul route to a buyer is forecast open before wood cut this turn spoils (next open turn: ${nextText}). Unhauled wood becomes waste.` });
+    else if (wasted.length)
+      findings.push({ code: 'haul-window', subject: id, level: 'warning', action: 'transport',
+        message: `${id}: no haul route to a buyer is forecast open until turn ${nextText}. Pulp cut this turn becomes waste first, and sawlogs become pulp.` });
+    else if (products.some(p => product(p).downgradeTo && wait >= product(p).maxFreshWeeks))
+      findings.push({ code: 'haul-window', subject: id, level: 'warning', action: 'transport',
+        message: `${id}: sawlogs cut this turn are forecast to become pulp before a haul route opens (next open turn: ${nextText}).` });
+  }
+  return findings;
+}
+
 export function planExceptions(game: Game): OperatingFinding[] {
   const findings: OperatingFinding[] = planProblems({ ...game, roleMode: false })
     .map((message, i) => ({ code: `plan-${i}`, subject: 'plan', level: 'blocked', message }));
+  findings.push(...haulWindowFindings(game));
   for (const [crew, orders] of Object.entries(game.plan.crews)) for (const order of orders)
     findings.push(...siteReadiness(game, order.stand, { crew, treatment: order.treatment })
       .filter(x => x.scope === 'harvest' && x.level !== 'ready'));

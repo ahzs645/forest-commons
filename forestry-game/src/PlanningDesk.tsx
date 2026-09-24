@@ -6,6 +6,7 @@ import type { Game } from "./simulation/types";
 import {
   forecastOutcome,
   learningProgress,
+  seasonBalance,
   supplyBalance,
 } from "./simulation/planning";
 import { sum } from "./simulation/engine";
@@ -64,6 +65,7 @@ export default function PlanningDesk({
  const {t: tr,language}=useLanguage(); const fmt=(n:number)=>Math.round(n).toLocaleString(language==='fr'?'fr-CA':'en-CA');
   const preview = useMemo(() => forecastOutcome(game), [game]),
     balance = useMemo(() => supplyBalance(game), [game]),
+    season = useMemo(() => seasonBalance(game), [game]),
     report = preview.report,
     r = game.region;
   return (
@@ -172,6 +174,43 @@ export default function PlanningDesk({
         <button onClick={() => onNavigate("Forest & timber")}>
           {tr("Inspect procurement options →")}
         </button>
+      </section>
+      <section className="panel">
+        <h2>{tr("Season outlook by product")}</h2>
+        <p className="muted">
+          {tr("What buyers still want for the rest of the season, against the wood you already hold: roadside stock plus secured stands above your retention floor. Access, crew and truck capacity and spoilage are not counted.")}
+        </p>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>{tr("Assortment")}</th>
+                <th>{tr("Buyers still want")}</th>
+                <th>{tr("Roadside now")}</th>
+                <th>{tr("Secured standing")}</th>
+                <th>{tr("Shortfall or surplus")}</th>
+                <th>{tr("Still offered to buy")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {season.map((b) => (
+                <tr key={b.product.id}>
+                  <td>{tr(b.product.name)}</td>
+                  <td>{fmt(b.demand)} m³</td>
+                  <td>{fmt(b.roadside)} m³</td>
+                  <td>{fmt(b.secured)} m³</td>
+                  <td className={b.balance < 0 ? "negative" : "positive"}>
+                    {b.balance < 0 ? `${fmt(-b.balance)} m³ ${tr("short")}` : `${fmt(b.balance)} m³ ${tr("surplus")}`}
+                  </td>
+                  <td>{fmt(b.available)} m³</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="muted">
+          {tr("A shortfall cannot be closed by planning alone: buy stands that grow that product, or expect to miss those targets. A surplus is wood buyers will not take this season; if harvested it stays at roadside, where sawlogs become pulp and pulp becomes waste.")}
+        </p>
       </section>
       {onChange && <DispatchBenchmark game={game} onChange={onChange} />}
       <LearningObjectives game={game} />

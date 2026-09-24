@@ -2,7 +2,7 @@ import { useLanguage } from "./i18n";
 import ProcurementStudy from "./ProcurementStudy";
 import ProcurementCharts from "./ProcurementCharts";
 import { useState } from "react";
-import type { Game, Weather } from "./simulation/types";
+import type { Game, StandDefinition, Weather } from "./simulation/types";
 import { appraise, bidRisk, procurementWindows } from "./simulation/appraisal";
 
 export default function ProcurementLab({
@@ -60,6 +60,7 @@ export default function ProcurementLab({
       </div>
       <p>
         {game.region.currency} {f(bid)}{" "}{tr("offered ·")}{" "}{f(a.eligible)}{" "}{tr("m³ eligible at current retention.")}{" "}</p>
+      {stand.priceBasis && <PriceBasisNote stand={stand} currency={game.region.currency} />}
       {game.region.bcTenure && <p>{tr("BC appraisal includes current stumpage")}: {game.region.currency} {f(a.stumpage)} · {tr("operator provisions")}: {game.region.currency} {f(a.obligations)}. {tr("Future resets and market changes can alter realized margins.")}{a.authorizationProblem && <> {tr("Harvest block")}: {a.authorizationProblem}.</>}</p>}
       <div className="table-wrap">
         <table>
@@ -178,4 +179,32 @@ export default function ProcurementLab({
       >{" "}{tr("Use")}{" "}{f(bid)}{" "}{tr("as this week’s sealed bid")}{" "}</button>
     </section><ProcurementStudy game={game} standId={standId} onBid={onBid}/></>
   );
+}
+
+/** Why a lot's asking price differs from the district average, largest reasons first. */
+export function PriceBasisNote({ stand, currency }: { stand: StandDefinition; currency: string }) {
+  const { t: tr, language } = useLanguage();
+  const basis = stand.priceBasis!, locale = language === "fr" ? "fr-CA" : "en-CA";
+  const num = (n: number, digits = 0) => n.toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  const pct = (n: number) => `${num(n * 100)}%`;
+  const shown: Record<string, { label: string; value: (n: number) => string }> = {
+    deciduous: { label: "Aspen and birch share", value: pct },
+    "tree-size": { label: "Volume per tree", value: n => `${num(n, 2)} m³` },
+    hembal: { label: "Balsam and hemlock share of conifers", value: pct },
+    density: { label: "Volume per hectare", value: n => `${num(n)} m³/ha` },
+    "lot-size": { label: "Lot size", value: n => `${num(n)} m³` },
+    haul: { label: "Haul cycle to nearest buyer", value: n => `${num(n, 1)} h` },
+  };
+  const perM3 = stand.volume ? stand.askingPrice / stand.volume : 0;
+  const main = basis.factors.filter(f => Math.abs(f.effect) >= 0.1).slice(0, 4);
+  return <div className="price-basis">
+    <h3>{tr("Why this asking price")}</h3>
+    <p>{currency} {num(perM3, 2)}/m³ · {tr("district average")} {currency} {num(basis.averageM3, 2)}/m³
+      {basis.capped && <> · {tr(basis.capped === "upper" ? "held at the upper limit (1.8× average)" : "held at the lower limit (0.4× average)")}</>}</p>
+    {main.length ? <ul>{main.map(f => <li key={f.factor}>
+      {tr(shown[f.factor].label)}: {shown[f.factor].value(f.value)} ({tr("district")} {shown[f.factor].value(f.average)}) →{" "}
+      <strong className={f.effect < 0 ? "negative" : "positive"}>{f.effect > 0 ? "+" : "−"}{currency} {num(Math.abs(f.effect), 2)}/m³</strong>
+    </li>)}</ul> : <p>{tr("No attribute moves this price by more than 0.10/m³.")}</p>}
+    <p className="muted">{tr("Asking prices are ranked with BC's 2010 Interior bid equation; rival bids follow the asking price. Each line is how far the price would move if only that attribute were the district average, so the lines need not add up exactly.")}</p>
+  </div>;
 }

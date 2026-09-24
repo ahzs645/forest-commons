@@ -56,6 +56,15 @@ describe('Prince George FSR teaching scenario', () => {
   expect(Math.max(...perM3)-Math.min(...perM3)).toBeGreaterThan(4);
   // The small-tree, half-deciduous auction lot is priced well below the large-tree lot.
   expect(byId.BC21.askingPrice/byId.BC21.volume).toBeLessThan(.6*byId.BC23.askingPrice/byId.BC23.volume);
+  // Each offered lot explains its price: BC21 is cheap mainly for its deciduous share, BC23 is capped.
+  expect(offered.every(s=>s.priceBasis?.factors.length===6)).toBe(true);
+  expect(byId.BC21.priceBasis!.factors[0]).toMatchObject({factor:'deciduous',value:.48});
+  expect(byId.BC21.priceBasis!.factors[0].effect).toBeLessThan(0);
+  expect(byId.BC23.priceBasis!.capped).toBe('upper');
+  expect(byId.BC01.priceBasis).toBeUndefined();
+  // Malformed price explanations are rejected.
+  const bad=structuredClone(princeGeorge);bad.stands.find(s=>s.id==='BC21')!.priceBasis!.factors[0].factor='colour' as never;
+  expect(()=>validateRegion(bad)).toThrow();
  });
  it('reproduces the 2010 bid equation terms', () => {
   // Every log term at 1 (zero), all fractions 0: the constant, the price and exchange terms, and the district term.
