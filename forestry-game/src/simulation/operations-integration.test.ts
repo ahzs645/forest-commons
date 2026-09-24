@@ -41,7 +41,7 @@ describe('operating-profile application integration', () => {
   it('rejects static incompatible equipment in the authoritative engine', () => {
     const game = createGame(bcOperatingLesson);
     const fullTree = game.region.crews.find(c => game.region.operations!.crews[c.id].system === 'full-tree')!;
-    game.plan.crews[fullTree.id] = [{ stand: 'BC05', treatment: 'thinning', hours: 8 }];
+    game.plan.crews[fullTree.id] = [{ stand: 'BC15', treatment: 'thinning', hours: 8 }];
     expect(planProblems(game).some(message => message.includes('eligible system'))).toBe(true);
     expect(() => advance(game)).toThrow(/eligible system/);
   });

@@ -1,5 +1,6 @@
 import data from '../data/prince-george.json';
 import vri from '../data/prince-george-vri.json';
+import connector from '../data/prince-george-connector.json';
 import { quebec } from './quebec';
 import type { RegionDefinition, Position } from '../simulation/types';
 import { emptyCalibration } from '../simulation/regional-calibration';
@@ -20,7 +21,7 @@ const inventory = vri.stands as unknown as Record<string, { featureId: string; l
 export const PG_PRODUCT_RULES = { coniferSawShare: .7, birchSawShare: .15, birch: ['EP', 'EA'], poplar: ['AT', 'AC', 'ACT', 'ACB'] };
 /** Stands below this projected live volume at 17.5 cm are not offered as timber (young or non-productive stands). */
 export const PG_MERCHANTABLE_M3_PER_HA = 60;
-function vriMix(species: [string, number][]): Record<string, number> {
+export function vriMix(species: [string, number][]): Record<string, number> {
   const mix = { 'soft-saw': 0, 'soft-pulp': 0, 'hard-saw': 0, 'hard-pulp': 0, poplar: 0 };
   const total = species.reduce((n, [, pct]) => n + pct, 0) || 1;
   for (const [code, pct] of species) {
@@ -39,27 +40,15 @@ function vriMix(species: [string, number][]): Record<string, number> {
 export const legacyPilotSupply = (i: number): RegionDefinition['stands'][number]['supply'] =>
   i === 23 ? 'protected' : i < 10 ? 'guaranteed' : i < 17 ? 'private' : 'auction';
 
-// The mapped FSR network ends about 13 km short of Prince George. A labelled
-// teaching connector from its southern exit reaches a modelled mill district,
-// so the town receiving businesses sit at a real haul distance instead of on
-// stand spurs. Two further yards sit at the network's northern ends.
+// The mapped FSR network ends at Pilot Mountain Road, about 15 km of public
+// road short of Prince George. The connector follows cached OSRM car routes
+// (Pilot Mountain Road → Chief Lake Road → John Hart Highway) to a junction
+// in the city and on to five fictional receiving locations in general
+// industrial areas (scripts/build-prince-george-connector.py). Two further
+// yards sit at the network's northern ends.
 const roads = structuredClone(data.roads) as RegionDefinition['roads'];
-const exitNode = roads.nodes.find(n => n.id === 'bc-road-30')!;
-const district: Position = [-122.765, 53.935];
-const flatKm = (a: Position, b: Position) => 6371.0088 * Math.hypot((b[0] - a[0]) * Math.PI / 180 * Math.cos((a[1] + b[1]) / 2 * Math.PI / 180), (b[1] - a[1]) * Math.PI / 180);
-roads.nodes.push({ id: 'pg-district', position: district });
-roads.edges.push({ id: 'pg-connector', name: 'Modelled public-road connector to Prince George · teaching link, not a mapped route',
-  from: exitNode.id, to: 'pg-district', geometry: [exitNode.position, district], km: Math.round(flatKm(exitNode.position, district) * 1.3 * 10) / 10,
-  speed: 70, bearing: 1, zone: 'south', roadClass: 'public' });
-const townYards: [string, Position, number][] = [
-  ['pg-yard-a', [-122.752, 53.928], 1.5], ['pg-yard-b', [-122.781, 53.921], 2.5], ['pg-yard-c', [-122.744, 53.944], 2],
-  ['pg-yard-d', [-122.790, 53.940], 2.5], ['pg-yard-e', [-122.735, 53.918], 3.5],
-];
-for (const [id, position, km] of townYards) {
-  roads.nodes.push({ id, position });
-  roads.edges.push({ id: `${id}-spur`, name: 'Modelled mill-district street · teaching link', from: 'pg-district', to: id,
-    geometry: [district, position], km, speed: 40, bearing: 1, zone: 'south', roadClass: 'public' });
-}
+roads.nodes.push(...connector.nodes as RegionDefinition['roads']['nodes']);
+roads.edges.push(...connector.edges as RegionDefinition['roads']['edges']);
 
 const standInputs = data.stands.map((s, i) => {
   const inv = inventory[s.id];

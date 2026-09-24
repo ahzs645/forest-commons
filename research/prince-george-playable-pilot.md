@@ -43,14 +43,24 @@ Two problems made the first preset hard to learn from. Its seven yards were plac
 
   The district is about one-third hardwood, mostly birch.
 - **Productivity (teaching assumption):** 3 + (m³/ha ÷ 70) m³/h, limited to 4.5–8.5.
-- **Receiving businesses:** the mapped network ends about 13 km short of Prince George.
-  - A labelled teaching connector (public road, bearing class 1, 70 km/h, straight-line distance × 1.3) runs from the southern FSR exit, `bc-road-30`, to a modelled mill district with five fictional businesses: sawmills A and B, pulp mills A and B, and a panel plant. They are about 19–22 km from the stands.
+- **Receiving businesses:** the mapped network ends at Pilot Mountain Road, north of Prince George.
+  - The connector now follows real public roads, taken from cached OSRM car routes (`research/bc-inputs/pg-connector-osrm/`, built by `scripts/build-prince-george-connector.py`, OpenStreetMap ODbL). The route is Pilot Mountain Road → Chief Lake Road → John Hart Highway (BC 97): 15.2 km to a junction in the city.
+  - Street routes of 3.0–7.9 km then lead to five fictional businesses in general industrial areas: sawmills A and B, pulp mills A and B, and a panel plant. They are 20–26 km from the stands.
+  - Edge speed is the OSRM car average, capped at 70 km/h for loaded trucks. It is not a certified heavy-truck route or a permitted haul.
   - Two fictional yards sit at the northern network ends, 27 km and 61 km away, and pay CAD 6–10 more per m³.
   - Public connector roads need no FSR road-use permit.
 - **Demand:** 55% of the offered volume of each product over the season, split across the yards that buy it, with the monthly pattern 1.0 / 1.1 / 0.9. The season total is 59,910 m³. The delivery objective is half the demand, 30,000 m³.
 - **Starting positions:** crews start at landings inside the stand block and trucks at the yards. Québec's numerical temperature curves are no longer attached; the frozen, thaw and wet access schedules remain.
 
-The authored operating lesson is built from this pilot. It keeps its previous supply categories, tenure, single zone, yard nodes, map view and roads, so its region definition is unchanged apart from a corrected source note.
+The authored operating lesson is built from this pilot. It keeps its own tenure, single zone, yard nodes, map view and roads.
+
+Its ten cases now take species, age and live volume (17.5 cm) from each stand's VRI record, and its product split uses the pilot mapping. Two cases moved to stands whose inventory fits them:
+- The commercial-thinning case moved from BC05 (black spruce, 0 m³/ha) to BC15 (35-year pine–spruce).
+- The BC Timber Sales acquisition case moved from BC18 (44 m³/ha) to BC20 (168-year spruce).
+
+The titles follow the inventory (for example, BC01 is an aspen–pine winter-access case). Yard intake keeps each yard's outlets and 2,200 m³ per month, split by the offered product mix. Net treatment area, systems, operating windows, layout timing and retention remain authored settings.
+
+In a draft-only replay, the rebuilt lesson delivers 5,126 m³ (previously 4,483), wastes 1,454 m³ (previously 2,372) and meets 16 of 24 targets (previously 14).
 
 Engine replays (seed 2026, normal weather, draft plan every week), before → after:
 
