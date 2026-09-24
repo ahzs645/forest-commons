@@ -23,6 +23,8 @@ for stand in game['stands']:
         # Projected live and dead stand volume at 17.5 cm utilization, m³/ha, as published.
         'liveM3PerHa175': round(p.get('LIVE_STAND_VOLUME_175') or 0, 1),
         'deadM3PerHa175': round(p.get('DEAD_STAND_VOLUME_175') or 0, 1),
+        # Live stems per hectare (VRI_LIVE_STEMS_PER_HA), for volume per tree.
+        'liveStemsPerHa': round(p.get('VRI_LIVE_STEMS_PER_HA') or 0),
         'ageYears': p.get('PROJ_AGE_1'),
         'bclcsLevel4': p.get('BCLCS_LEVEL_4'),
         'species': species,
@@ -31,7 +33,7 @@ for stand in game['stands']:
 out = {
     'source': 'BC VRI 2025 Rank 1 (Open Government Licence – British Columbia), cached snapshot research/bc-inputs/fsr-7695-inventory',
     'collected': manifest.get('collectedAt') or manifest.get('collected') or manifest.get('retrieved'),
-    'fields': 'LIVE_STAND_VOLUME_175, DEAD_STAND_VOLUME_175, PROJ_AGE_1, BCLCS_LEVEL_4, SPECIES_CD_1..6 / SPECIES_PCT_1..6',
+    'fields': 'LIVE_STAND_VOLUME_175, DEAD_STAND_VOLUME_175, VRI_LIVE_STEMS_PER_HA, PROJ_AGE_1, BCLCS_LEVEL_4, SPECIES_CD_1..6 / SPECIES_PCT_1..6',
     'note': 'Published inventory projections, not a cruise, appraisal or net merchantable volume after decay, waste and breakage.',
     'stands': stands,
 }

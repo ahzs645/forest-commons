@@ -24,7 +24,10 @@ Items marked **(derived)** are calculations from the sources, not published figu
 | Load + unload | 0.6 + 0.4 h | 0.75 + 0.55 h | IAM 2024 §3.2.12.1, 78-minute unavoidable-delay allowance (interpretation) |
 | FSR / spur speed | 35 / 15 km/h | 40 / 12 km/h | FPInterface PG TSA class 2–3 speeds (34–48 km/h); IAM in-block 10 loaded / 15 empty |
 | Public connector | straight teaching line | real route: Pilot Mountain Rd → Chief Lake Rd → Hwy 97 | OSRM car route over OpenStreetMap, cached in `bc-inputs/pg-connector-osrm` |
-| Season demand | 55% of offered volume, 1.0/1.1/0.9 by month | 40% of offered volume (43,560 m³), 1.45/0.85/0.70 by month | Scaled to what six trucks can haul in the weeks break-up leaves open **(derived)** |
+| Season demand | 55% of offered volume, 1.0/1.1/0.9 by month | 43,560 m³, split by offered product mix, 1.45/0.85/0.70 by month | Scaled to what six trucks can haul in the weeks break-up leaves open **(derived)** |
+| Minimum stand volume | 60 m³/ha (teaching) | 140 m³/ha pine-leading, 182 m³/ha others | Prince George TSA data package, April 2015, §5.2.3 and §6.1.3 (applied to VRI projections, not net volumes) |
+| Minimum plan retention | 10% (Québec) | 12.1% | Same data package: median stand-level retention 2006–2014 |
+| Lot asking prices | flat 9 $/m³ | 3.87–16.20 $/m³, averaging about 9 | 2010 Interior bid equation ratios between lots; market inputs assumed **(derived)** |
 
 ### Weather classes (season starting early February)
 
@@ -48,15 +51,17 @@ Snow depth at month end is 26 cm (Feb), 12 cm (Mar) and 0 cm (Apr).
 
 ## Resulting play
 
-Engine replays, seed 2026, draft plan every week:
+Engine replays, draft plan every week (the draft has no random element, so every seed gives the same result):
 
-| Weather | Cash | Delivered | Targets met |
+| Weather | Cash change | Delivered | Targets met |
 |---|---|---|---|
-| Typical | +388k | 29,303 m³ | 19 / 33 |
-| Early break-up | about −26k | 22,032 m³ | 14 / 33 |
-| Late, dry break-up | +497k | 29,859 m³ | 19 / 33 |
+| Typical | +420k | 27,706 m³ | 15 / 33 |
+| Early break-up | +139k | 21,917 m³ | 13 / 33 |
+| Late, dry break-up | +560k | 29,981 m³ | 19 / 33 |
 
-Buying and bidding on every lot delivered less and ended at a loss, about −477k. Timber bought after the winter haul cannot be moved before break-up. This is a deliberate teaching point.
+Before the TSA rules and lot prices, the draft plan gave +388k, about −26k and +497k.
+
+Buying every private lot and bidding on every auction still ends at a loss in every weather. Timber bought after the winter haul cannot be moved before break-up. This is a deliberate teaching point. The [pilot notes](prince-george-playable-pilot.md) give the bidding comparison.
 
 ## Sources
 
@@ -84,7 +89,7 @@ Buying and bidding on every lot delivered less and ended at a loss, about −477
 
 ## Documents supplied or found on 24 September 2026
 
-The user supplied five documents, and a search of the Legislative Library of BC catalogue (searchcollections.llbc.leg.bc.ca) found five more. None of them has changed a game value yet.
+The user supplied five documents, and a search of the Legislative Library of BC catalogue (searchcollections.llbc.leg.bc.ca) found five more. The minimum stand volumes, minimum retention and lot price ratios below are now applied; the rest is context.
 
 ### Interior market pricing specifications (2009 and November 2010)
 
@@ -126,7 +131,7 @@ What this shows:
 
 - **The totals cannot be compared directly.** The equation estimates the whole winning bid. The game charges a separate premium and then its own stumpage, which comes to roughly 17–19 $/m³ in total. For scale, BC Timber Sales' 2022/23 average billed rate across the province was $60.85/m³.
 - **The spread between lots is usable now.** The game prices every lot at a flat 9 $/m³. Per m³ of lot volume, the equation values the small-tree, half-aspen lot (BC21) at about half the typical lot, and the large-tree lot (BC23) about 40% higher. A rival bid that followed these ratios would reward players who read the stand data.
-- **Using the equation directly** would need the lumber values, recovery factors and CPI for the same period, plus a revised stumpage model. That is a balance change and has not been made.
+- **The ratios are now applied** to asking prices, and so to rival bids (see the [pilot notes](prince-george-playable-pilot.md)). Using the equation's dollar values directly would need the lumber values, recovery factors and CPI for the same period, plus a revised stumpage model.
 
 ### Prince George TSA timber supply review data package (April 2015)
 
@@ -149,9 +154,9 @@ This is the Prince George TSA's own set of analysis inputs, found in the library
 
 Checked against the pilot:
 
-- **Merchantability:** the pilot counts a stand at 60 m³/ha of gross VRI volume. A 140 m³/ha floor would drop one offered stand, the 110.6 m³/ha stand that is 65% aspen. A 182 m³/ha floor would also drop the 161.9 m³/ha stand. The data package's floors apply to net volume, so they would bite harder on gross VRI figures.
+- **Merchantability:** now applied (see the table above). BC01 (110.6 m³/ha, 65% aspen) and BC04 (161.9 m³/ha) are no longer offered. The data package's floors apply to net volume, so they would exclude more stands if applied to net figures.
 - **Aspen:** the aspen/poplar outlet is fictional, and the data package confirms there is no current deciduous market in the TSA.
-- **Retention:** the pilot takes no retention off harvest volume. Taking off 12.1% would lower every stand's volume.
+- **Retention:** now the scenario's minimum plan retention (it was Québec's 10%).
 
 ### 2016 Prince George TSA timber supply analysis discussion paper
 
@@ -171,7 +176,7 @@ Checked against the pilot:
   - the average billed rate across the province was $60.85/m³;
   - developed timber cost $12.30/m³, and access $11.29/m³ sold.
 
-These figures give context for the auction share and price level only. The pilot's 5 auction lots out of 19 offered are a teaching ratio.
+These figures give context for the auction share and price level only. The pilot's 5 auction lots out of 17 offered are a teaching ratio.
 
 ### Cranbrook TSA timber supply analysis report v3 (2004)
 

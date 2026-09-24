@@ -7,6 +7,7 @@ const frAmount=(text:string)=>{const money=text.match(/^([A-Z]{3}) ([\d,.]+)$/);
 const patterns: [RegExp,(...parts:string[])=>string][] = [
  [/^([\d,]+) m³ now\. Same-turn harvest may add stock; rehearsal checks fulfillment\.$/,(_,n)=>`${n} m³ actuellement. La récolte du même tour peut ajouter du stock; la simulation vérifie l’exécution.`],
  [/^([\d,]+) m³ now; this turn’s crew plan harvests here first\. Rehearsal checks fulfillment\.$/,(_,n)=>`${n} m³ actuellement; le plan des équipes récolte d’abord ce site ce tour-ci. La simulation vérifie l’exécution.`],
+ [/^Below (\d+) m³\/ha \(TSA minimum\)$/,(_,n)=>`Moins de ${n} m³/ha (minimum de la TSA)`],
  [/^authorization pending until turn (\d+|\?)$/,(_,turn)=>`autorisation en attente jusqu’au tour ${turn}`],
  [/^available in (\d+) week\(s\)$/,(_,n)=>`disponible dans ${n} tour(s)`],
  [/^Scenario (.+) validated\. Review it in Scenario studio, then start a campaign\.$/,(_,name)=>`Scénario ${name} validé. Examinez-le dans l’atelier, puis démarrez une campagne.`],

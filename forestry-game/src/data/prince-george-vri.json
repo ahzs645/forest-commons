@@ -1,13 +1,14 @@
 {
  "source": "BC VRI 2025 Rank 1 (Open Government Licence \u2013 British Columbia), cached snapshot research/bc-inputs/fsr-7695-inventory",
  "collected": "2026-09-08T06:37:34.376306+00:00",
- "fields": "LIVE_STAND_VOLUME_175, DEAD_STAND_VOLUME_175, PROJ_AGE_1, BCLCS_LEVEL_4, SPECIES_CD_1..6 / SPECIES_PCT_1..6",
+ "fields": "LIVE_STAND_VOLUME_175, DEAD_STAND_VOLUME_175, VRI_LIVE_STEMS_PER_HA, PROJ_AGE_1, BCLCS_LEVEL_4, SPECIES_CD_1..6 / SPECIES_PCT_1..6",
  "note": "Published inventory projections, not a cruise, appraisal or net merchantable volume after decay, waste and breakage.",
  "stands": {
   "BC01": {
    "featureId": "16546767",
    "liveM3PerHa175": 110.6,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 781,
    "ageYears": 60,
    "bclcsLevel4": "TM",
    "species": [
@@ -33,6 +34,7 @@
    "featureId": "16548081",
    "liveM3PerHa175": 273.9,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 425,
    "ageYears": 120,
    "bclcsLevel4": "TM",
    "species": [
@@ -58,6 +60,7 @@
    "featureId": "16546867",
    "liveM3PerHa175": 263.4,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 907,
    "ageYears": 120,
    "bclcsLevel4": "TM",
    "species": [
@@ -83,6 +86,7 @@
    "featureId": "16547085",
    "liveM3PerHa175": 161.9,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 920,
    "ageYears": 65,
    "bclcsLevel4": "TM",
    "species": [
@@ -108,6 +112,7 @@
    "featureId": "16553102",
    "liveM3PerHa175": 0.0,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 184,
    "ageYears": 100,
    "bclcsLevel4": "TC",
    "species": [
@@ -121,6 +126,7 @@
    "featureId": "16546761",
    "liveM3PerHa175": 291.9,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 1089,
    "ageYears": 110,
    "bclcsLevel4": "TM",
    "species": [
@@ -150,6 +156,7 @@
    "featureId": "16547636",
    "liveM3PerHa175": 247.2,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 797,
    "ageYears": 130,
    "bclcsLevel4": "TM",
    "species": [
@@ -175,6 +182,7 @@
    "featureId": "20131144",
    "liveM3PerHa175": 265.8,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 279,
    "ageYears": 130,
    "bclcsLevel4": "TM",
    "species": [
@@ -208,6 +216,7 @@
    "featureId": "16546935",
    "liveM3PerHa175": 293.6,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 426,
    "ageYears": 150,
    "bclcsLevel4": "TM",
    "species": [
@@ -233,6 +242,7 @@
    "featureId": "16553269",
    "liveM3PerHa175": 4.3,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 778,
    "ageYears": 30,
    "bclcsLevel4": "TB",
    "species": [
@@ -258,6 +268,7 @@
    "featureId": "16547441",
    "liveM3PerHa175": 383.5,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 344,
    "ageYears": 170,
    "bclcsLevel4": "TC",
    "species": [
@@ -287,6 +298,7 @@
    "featureId": "16547785",
    "liveM3PerHa175": 250.1,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 835,
    "ageYears": 70,
    "bclcsLevel4": "TM",
    "species": [
@@ -312,6 +324,7 @@
    "featureId": "16546704",
    "liveM3PerHa175": 263.0,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 1297,
    "ageYears": 75,
    "bclcsLevel4": "TM",
    "species": [
@@ -333,6 +346,7 @@
    "featureId": "16547654",
    "liveM3PerHa175": 297.9,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 767,
    "ageYears": 120,
    "bclcsLevel4": "TM",
    "species": [
@@ -358,6 +372,7 @@
    "featureId": "16546888",
    "liveM3PerHa175": 40.3,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 817,
    "ageYears": 35,
    "bclcsLevel4": "TC",
    "species": [
@@ -379,6 +394,7 @@
    "featureId": "16554449",
    "liveM3PerHa175": 236.0,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 840,
    "ageYears": 95,
    "bclcsLevel4": "TC",
    "species": [
@@ -404,6 +420,7 @@
    "featureId": "16546864",
    "liveM3PerHa175": 344.9,
    "deadM3PerHa175": 88.2,
+   "liveStemsPerHa": 585,
    "ageYears": 150,
    "bclcsLevel4": "TC",
    "species": [
@@ -429,6 +446,7 @@
    "featureId": "16548004",
    "liveM3PerHa175": 43.9,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 50,
    "ageYears": 130,
    "bclcsLevel4": "ST",
    "species": [
@@ -450,6 +468,7 @@
    "featureId": "17373591",
    "liveM3PerHa175": 249.4,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 521,
    "ageYears": 130,
    "bclcsLevel4": "TC",
    "species": [
@@ -475,6 +494,7 @@
    "featureId": "16546496",
    "liveM3PerHa175": 280.6,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 343,
    "ageYears": 168,
    "bclcsLevel4": "TC",
    "species": [
@@ -500,6 +520,7 @@
    "featureId": "16547294",
    "liveM3PerHa175": 293.6,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 823,
    "ageYears": 130,
    "bclcsLevel4": "TM",
    "species": [
@@ -529,6 +550,7 @@
    "featureId": "16547776",
    "liveM3PerHa175": 321.1,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 296,
    "ageYears": 210,
    "bclcsLevel4": "TC",
    "species": [
@@ -554,6 +576,7 @@
    "featureId": "16546904",
    "liveM3PerHa175": 405.9,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 344,
    "ageYears": 168,
    "bclcsLevel4": "TC",
    "species": [
@@ -579,6 +602,7 @@
    "featureId": "16749008",
    "liveM3PerHa175": 324.0,
    "deadM3PerHa175": 0,
+   "liveStemsPerHa": 300,
    "ageYears": 150,
    "bclcsLevel4": "TC",
    "species": [

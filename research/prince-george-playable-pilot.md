@@ -29,13 +29,13 @@ Two problems made the first preset hard to learn from. Its seven yards were plac
 `scripts/extract-prince-george-vri.py` copies each stand's VRI attributes from the cached snapshot into `src/data/prince-george-vri.json`, with no network request. The copied fields are FEATURE_ID, LIVE_STAND_VOLUME_175, DEAD_STAND_VOLUME_175, PROJ_AGE_1, BCLCS_LEVEL_4 and species codes and percentages. `src/scenarios/prince-george.ts` then derives:
 
 - **Volume:** projected live volume at 17.5 cm × polygon area. District total 117,458 m³, against 60,871 m³ at 120 m³/ha. This is an inventory projection with no decay, waste or breakage deduction, not a cruise.
-- **Merchantability:** stands below 60 m³/ha are not offered and are labelled *Not merchantable (VRI)*:
+- **Merchantability** (superseded by the TSA rules below): stands below 60 m³/ha were not offered and were labelled *Not merchantable (VRI)*:
   - BC05, black spruce, 0 m³/ha;
   - BC10, 30 years old, 4 m³/ha;
   - BC15, 40 m³/ha;
   - BC18, 44 m³/ha.
 
-  BC24 stays the conservation area. The 19 offered stands are ranked in source order: eight secured, six private and five at auction (weeks 1, 3, 5, 7 and 9).
+  BC24 stays the conservation area. The 19 offered stands were ranked in source order: eight secured, six private and five at auction (weeks 1, 3, 5, 7 and 9).
 - **Product mix (teaching mapping):**
   - Conifers (SX, BL, FDI, PLI, SB and others) split 75/25 between sawlog and pulp (70/30 until the 24 September evidence pass; see below).
   - Paper birch (EP) splits 15/85 between hardwood sawlog and hardwood pulp.
@@ -78,7 +78,7 @@ A desk search for published BC figures replaced the Québec operating values; se
 - **Speeds:** FSR 40 km/h and spurs 12 km/h.
 - **Products and prices:** the conifer split is 75/25. Log prices follow the Interior Log Market Report, and the aspen and birch prices are marked unverified or fictional.
 - **Weather:** Prince George February–April schedules built from the 1991–2020 normals and load-restriction timing.
-- **Demand:** 40% of the offered volume (43,560 m³), weighted towards the February winter haul; the delivery objective is 22,000 m³.
+- **Demand:** 40% of the offered volume (43,560 m³), weighted towards the February winter haul; the delivery objective is 22,000 m³. After the TSA rules below, the 43,560 m³ total is kept and split by product.
 
 Every sourced item is recorded as *source-identified* in the in-app evidence worksheet. None is marked reviewed.
 
@@ -91,6 +91,76 @@ Engine replays (seed 2026, draft plan every week):
 | Late, dry break-up | 29,859 m³ | 19/33 | CAD 1,147,110 |
 
 Buying and bidding on every lot delivers less and ends below the starting cash, because timber bought after the winter haul cannot be moved before break-up.
+
+## Prince George TSA rules and lot prices (24 September 2026)
+
+Three changes use documents found in the Legislative Library of BC (see the [evidence notes](bc-coefficient-evidence-2026-09-24.md)).
+
+### What changed
+
+- **Minimum stand volume.** A stand is offered only at or above the Prince George TSA minimums from the April 2015 timber supply review data package: 140 m³/ha when pine-leading, 182 m³/ha otherwise.
+  - No offered stand is pine-leading, so 182 applies throughout.
+  - Two more stands drop out: BC01 (110.6 m³/ha, aspen-leading) and BC04 (161.9 m³/ha).
+  - Unoffered stands show *Below 182 m³/ha (TSA minimum)* (or 140), in English and French.
+  - The data package applies these minimums to net appraisal volumes. The pilot applies them to VRI projections, which are not net.
+- **Retention.** The game already makes every plan leave a share of each stand standing. Its minimum for this scenario is now 12.1%, the TSA's median stand-level retention for 2006–2014 (it was Québec's 10%). Stand volumes themselves are unchanged.
+- **Lot prices from the 2010 bid equation.**
+  - `src/scenarios/interior-bid-equation.ts` implements the Interior market pricing system's estimated winning bid (November 2010 coefficients).
+  - Each stand feeds it from its VRI record: conifer share, hemlock and balsam share, cedar, m³/ha, volume per tree (volume ÷ `VRI_LIVE_STEMS_PER_HA`, now copied by the extract script) and lot volume. Cycle time comes from the road network to the nearest yard, and the Prince George average of 3.6 bidders is used.
+  - Market inputs are assumed, so only the ratio between lots is used. Offered timber still averages about 9 $/m³ (8.89 after clamping), with each lot between 0.4× and 1.8× of that.
+  - Rival bids stay the engine's 86–121% of the asking price, so they now follow the lot's value too.
+- **Supply ranking.** 17 stands are offered, ranked in source order: the last five go to auction (weeks 1, 3, 5, 7 and 9), the five before them are private, and the first seven are secured.
+- **Demand** stays at 43,560 m³ for the season, the level sized to six trucks. It is split by product in proportion to the offered volume. Holding it at 40% of the smaller offered volume would have cut it by 16% although the fleet is unchanged.
+
+### Lot prices
+
+| Lot | Supply | Volume (m³) | Estimated bid ($/m³) | Asking ($/m³) |
+|---|---|---|---|---|
+| BC03 | Secured | 10,386 | 15 | 3.87 |
+| BC12 | Private | 3,978 | 17 | 4.34 |
+| BC21 | Auction, week 5 | 5,543 | 23 | 5.82 |
+| BC16 | Private | 3,677 | 34 | 8.76 |
+| BC20 | Auction, week 3 | 5,170 | 46 | 11.80 |
+| BC22 | Auction, week 7 | 5,574 | 46 | 11.88 |
+| BC19 | Auction, week 1 | 4,626 | 50 | 12.81 |
+| BC11 | Secured | 6,752 | 66 | 16.20 (upper limit) |
+| BC23 | Auction, week 9 | 8,326 | 66 | 16.20 (upper limit) |
+
+- Birch- and balsam-heavy stands are priced lowest, because the equation gives deciduous volume no value and penalizes balsam.
+- Large-tree spruce and fir stands are priced highest.
+
+### How it plays
+
+Engine replays over seeds 1–10:
+
+- The automatic draft plan has no random element, so it gives the same result for every seed.
+- Seeds change only rival bids.
+- "Flat" bids 10 $/m³ on every lot; "read" bids 110% of the asking price. Both also buy every private lot while cash allows.
+
+| Plan | Weather | Before: cash change | After: cash change | Before: delivered / targets | After: delivered / targets |
+|---|---|---|---|---|---|
+| Draft only | Typical | +388,496 | +419,743 | 29,303 m³ / 19 of 33 | 27,706 m³ / 15 of 33 |
+| Draft only | Early break-up | −26,036 | +139,498 | 22,032 m³ / 14 | 21,917 m³ / 13 |
+| Draft only | Late, dry | +497,110 | +560,350 | 29,859 m³ / 19 | 29,981 m³ / 19 |
+| Flat bids | Typical (median) | −340,735 | −62,454 | 4 lots won | 2 lots won |
+| Read bids | Typical (median) | −338,644 | −191,979 | 4 lots won | 4 lots won |
+
+Closing cash for the draft plan is CAD 1,069,743 (typical), 789,498 (early break-up) and 1,210,350 (late, dry).
+
+What this shows:
+
+- **Rival bids now respond to lot value.**
+  - Before, a flat 10 $/m³ bid won four of five lots and played identically to reading the asking price.
+  - Now it wins only BC21, the cheapest lot, and BC22, in every seed. In the median seed it loses both BC19 and BC23, the most valuable lots.
+  - Bidding from the asking price wins four.
+- **Buying timber still loses money** in every weather. Timber bought after the winter haul cannot be moved before break-up, as before.
+- **Monthly targets are harder under typical weather** (15 of 33, from 19). The secured stands are mostly birch–balsam mixedwood, so the draft cuts more pulp and less sawlog than the mills ask for.
+- **Early break-up is very sensitive to which stands are secured.**
+  - An intermediate version took retention out of stand volumes instead of using the plan minimum. The same weather then ended at −232,022, or −285,790 with demand also cut to 40% of offered volume.
+  - In the −232,022 run, sawlog buyers got 8,943 of 21,920 m³, while pulp overflowed and decayed at the roadside during the thaw.
+  - Choosing which secured stands to cut in the three winter weeks matters more than before.
+
+The guided lesson is unchanged: its replay is identical (5,051 m³ delivered, 16 of 24 targets).
 
 ## Verification
 

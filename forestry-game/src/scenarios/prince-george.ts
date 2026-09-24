@@ -6,11 +6,12 @@ import type { RegionDefinition, Position, Weather } from '../simulation/types';
 import { emptyCalibration } from '../simulation/regional-calibration';
 import { bcTeachingTenure } from './bc-tenure';
 import { bcTeachingMarket } from './bc-market';
+import { estimatedWinningBid, PRINCE_GEORGE_DANB } from './interior-bid-equation';
 
 // Reuse explicit teaching mechanics; geography and entities belong to this package.
 // None of the inherited economic, ecological or weather coefficients is BC calibration.
 const teaching = structuredClone(quebec);
-const inventory = vri.stands as unknown as Record<string, { featureId: string; liveM3PerHa175: number; ageYears: number | null; species: [string, number][] }>;
+const inventory = vri.stands as unknown as Record<string, { featureId: string; liveM3PerHa175: number; deadM3PerHa175: number; liveStemsPerHa: number; ageYears: number | null; species: [string, number][] }>;
 
 /**
  * Teaching conversion from VRI species to the game's five assortments. The
@@ -20,8 +21,32 @@ const inventory = vri.stands as unknown as Record<string, { featureId: string; l
  * all go to the poplar (panel) assortment. Unlisted codes count as conifer.
  */
 export const PG_PRODUCT_RULES = { coniferSawShare: .75, birchSawShare: .15, birch: ['EP', 'EA'], poplar: ['AT', 'AC', 'ACT', 'ACB'] };
-/** Stands below this projected live volume at 17.5 cm are not offered as timber (young or non-productive stands). */
-export const PG_MERCHANTABLE_M3_PER_HA = 60;
+/**
+ * Minimum volume per hectare for a stand to be offered as timber, from the
+ * Prince George TSA timber supply review data package (April 2015, §5.2.3 and
+ * §6.1.3): 140 m³/ha for pine-leading stands (the beetle-salvage threshold)
+ * and 182 m³/ha for all others, from 30 years of appraisal data. The package
+ * applies them to net appraisal volumes; the pilot applies them to the VRI's
+ * projected live volume at 17.5 cm.
+ */
+export const PG_MIN_M3_PER_HA = { pineLeading: 140, other: 182 };
+/** Median stand-level retention in the TSA, 2006–2014 (data package §5.4). It is the scenario's minimum retention: each plan leaves at least this share of a stand standing. */
+export const PG_RETENTION = 0.121;
+/**
+ * Assumed market inputs for ranking lots with the 2010 bid equation. These are
+ * not published parameters: 230 fbm/m³ recovery at $520/Mbm, 0.73 US$/C$,
+ * CPI 165. Decay is taken as 5% and slope as 10% for every lot.
+ */
+export const PG_BID_MARKET = { sellingPriceIndex: 230 * 0.52, usdPerCad: 0.73, cpi: 165 };
+const PG_BID_SITE = { decay: 0.05, slopePct: 10 };
+/** Lot prices follow the bid equation, scaled so offered timber averages this, and kept within these bounds of it. */
+export const PG_ASKING_M3 = 9, PG_ASKING_RANGE = [0.4, 1.8] as const;
+const leadingSpecies = (species: [string, number][]) => species.reduce<[string, number] | undefined>((a, b) => !a || b[1] > a[1] ? b : a, undefined)?.[0] ?? '';
+const isPine = (code: string) => code.startsWith('PL') || code === 'PA' || code === 'PY' || code === 'PW';
+const isDeciduous = (code: string) => PG_PRODUCT_RULES.poplar.includes(code) || PG_PRODUCT_RULES.birch.includes(code);
+export function pgMinimumM3PerHa(species: [string, number][]) {
+  return isPine(leadingSpecies(species)) ? PG_MIN_M3_PER_HA.pineLeading : PG_MIN_M3_PER_HA.other;
+}
 export function vriMix(species: [string, number][]): Record<string, number> {
   const mix = { 'soft-saw': 0, 'soft-pulp': 0, 'hard-saw': 0, 'hard-pulp': 0, poplar: 0 };
   const total = species.reduce((n, [, pct]) => n + pct, 0) || 1;
@@ -54,44 +79,6 @@ for (const edge of roads.edges) edge.speed = edge.id.startsWith('access-') ? 12 
 roads.nodes.push(...connector.nodes as RegionDefinition['roads']['nodes']);
 roads.edges.push(...connector.edges as RegionDefinition['roads']['edges']);
 
-const standInputs = data.stands.map((s, i) => {
-  const inv = inventory[s.id];
-  const perHa = inv.liveM3PerHa175;
-  return { s, i, inv, perHa, merchantable: perHa >= PG_MERCHANTABLE_M3_PER_HA && i !== 23 };
-});
-let offered = 0;
-const stands: RegionDefinition['stands'] = standInputs.map(({ s, i, inv, perHa, merchantable }) => {
-  const volume = Math.max(1, Math.round(perHa * s.hectares));
-  // Offered stands are ranked in source order: eight secured, six private, the rest at auction.
-  const rank = merchantable ? offered++ : -1;
-  const supply = !merchantable ? 'protected' : rank < 8 ? 'guaranteed' : rank < 14 ? 'private' : 'auction';
-  return {
-    sourceNote: `VRI 2025 Rank 1 feature ${inv.featureId}: outline, area, species (${inv.species.map(([c, p]) => `${c}${p}`).join(' ')}), age ${inv.ageYears ?? '?'} and projected live volume ${perHa} m³/ha at 17.5 cm are source data, not a cruise. `
-      + (i === 23 ? 'Held back as the teaching conservation area. ' : !merchantable ? `Below the ${PG_MERCHANTABLE_M3_PER_HA} m³/ha teaching merchantability threshold, so not offered as timber. ` : '')
-      + 'The species-to-product split, productivity, rights and prices are teaching assumptions.',
-    // Screens prefix the stand ID themselves, so the name is only the inventory reference.
-    id: s.id, name: `VRI ${s.sourceId.split('.').at(-1)}${!merchantable && i !== 23 ? ' (not merchantable)' : ''}`,
-    ...(!merchantable && i !== 23 ? { unavailableReason: 'Not merchantable (VRI)' } : {}),
-    node: s.node, position: s.position as Position, polygon: s.polygon as Position[],
-    hectares: s.hectares, zone: 'north', terrain: i % 6 === 0 ? 3 : 1,
-    volume, mix: vriMix(inv.species),
-    // m³ per scheduled crew hour for a full-tree ground system. Prince George
-    // feller-buncher studies show 47–87 m³/PMH at 51–92% utilization; denser
-    // stands (larger pieces) sit higher. Teaching derivation, not a BC function.
-    // harvestCost covers landing and road upkeep; crew time carries the system rate.
-    productivity: Math.round(Math.min(45, Math.max(22, 15 + perHa / 12)) * 10) / 10, harvestCost: 3,
-    askingPrice: Math.round(volume * 9),
-    supply, auctionWeek: supply === 'auction' ? [1, 3, 5, 7, 9][(rank - 14) % 5] : 1 + i % 5 * 2,
-  };
-});
-
-// Receiving businesses by assortment. Season demand is 40% of the offered
-// district volume of each product: about what six trucks can haul in the
-// weeks break-up leaves open, so buying timber matters but targets can be met.
-// The remote yards pay a premium for their longer haul. Monthly shares
-// 1.45 / 0.85 / 0.7 follow the February winter haul and spring break-up.
-const offeredSupply: Record<string, number> = {};
-for (const st of stands) if (st.supply !== 'protected') for (const [p, share] of Object.entries(st.mix)) offeredSupply[p] = (offeredSupply[p] ?? 0) + st.volume * share;
 const yardPlan: { name: string; node: string; products: string[]; premium: number }[] = [
   { name: 'North satellite sawlog yard (fictional)', node: 'bc-road-1', products: ['soft-saw'], premium: 10 },
   { name: 'North-west reload yard (fictional)', node: 'bc-road-4', products: ['soft-saw', 'soft-pulp'], premium: 6 },
@@ -101,19 +88,101 @@ const yardPlan: { name: string; node: string; products: string[]; premium: numbe
   { name: 'Prince George panel plant (fictional)', node: 'pg-yard-d', products: ['poplar'], premium: 0 },
   { name: 'Prince George pulp mill B (fictional)', node: 'pg-yard-e', products: ['soft-pulp', 'hard-pulp'], premium: 0 },
 ];
+// One-way travel hours from each node to its nearest yard, over the pilot's
+// roads at their authored speeds (both directions), for the bid equation's
+// cycle time. Weather and load restrictions are ignored here.
+function hoursToNearestYard() {
+  const hours = new Map<string, number>(yardPlan.map(y => [y.node, 0]));
+  const queue = yardPlan.map(y => y.node);
+  while (queue.length) {
+    queue.sort((a, b) => hours.get(b)! - hours.get(a)!);
+    const at = queue.pop()!;
+    for (const e of roads.edges) {
+      const next = e.from === at ? e.to : e.to === at ? e.from : null;
+      if (!next) continue;
+      const h = hours.get(at)! + e.km / e.speed;
+      if (h < (hours.get(next) ?? Infinity)) { hours.set(next, h); queue.push(next); }
+    }
+  }
+  return hours;
+}
+const yardHours = hoursToNearestYard();
+// Truck load plus unload at the landing and yard (see pgTrucks).
+const HANDLING_HOURS = 0.75 + 0.55;
+const standInputs = data.stands.map((s, i) => {
+  const inv = inventory[s.id];
+  const perHa = inv.liveM3PerHa175;
+  const volume = Math.max(1, Math.round(perHa * s.hectares));
+  // 2010 Interior bid equation per m³ of coniferous volume, spread over the
+  // whole lot (the equation gives deciduous volume no value).
+  const conifer = inv.species.filter(([c]) => !isDeciduous(c)).reduce((n, [, p]) => n + p, 0) / 100;
+  const ofConifer = (test: (c: string) => boolean) => conifer ? inv.species.filter(([c]) => !isDeciduous(c) && test(c)).reduce((n, [, p]) => n + p, 0) / 100 / conifer : 0;
+  const bid = estimatedWinningBid({
+    coniferM3: Math.max(1, volume * conifer), coniferM3PerHa: Math.max(1, perHa * conifer),
+    m3PerTree: inv.liveStemsPerHa ? perHa / inv.liveStemsPerHa : 0.1,
+    hembal: ofConifer(c => c.startsWith('B') || c.startsWith('H')), cedar: ofConifer(c => c === 'CW'),
+    beetleAttack: inv.deadM3PerHa175 / Math.max(1, inv.liveM3PerHa175 + inv.deadM3PerHa175), ...PG_BID_SITE,
+    cycleHours: 2 * (yardHours.get(s.node) ?? 0) + HANDLING_HOURS, danb: PRINCE_GEORGE_DANB,
+  }, PG_BID_MARKET) * conifer;
+  const minimum = pgMinimumM3PerHa(inv.species);
+  return { s, i, inv, perHa, volume, bid, minimum, merchantable: perHa >= minimum && i !== 23 };
+});
+// Asking prices keep the pilot's 9 $/m³ average over offered timber, spread
+// between lots in proportion to the estimated bid.
+const offeredInputs = standInputs.filter(x => x.merchantable);
+const meanBid = offeredInputs.reduce((n, x) => n + x.bid * x.volume, 0) / offeredInputs.reduce((n, x) => n + x.volume, 0);
+const askingIndex = (bid: number) => Math.min(PG_ASKING_RANGE[1], Math.max(PG_ASKING_RANGE[0], bid / meanBid));
+let offered = 0;
+const auctionLots = 5, privateLots = 5, secured = offeredInputs.length - auctionLots - privateLots;
+const stands: RegionDefinition['stands'] = standInputs.map(({ s, i, inv, perHa, volume, bid, minimum, merchantable }) => {
+  // Offered stands are ranked in source order: the last five go to auction, the five before them are private, the rest are secured.
+  const rank = merchantable ? offered++ : -1;
+  const supply = !merchantable ? 'protected' : rank < secured ? 'guaranteed' : rank < secured + privateLots ? 'private' : 'auction';
+  return {
+    sourceNote: `VRI 2025 Rank 1 feature ${inv.featureId}: outline, area, species (${inv.species.map(([c, p]) => `${c}${p}`).join(' ')}), age ${inv.ageYears ?? '?'} and projected live volume ${perHa} m³/ha at 17.5 cm are source data, not a cruise. `
+      + (i === 23 ? 'Held back as the teaching conservation area. ' : !merchantable ? `Below the Prince George TSA minimum of ${minimum} m³/ha for this leading species, so not offered as timber. ` : '')
+      + (merchantable ? `The 2010 Interior bid equation estimates about ${bid.toFixed(0)} $/m³ for this lot under assumed market inputs; its asking price is scaled from that. ` : '')
+      + 'The species-to-product split, productivity, rights and prices are teaching assumptions.',
+    // Screens prefix the stand ID themselves, so the name is only the inventory reference.
+    id: s.id, name: `VRI ${s.sourceId.split('.').at(-1)}${!merchantable && i !== 23 ? ' (not merchantable)' : ''}`,
+    ...(!merchantable && i !== 23 ? { unavailableReason: `Below ${minimum} m³/ha (TSA minimum)` } : {}),
+    node: s.node, position: s.position as Position, polygon: s.polygon as Position[],
+    hectares: s.hectares, zone: 'north', terrain: i % 6 === 0 ? 3 : 1,
+    volume, mix: vriMix(inv.species),
+    // m³ per scheduled crew hour for a full-tree ground system. Prince George
+    // feller-buncher studies show 47–87 m³/PMH at 51–92% utilization; denser
+    // stands (larger pieces) sit higher. Teaching derivation, not a BC function.
+    // harvestCost covers landing and road upkeep; crew time carries the system rate.
+    productivity: Math.round(Math.min(45, Math.max(22, 15 + perHa / 12)) * 10) / 10, harvestCost: 3,
+    askingPrice: Math.round(volume * PG_ASKING_M3 * (merchantable ? askingIndex(bid) : 1)),
+    supply, auctionWeek: supply === 'auction' ? [1, 3, 5, 7, 9][(rank - secured - privateLots) % 5] : 1 + i % 5 * 2,
+  };
+});
+
+// Receiving businesses by assortment. Season demand is about what six trucks
+// can haul in the weeks break-up leaves open, so buying timber matters but
+// targets can be met. It is split between products in proportion to the
+// offered volume of each. The remote yards pay a premium for their longer
+// haul. Monthly shares 1.45 / 0.85 / 0.7 follow the February winter haul and
+// spring break-up.
+export const PG_SEASON_DEMAND_M3 = 43_560;
+const offeredSupply: Record<string, number> = {};
+for (const st of stands) if (st.supply !== 'protected') for (const [p, share] of Object.entries(st.mix)) offeredSupply[p] = (offeredSupply[p] ?? 0) + st.volume * share;
+
 // Delivered prices (CAD/m³). SPF sawlog 105 and pulp log 58 follow the BC
 // Interior Log Market Report (Jan–Mar 2026 averages 106.53 and 57.60). BC
 // publishes no deciduous price: aspen 55 is an unverified estimate (stumpage
 // near zero, so price ≈ logging plus haul) and birch sawlog 70 is a fictional
 // specialty outlet.
 const basePrice = (p: string) => p === 'soft-saw' ? 105 : p === 'hard-saw' ? 70 : p === 'poplar' ? 55 : 58;
+const offeredTotal = Object.values(offeredSupply).reduce((n, v) => n + v, 0);
 const buyers = (p: string) => yardPlan.filter(y => y.products.includes(p)).length;
 const mills = yardPlan.map((y, i) => {
   const node = roads.nodes.find(n => n.id === y.node)!;
   return { ...teaching.mills[i], id: `BCM${i + 1}`, name: y.name, node: node.id, position: node.position,
     prices: Object.fromEntries(y.products.map(p => [p, basePrice(p) + y.premium])),
     // Mills build log decks over the winter haul and take less during break-up.
-    demand: [1.45, .85, .7].map(f => Object.fromEntries(y.products.map(p => [p, Math.round((offeredSupply[p] ?? 0) * .4 / 3 * f / buyers(p) / 10) * 10]))) };
+    demand: [1.45, .85, .7].map(f => Object.fromEntries(y.products.map(p => [p, Math.round((offeredSupply[p] ?? 0) / offeredTotal * PG_SEASON_DEMAND_M3 / 3 * f / buyers(p) / 10) * 10]))) };
 });
 // Weekly access classes for a season starting in early February. Built from
 // Prince George ECCC 1991–2020 normals (Feb −5.4 °C with about 26 frost days;
@@ -165,6 +234,7 @@ export const princeGeorge: RegionDefinition = {
     { ...teaching.disruptions![1] },
     { ...teaching.disruptions![2], title: 'Teaching receiving-yard shutdown', description: 'Fictional intake stoppage for the operating exercise.', target: mills[0].id },
   ],
+  ecology: { ...teaching.ecology, minimumRetention: PG_RETENTION },
   stewardship: { ...teaching.stewardship!, note: 'Uncalibrated educational annual growth, regeneration and habitat coefficients reused from the teaching engine. Not BC yield curves, prescriptions or habitat assessments.' },
   // Half of the season's receiving demand, rounded: reachable with bought timber, not with the secured lots alone.
   objectives: teaching.objectives!.map(o => o.id === 'supply' ? { ...o, target: supplyTarget, description: `Deliver ${supplyTarget.toLocaleString('en-CA')} m³ of accepted products during this teaching season.` } : o),
@@ -197,7 +267,9 @@ const evidence: Record<string, { sourceUrl: string; license: string; sourceDate:
   geography: { sourceUrl: 'https://catalogue.data.gov.bc.ca/dataset/9e5bfa62-2339-445e-bf67-81657180c682', license: 'Open Government Licence – British Columbia; connector: OpenStreetMap (ODbL) via OSRM', sourceDate: '2026-09-24',
     notes: 'FSR 7695/7727 geometry from BC Forest Tenure Road Segment Lines. Public connector (Pilot Mountain Rd → Chief Lake Rd → Hwy 97, 15.2 km) from cached OSRM car routes, research/bc-inputs/pg-connector-osrm. Receiving locations are fictional points in general industrial areas.' },
   inventory: { sourceUrl: 'https://catalogue.data.gov.bc.ca/dataset/2ebb35d8-c82f-4a17-9c96-612ac3532d55', license: 'Open Government Licence – British Columbia', sourceDate: '2026-09-08',
-    notes: 'VRI 2025 Rank 1 LIVE_STAND_VOLUME_175 × polygon area, species and age (src/data/prince-george-vri.json). Projections without decay/waste/breakage deductions; stands under 60 m³/ha not offered (teaching threshold).' },
+    notes: 'VRI 2025 Rank 1 LIVE_STAND_VOLUME_175 × polygon area, species and age (src/data/prince-george-vri.json). Projections, not net appraisal volumes. Stands are offered only above the Prince George TSA minimum volumes (TSR data package, April 2015: 140 m³/ha pine-leading, 182 m³/ha others; the package applies them to net volumes). Minimum plan retention 12.1%, the TSA median stand-level retention 2006–2014 (same package).' },
+  acquisition: { sourceUrl: 'https://www.llbc.leg.bc.ca/public/pubdocs/bcdocs2011/469332/mps-interior-spec.pdf', license: 'Province of British Columbia publication (Legislative Library of BC copy)', sourceDate: '2026-09-24',
+    notes: 'Asking prices follow the Interior market pricing system estimated-winning-bid equation (November 2010 coefficients; Prince George 3.6 average bidders), fed by VRI species, stems per hectare and volume, and the route to the nearest yard. Market inputs are assumed (230 fbm/m³, $520/Mbm, 0.73 US$/C$, CPI 165), so only the ratio between lots is used: prices are scaled to average about 9 $/m³ and kept within 0.4–1.8× of it. Rival bids remain the engine\'s 86–121% of the asking price.' },
   products: { sourceUrl: 'https://www2.gov.bc.ca/assets/gov/farming-natural-resources-and-industry/forestry/stewardship/forest-analysis-inventory/tsr-annual-allowable-cut/prince_george_tsa_rationale_2017.pdf', license: 'Province of British Columbia publication', sourceDate: '2026-09-24',
     notes: 'Prince George TSA 2017 AAC rationale: base case about 76% sawlog / 24% non-sawlog (beetle-affected pine), used for the 75/25 conifer split. No published birch sawlog/pulp split; 15/85 remains an assumption. Deciduous uses named: OSB, pellets, bioenergy.' },
   access: { sourceUrl: 'https://climate.weather.gc.ca/climate_normals/results_1991_2020_e.html?stnID=0&climate_id=1096450', license: 'Environment and Climate Change Canada data (Open Government Licence – Canada)', sourceDate: '2026-09-24',
