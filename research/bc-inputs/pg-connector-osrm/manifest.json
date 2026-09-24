@@ -1,0 +1,17 @@
+{
+ "collectedAt": "2026-09-24T01:35:16.925720+00:00",
+ "service": "OSRM demo server (car profile)",
+ "data": "OpenStreetMap contributors, ODbL",
+ "requests": {
+  "trunk": "https://router.project-osrm.org/route/v1/driving/-122.8600883,54.03249374;-122.762081,53.932033?overview=full&geometries=geojson&steps=true",
+  "pg-yard-a": "https://router.project-osrm.org/route/v1/driving/-122.762081,53.932033;-122.745,53.925?overview=full&geometries=geojson&steps=true",
+  "pg-yard-b": "https://router.project-osrm.org/route/v1/driving/-122.762081,53.932033;-122.772,53.898?overview=full&geometries=geojson&steps=true",
+  "pg-yard-c": "https://router.project-osrm.org/route/v1/driving/-122.762081,53.932033;-122.715,53.93?overview=full&geometries=geojson&steps=true",
+  "pg-yard-d": "https://router.project-osrm.org/route/v1/driving/-122.762081,53.932033;-122.795,53.94?overview=full&geometries=geojson&steps=true",
+  "pg-yard-e": "https://router.project-osrm.org/route/v1/driving/-122.762081,53.932033;-122.72,53.905?overview=full&geometries=geojson&steps=true"
+ },
+ "limitations": [
+  "Car routing, not a certified heavy-truck or permitted log-haul route.",
+  "Receiving locations are fictional teaching points in general industrial areas."
+ ]
+}

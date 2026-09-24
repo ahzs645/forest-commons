@@ -101,7 +101,6 @@
   "Dispatch trucks.": "Répartir les camions.",
   "Each truck starts at its last location. Road paths determine travel time and cost; loads also consume handling time. Production enters roadside inventory before transport.": "Chaque camion repart de sa dernière position. Les trajets déterminent le temps et le coût de déplacement; les chargements consomment aussi du temps de manutention. La production entre au stock routier avant le transport.",
   "Watch freshness.": "Surveiller la fraîcheur.",
-  "Sawlogs downgrade to pulp after their freshness window; old pulp becomes recorded waste. Oldest stock ships first, with a quality-adjusted price.": "Les billes de sciage deviennent du bois de trituration après leur durée de fraîcheur; la trituration trop ancienne devient une perte enregistrée. Le stock le plus ancien part en premier, à un prix ajusté à sa qualité.",
   "Prepare for changing access.": "Préparer les changements d’accès.",
   "Bearing class 1 works in all conditions, 2 excludes thaw, 3 requires normal/frozen, 4 frozen only. Road upgrades improve roads, not soil bearing.": "La classe de portance 1 fonctionne partout; la classe 2 exclut le dégel; la classe 3 exige des conditions normales ou gelées; la classe 4 exige le gel. Les améliorations routières ne changent pas la portance du sol.",
   "Review and adapt.": "Examiner et adapter.",
@@ -190,5 +189,6 @@
   "Southern sector": "Secteur sud",
   "Lumber equivalent": "Équivalent sciage",
   "Chip by-product equivalent": "Équivalent sous-produit de copeaux",
-  "Pulp priority (illustrative)": "Priorité à la trituration (illustratif)"
+  "Pulp priority (illustrative)": "Priorité à la trituration (illustratif)",
+  "Sawlogs and poplar downgrade to pulp after their freshness window; old pulp becomes recorded waste. Oldest stock ships first, with a quality-adjusted price.": "Les billes de sciage et le peuplier deviennent du bois de trituration après leur durée de fraîcheur; la trituration trop ancienne devient une perte enregistrée. Le stock le plus ancien part en premier, à un prix ajusté à sa qualité."
 }

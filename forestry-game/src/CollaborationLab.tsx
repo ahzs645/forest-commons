@@ -152,7 +152,7 @@ export default function CollaborationLab({
           </div>
           <p>{tr("Volume-weighted total cost allocates the coalition's cost in proportion to these volumes, then subtracts each allocation from standalone cost to obtain savings. Negative savings mean a company loses; such an offer cannot be submitted under this game's individual-rationality rule.")}{" "}</p>
           {count === 5 && (
-            <p className="muted">{tr("The five-company rows sum to 795,190 m³; the printed total is 795,200 m³. Calculations use the individual rows. The four-company handout has different volumes for companies 1 and 2.")}{" "}</p>
+            <p className="muted">{tr("The five-company rows sum to 795,190 m³; the printed total is 795,200 m³. Calculations use the individual rows of the English five-company handout. The four-company handout and the French printed map sheet give 77,300 and 301,300 m³ for companies 1 and 2.")}{" "}</p>
           )}
         </details>
         <Suspense fallback={<p>{tr("Loading teaching materials…")}</p>}><TeachingPackets negotiation={game.negotiation} /></Suspense>

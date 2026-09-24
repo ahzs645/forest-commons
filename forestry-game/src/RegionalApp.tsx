@@ -46,7 +46,8 @@ import { respondToDisruption, operatingRegion } from "./simulation/disruptions";
 import MapWorkspace from "./MapWorkspace";
 import ProcurementLab from "./ProcurementLab";
 import { serializeGame } from "./simulation/save-format";
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { securedAwaitingAuthorization } from "./simulation/tenure";
 import {
   Trees,
   LayoutDashboard,
@@ -254,6 +255,7 @@ export default function RegionalApp() {
     change(next);
   };
   const select = useCallback((id: string) => setSelected(id), []);
+  const awaitingAuthorization = useMemo(() => securedAwaitingAuthorization(game), [game]);
   const totalHarvest = game.history.reduce((n, h) => n + sum(h.harvested), 0),
     totalDelivered = game.history.reduce((n, h) => n + sum(h.delivered), 0),
     totalEmissions = game.history.reduce((n, h) => n + h.emissions, 0),
@@ -489,7 +491,7 @@ export default function RegionalApp() {
                 onClick={() => setConfirm("advance")}
               >
                 <Play size={16} />
-                <span>{tr("Run")} {tr(periodLabel).toLowerCase()} {Math.min(game.week, r.weeks)}</span>
+                <span>{done ? tr("Season complete") : <>{tr("Run")} {tr(periodLabel).toLowerCase()} {Math.min(game.week, r.weeks)}</>}</span>
               </button>
               <div className="save-actions">
                 <button
@@ -592,7 +594,7 @@ export default function RegionalApp() {
             </article>
           </div>
           </>}
-          {page === "Overview" && game.region.bcTenure && <section className="panel bc-tenure-callout"><p>{tr("BC secured timber still needs active harvesting and road authorizations. Check applications, renewals, stumpage and obligations before assigning crews or trucks.")}</p><button onClick={()=>setPage("Forest & timber")}>{tr("Review selected lot tenure and permits")}</button></section>}
+          {page === "Overview" && game.region.bcTenure && <section className="panel bc-tenure-callout"><p>{tr("BC secured timber still needs active harvesting and road authorizations. Check applications, renewals, stumpage and obligations before assigning crews or trucks.")}</p>{awaitingAuthorization.length > 0 && <p><strong>{tr("Secured timber waiting for a harvest authorization:")}</strong> {awaitingAuthorization.map(a => a.id).join(", ")}. {tr("The draft plan skips these lots until an application is approved.")}</p>}<button onClick={()=>{if(awaitingAuthorization[0])setSelected(awaitingAuthorization[0].id);setPage("Forest & timber");}}>{tr("Review selected lot tenure and permits")}</button></section>}
           {page === "Overview" && (
             <MapWorkspace
               key={JSON.stringify([r.id,r.stands.map(s=>s.id),r.crews.map(c=>c.id),r.trucks.map(t=>t.id),r.mills.map(m=>m.id),r.products.map(p=>p.id),r.zones.map(z=>z.id)])}
@@ -672,10 +674,20 @@ export default function RegionalApp() {
                         {!game.region.bcTenure && game.region.economy.timberPayment === "harvest-royalty" ? <>{tr("Acquire lot · pay on harvest ·")} {game.region.currency} {(chosen.askingPrice / chosen.volume).toFixed(2)}{tr("/m³ harvested")}</> : <>{tr("Buy private lot ·")} {money(chosen.askingPrice)}</>}
                       </button>
                     )}
+                  {chosen.supply === "auction" &&
+                    !state.owned &&
+                    !state.refused &&
+                    chosen.auctionWeek != null && chosen.auctionWeek < game.week && (() => {
+                      // A closed auction keeps its lot on the map, so show the
+                      // recorded outcome instead of a bid field that cannot change.
+                      const outcome = game.history.find(h => h.week === chosen.auctionWeek)?.messages.find(m => m.startsWith(`${chosen.id}: `));
+                      return <p className="muted">{tr("Auction closed")} · {outcome ? tr(outcome) : tr("No bid was placed.")}</p>;
+                    })()}
                   {!done &&
                     chosen.supply === "auction" &&
                     !state.owned &&
-                    !state.refused && (
+                    !state.refused &&
+                    !(chosen.auctionWeek != null && chosen.auctionWeek < game.week) && (
                       <label>
                         {tr("Sealed bid · auction")} {tr(periodLabel).toLowerCase()} {chosen.auctionWeek}
                         <input
@@ -803,7 +815,7 @@ export default function RegionalApp() {
                                   {s.id} · {s.name}
                                 </button>
                               </td>
-                              <td>{tr(st.owned ? "Owned" : s.supply)}</td>
+                              <td>{tr(st.owned ? "Owned" : s.supply[0].toUpperCase() + s.supply.slice(1))}</td>
                               <td>{fmt(st.remaining)}</td>
                               <td>{fmt(sum(stockAt(game, s.id)))}</td>
                               <td>
@@ -815,7 +827,7 @@ export default function RegionalApp() {
                                 {s.supply === "auction"
                                   ? `${tr("Auction")} ${tr(periodLabel).toLowerCase()} ${s.auctionWeek}`
                                   : s.supply === "protected"
-                                    ? tr("Conservation")
+                                    ? tr(s.unavailableReason ?? "Conservation")
                                     : tr("Now")}
                               </td>
                             </tr>
@@ -1339,9 +1351,10 @@ export default function RegionalApp() {
               </p>
             </section>
           )}
-          {page === "Collaboration"&&<EightCompanyExercise/>}
+          {/* The handout-based four/five-company laboratory leads; the generated
+              eight-company round is an extension, so it follows the campaign desks. */}
           {page === "Collaboration" && (
-            <><ReciprocalDesk key={`reciprocal-${game.region.id}`} game={game} onChange={change}/><CollaborationLab game={game} onChange={change} /><NetworkDispatchLab key={`network-${game.region.id}`} game={game}/></>
+            <><CollaborationLab game={game} onChange={change} /><ReciprocalDesk key={`reciprocal-${game.region.id}`} game={game} onChange={change}/><NetworkDispatchLab key={`network-${game.region.id}`} game={game}/><EightCompanyExercise/></>
           )}
           {(page === "Reports" || page === "Planning desk") && (
             <><Debrief game={game} onNavigate={setPage} />
@@ -1684,7 +1697,7 @@ export default function RegionalApp() {
                     <strong>{tr("Dispatch trucks.")}</strong> {tr("Each truck starts at its\n                    last location. Road paths determine travel time and cost;\n                    loads also consume handling time. Production enters roadside\n                    inventory before transport.")}
                   </li>
                   <li>
-                    <strong>{tr("Watch freshness.")}</strong> {tr("Sawlogs downgrade to pulp\n                    after their freshness window; old pulp becomes recorded\n                    waste. Oldest stock ships first, with a quality-adjusted\n                    price.")}
+                    <strong>{tr("Watch freshness.")}</strong> {tr("Sawlogs and poplar downgrade to pulp after their freshness window; old pulp becomes recorded waste. Oldest stock ships first, with a quality-adjusted price.")}
                   </li>
                   <li>
                     <strong>{tr("Prepare for changing access.")}</strong> {tr("Bearing class\n                    1 works in all conditions, 2 excludes thaw, 3 requires\n                    normal/frozen, 4 frozen only. Road upgrades improve roads,\n                    not soil bearing.")}

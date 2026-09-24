@@ -386,6 +386,17 @@ strong {
   font-size: 11px;
   background: #fff1d1;
 }
+/* A basemap tile failure does not block play: a small notice at the foot of
+   the map rather than a banner across the operations. */
+.map-error.map-notice {
+  top: auto;
+  bottom: 34px;
+  right: auto;
+  max-width: min(360px, calc(100% - 20px));
+  padding: 6px 10px;
+  opacity: .92;
+  z-index: 2;
+}
 .brief-item {
   display: flex;
   gap: 13px;

@@ -14,13 +14,13 @@ describe('authored BC market timing',()=>{
   expect(effective.trucks[0].costKm).toBeCloseTo(base.trucks[0].costKm*1.25);
   expect(effective.mills[0].prices['soft-saw']).toBeCloseTo(base.mills[0].prices['soft-saw']*.8);
   expect(effective.stands.map(s=>s.askingPrice)).toEqual(base.stands.map(s=>s.askingPrice));
-  expect(base.bcTenure!.stands[base.stands[0].id].stumpage.rates['soft-saw']).toBe(12);
+  expect(base.bcTenure!.stands[base.stands.find(s=>s.supply!=='protected')!.id].stumpage.rates['soft-saw']).toBe(12);
   expect(marketSnapshot(g).bidIndex).toBeCloseTo(.5);
  });
  it('resets adjustable rates only at the physical boundary using lagged signals',()=>{
   const g=game();g.week=6;expect(marketSnapshot(g).stumpageMultiplier).toBe(1);
   g.week=7;const snapshot=marketSnapshot(g);expect(snapshot.lastResetWeek).toBe(7);expect(snapshot.rateSignalWeek).toBe(5);expect(snapshot.nextResetWeek).toBe(20);expect(snapshot.stumpageMultiplier).toBeCloseTo(.75);
-  const id=g.region.stands[0].id;expect(effectiveMarketRegion(g).bcTenure!.stands[id].stumpage.rates['soft-saw']).toBeCloseTo(9);
+  const id=g.region.stands.find(s=>s.supply!=='protected')!.id;expect(effectiveMarketRegion(g).bcTenure!.stands[id].stumpage.rates['soft-saw']).toBeCloseTo(9);
   g.week=9;expect(marketSnapshot(g).stumpageMultiplier).toBeCloseTo(.75);
   g.region.turnDurationWeeks=.25;g.week=24;expect(marketSnapshot(g).stumpageMultiplier).toBe(1);g.week=25;expect(marketSnapshot(g).stumpageMultiplier).toBeCloseTo(.75);
  });

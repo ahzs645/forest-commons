@@ -18,11 +18,11 @@ export function runProcessing(g:Game,report:WeekResult,post:(category:string,des
   state.processed+=volume;
   const residue=volume*(1-p.outputs.reduce((n,o)=>n+o.yield,0));state.residue+=residue;
   for(const o of p.outputs)state.output[o.id]=(state.output[o.id]??0)+volume*o.yield;
-  if(volume>0)post('processing',`${m.name} · ${volume.toFixed(1)} m³ processed`,-volume*p.costM3);
+  if(volume>0)post('processing',`${m.name} · ${volume.toLocaleString("en-CA",{maximumFractionDigits:1})} m³ processed`,-volume*p.costM3);
   const sold:Stock={};
   if(order.sell)for(const o of p.outputs){const n=Math.min(state.output[o.id]??0,o.weeklyDemand);if(n<=0)continue;
    state.output[o.id]-=n;state.sold[o.id]=(state.sold[o.id]??0)+n;sold[o.id]=n;
-   post('finished-sales',`${m.name} · ${o.name} · ${n.toFixed(1)} input-equivalent m³`,n*o.price);
+   post('finished-sales',`${m.name} · ${o.name} · ${n.toLocaleString("en-CA",{maximumFractionDigits:1})} input-equivalent m³`,n*o.price);
   }
   report.processing??={};report.processing[m.id]={received:report.processing[m.id]?.received??0,processed:volume,sold,residue};
  }

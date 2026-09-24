@@ -15,6 +15,7 @@ import ReservationDesk from "./ReservationDesk";
 import { useEffect, useRef, useState } from "react";
 import type { Game } from "./simulation/types";
 import OperationsMap from "./maps/LazyMap";
+import type { MapPick } from "./maps/OperationsMap";
 import { purchase, stockAt, sum } from "./simulation/engine";
 import { activeDisruptions } from "./simulation/disruptions";
 import { weatherAt, canAccess } from "./simulation/routing";
@@ -45,7 +46,10 @@ export default function MapWorkspace({
   useEffect(()=>setError(''),[game.week]);
   const [role,setRole]=useState<MapRole>('purchase');
   const [workspaceView, setWorkspaceView] = useState<'map' | 'list'>('map');
-  const [sheetSize, setSheetSize] = useState<'half' | 'full'>('half');
+  // Phone sheet: 'peek' leaves the map clear with only the header showing.
+  const [sheetSize, setSheetSize] = useState<'peek' | 'half' | 'full'>('half');
+  const [nearby, setNearby] = useState<MapPick[] | null>(null);
+  const openSheet = () => setSheetSize(size => size === 'peek' ? 'half' : size);
   useEffect(() => {
     const frame = requestAnimationFrame(anchorWorkbench);
     return () => cancelAnimationFrame(frame);
@@ -63,7 +67,16 @@ export default function MapWorkspace({
   const inspectorRef = useRef<HTMLElement>(null);
   const r = game.region,
     done = game.week > r.weeks;
+  const inspectFeature = (kind: MapPick["kind"], id: string) => {
+    setNearby(null);
+    setInspect({ kind, id });
+    if (featureRef.current) featureRef.current.open = true;
+    openSheet();
+    inspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+  };
   const select = (id: string) => {
+    setNearby(null);
+    openSheet();
     onSelect(id);
     setInspect({ kind: "stand", id });
     if(featureRef.current) featureRef.current.open=true;
@@ -91,6 +104,10 @@ export default function MapWorkspace({
   const treatments = stand && r.operations?.stands[stand.id]?.treatments;
   const selectedTreatment = treatments && !treatments.includes(treatmentChoice) ? treatments[0] : treatmentChoice;
   const assignmentIssues = stand ? standWorkProblems(game, stand.id, crew, selectedTreatment) : [];
+  const kindLabel = (kind: MapPick["kind"]) => tr(({ stand: 'Stand', mill: 'Mill', crew: 'Crew', truck: 'Truck', road: 'Road' } as const)[kind]);
+  const inspectName = mill?.name ?? resource?.name ?? road?.name ?? inspect.id;
+  // Some regions already prefix stand names with their ID ("BC01 · VRI …").
+  const standTitle = (id: string, name = '') => name.startsWith(id) ? name : `${id} · ${name}`;
   return (
     <>
     <div className={`map-workspace adaptive-map-workspace ${workspaceView === 'list' ? 'operations-list-mode' : ''}`} data-sheet={sheetSize}>
@@ -100,22 +117,33 @@ export default function MapWorkspace({
           visibleStandIds={r.stands.filter(s=>(!zone||s.zone===zone)&&(!product||standSupportsProduct(game,s.id,product))&&(!accessibleOnly||(game.stands.find(t=>t.id===s.id)?.owned&&canAccess(s.terrain,weatherAt(game,true)[s.zone])))).map(s=>s.id)}
           selected={selected}
           onSelect={select}
-          onInspect={(kind, id) => {setInspect({ kind, id });if(featureRef.current)featureRef.current.open=true;}}
+          onInspect={inspectFeature}
+          onPick={(items) => { setNearby(items); openSheet(); inspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' }); }}
+          onBackgroundTap={() => { setNearby(null); setSheetSize('peek'); inspectorRef.current?.scrollTo({ top: 0, behavior: 'auto' }); }}
         />
         <button className="map-inspector-jump" onClick={()=>{if(featureRef.current)featureRef.current.open=true;inspectorRef.current?.focus({preventScroll:true});inspectorRef.current?.scrollIntoView({behavior:'smooth',block:'start'});}}>{tr("View selected feature ↓")}</button>
       </div>
       <aside ref={inspectorRef} tabIndex={-1} className="map-inspector" aria-label={tr("Selected map feature")}>
         <div className="operating-sheet-controls">
-          <strong>{inspect.id}</strong>
+          <button className="operating-sheet-title" aria-expanded={sheetSize !== 'peek'} onClick={() => setSheetSize(sheetSize === 'peek' ? 'half' : 'peek')}>
+            <small>{kindLabel(inspect.kind)}</small>
+            <strong>{inspect.kind === 'stand' ? standTitle(inspect.id, stand?.name) : inspectName}</strong>
+          </button>
           <div className="mobile-workspace-controls" aria-label={language === 'fr' ? 'Affichage' : 'Workspace view'}>
             <button aria-pressed={workspaceView === 'list'} onClick={() => setWorkspaceView(workspaceView === 'list' ? 'map' : 'list')}>
               {workspaceView === 'list' ? (language === 'fr' ? 'Carte' : 'Map') : (language === 'fr' ? 'Liste' : 'List')}
             </button>
-            <button className="operating-sheet-size" aria-expanded={sheetSize === 'full'} onClick={() => setSheetSize(sheetSize === 'half' ? 'full' : 'half')}>
-              {sheetSize === 'half' ? (language === 'fr' ? 'Développer' : 'Expand') : (language === 'fr' ? 'Réduire' : 'Collapse')}
+            <button className="operating-sheet-size" aria-expanded={sheetSize === 'full'} onClick={() => setSheetSize(sheetSize === 'full' ? 'half' : 'full')}>
+              {sheetSize === 'full' ? (language === 'fr' ? 'Réduire' : 'Collapse') : (language === 'fr' ? 'Développer' : 'Expand')}
             </button>
           </div>
         </div>
+        {nearby && nearby.length > 1 && <div className="map-nearby" role="group" aria-label={tr("Features at this spot")}>
+          <p>{nearby.length} {tr("features here · choose one")}</p>
+          {nearby.map(item => <button key={`${item.kind}-${item.id}`} onClick={() => item.kind === 'stand' ? select(item.id) : inspectFeature(item.kind, item.id)}>
+            <small>{kindLabel(item.kind)}</small> {item.kind === 'stand' ? standTitle(item.id, item.name) : item.name}
+          </button>)}
+        </div>}
         <div className="operating-role-tabs" aria-label={tr("Planning role")}>
           {(['purchase', 'production', 'transport'] as const).map(value => <button key={value}
             aria-pressed={role === value} onClick={() => setRole(value)}>
@@ -296,9 +324,12 @@ export default function MapWorkspace({
             <p>{resource.hours} {tr("operating hours per week.")}</p>
             <p>
               {tr("Current location:")}{" "}
-              {inspect.kind === "crew"
-                ? game.crewPositions[resource.id]
-                : game.truckPositions[resource.id]}
+              {(() => {
+                // Positions are road-node IDs; name the mill or stand at that node instead.
+                const node = inspect.kind === "crew" ? game.crewPositions[resource.id] : game.truckPositions[resource.id];
+                const place = r.mills.find(m => m.node === node) ?? r.stands.find(s => s.node === node);
+                return place ? `${place.name} (${place.id})` : `${tr("road junction")} ${node}`;
+              })()}
             </p>
             <p>
               {

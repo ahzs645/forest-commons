@@ -27,7 +27,7 @@ export function runFacilityTransfers(g:Game,h:WeekResult,post:(category:string,d
    s.output[link.output]-=volume;s.transferred??={};s.transferred[link.output]=(s.transferred[link.output]??0)+volume;
    receiveProcessing(g,h,to.id,link.input,volume);h.facilityTransfers??=[];h.facilityTransfers.push({link:link.id,truck:t.id,volume});
    h.truckHours[t.id]=(h.truckHours[t.id]??0)+hours;h.truckActivity??={};const activity=h.truckActivity[t.id]??={travel:0,handling:0};activity.travel+=empty.hours+loaded.hours;activity.handling+=t.loadingHours+t.unloadingHours;
-   g.truckPositions[t.id]=to.node;const km=empty.km+loaded.km;post('facility-haul',`${t.name}: ${from.name} → ${to.name}, ${volume.toFixed(1)} input-equivalent m³`,-km*t.costKm);h.emissions+=km*r.ecology.haulKgCO2Km;
+   g.truckPositions[t.id]=to.node;const km=empty.km+loaded.km;post('facility-haul',`${t.name}: ${from.name} → ${to.name}, ${volume.toLocaleString("en-CA",{maximumFractionDigits:1})} input-equivalent m³`,-km*t.costKm);h.emissions+=km*r.ecology.haulKgCO2Km;
    h.movements.push({resource:t.id,kind:'truck',path:[...empty.path,...loaded.path.slice(1)],km,hours,volume,from:empty.nodes[0],to:to.node});delivered+=volume;
   }
   if(!delivered)h.messages.push(`${link.id}: no transfer; check opening output stock, road access and remaining truck hours.`);

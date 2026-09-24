@@ -1,4 +1,6 @@
-import { princeGeorge } from './prince-george';
+import { princeGeorge, legacyPilotSupply, vriMix } from './prince-george';
+import vri from '../data/prince-george-vri.json';
+import { bcTeachingTenure } from './bc-tenure';
 import { emptyCalibration } from '../simulation/regional-calibration';
 import type { RegionDefinition, Weather } from '../simulation/types';
 import type { StandDossier, OperationsProfile, HarvestSystem } from '../simulation/operations-profile';
@@ -6,82 +8,102 @@ import type { StandDossier, OperationsProfile, HarvestSystem } from '../simulati
 /** Opt-in authored case. Never migrate an embedded campaign to this preset. */
 export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): RegionDefinition {
   const region = structuredClone(base);
+  // Each case sits on a pilot stand whose VRI record fits it. Species, age and
+  // live volume (17.5 cm) come from VRI; the product split uses the pilot's
+  // teaching mapping. Net treatment area, systems, operating windows, layout
+  // timing and retention remain authored case settings.
   const profileRows: {
-    id: string; title: string; area: number; density: number; age: number;
-    species: Record<string, number>; mix: number[]; systems: HarvestSystem[];
-    weather: Weather[]; retention: number; ready: number; rationale: string;
+    id: string; title: string; supply: RegionDefinition['stands'][number]['supply']; area: number; priceM3: number;
+    systems: HarvestSystem[]; weather: Weather[]; retention: number; ready: number; rationale: string;
   }[] = [
-    { id: 'BC01', title: 'Winter-access conifer case', area: .78, density: 175, age: 95,
-      species: { spruce: .55, pine: .35, fir: .1 }, mix: [.64, .31, 0, 0, .05],
+    { id: 'BC01', title: 'Winter-access aspen–pine case', supply: 'guaranteed', area: .78, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['frozen'], retention: .15, ready: 1,
-      rationale: 'Use the short authored frozen-ground window, or carry this timber rather than treating mapped access as year-round access.' },
-    { id: 'BC02', title: 'Firm-ground flexible supply', area: .88, density: 155, age: 82,
-      species: { pine: .7, spruce: .3 }, mix: [.7, .28, 0, 0, .02],
+      rationale: 'Use the short authored frozen-ground window, or carry this timber rather than treating mapped access as year-round access. The aspen-leading stand mostly suits the panel outlet.' },
+    { id: 'BC02', title: 'Firm-ground birch–fir supply', supply: 'guaranteed', area: .88, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'wet', 'frozen'], retention: .15, ready: 1,
-      rationale: 'A flexible source can buffer a disrupted plan even when it is not the first choice on immediate delivered margin.' },
-    { id: 'BC03', title: 'Mixed-wood recovery case', area: .74, density: 145, age: 78,
-      species: { aspen: .5, spruce: .4, birch: .1 }, mix: [.3, .18, .18, .14, .2],
+      rationale: 'A flexible source can buffer a disrupted plan even when its birch-heavy mix is not the first choice on immediate delivered margin.' },
+    { id: 'BC03', title: 'Mixed-wood recovery case', supply: 'guaranteed', area: .74, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'frozen'], retention: .22, ready: 1,
-      rationale: 'Evaluate outlets for every assortment. Species and recovery are related authored inputs, not measurements or a BC grading model.' },
-    { id: 'BC04', title: 'Access-recovery decision', area: .8, density: 170, age: 89,
-      species: { spruce: .65, fir: .35 }, mix: [.62, .35, 0, 0, .03],
+      rationale: 'Fir, aspen, birch and spruce: evaluate outlets for every assortment. The product split is an authored mapping of VRI species, not a BC grading model.' },
+    { id: 'BC04', title: 'Access-recovery decision', supply: 'guaranteed', area: .8, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'wet', 'frozen'], retention: .2, ready: 1,
       rationale: 'An authored washout interrupts this access spur. Paid recovery still takes physical time; cash cannot reopen it immediately.' },
-    { id: 'BC05', title: 'Commercial-thinning case', area: .85, density: 135, age: 48,
-      species: { pine: .6, spruce: .4 }, mix: [.38, .58, 0, 0, .04],
+    { id: 'BC15', title: 'Young-pine commercial-thinning case', supply: 'guaranteed', area: .85, priceM3: 9,
       systems: ['cut-to-length'], weather: ['normal', 'frozen'], retention: .65, ready: 1,
-      rationale: 'The case requires thinning and the compatible crew, retains substantial standing volume and produces a larger low-value component.' },
-    { id: 'BC08', title: 'Authorization-expiry case', area: .82, density: 185, age: 105,
-      species: { spruce: .6, fir: .25, pine: .15 }, mix: [.72, .26, 0, 0, .02],
+      rationale: 'A 35-year pine–spruce stand with little volume at 17.5 cm. Thinning with the compatible crew retains most standing volume and yields a large low-value component.' },
+    { id: 'BC08', title: 'Authorization-expiry case', supply: 'guaranteed', area: .82, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'wet', 'frozen'], retention: .2, ready: 1,
       rationale: 'A secured timber right is not a perpetual active authorization. Review the existing exercise renewal requirement.' },
-    { id: 'BC09', title: 'Layout and permit case', area: .68, density: 165, age: 86,
-      species: { spruce: .45, pine: .45, aspen: .1 }, mix: [.57, .29, .04, .04, .06],
+    { id: 'BC09', title: 'Layout and permit case', supply: 'guaranteed', area: .68, priceM3: 9,
       systems: ['cut-to-length'], weather: ['normal', 'frozen'], retention: .25, ready: 3,
       rationale: 'The authored layout package becomes available in operating week 3. Harvest authorization remains an independent requirement.' },
-    { id: 'BC11', title: 'Fictional private-timber case', area: .9, density: 125, age: 70,
-      species: { aspen: .7, spruce: .2, birch: .1 }, mix: [.15, .13, .22, .2, .3],
+    { id: 'BC11', title: 'Fictional private old-spruce case', supply: 'private', area: .9, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'wet', 'frozen'], retention: .15, ready: 1,
-      rationale: 'Upfront acquisition, recovery and outlet capacity must justify this purchase. The VRI outline does not establish real private ownership.' },
-    { id: 'BC18', title: 'Fictional BCTS acquisition case', area: .76, density: 195, age: 110,
-      species: { spruce: .7, fir: .2, pine: .1 }, mix: [.7, .27, 0, 0, .03],
+      rationale: 'A high-volume old spruce stand. Upfront acquisition, recovery and outlet capacity must justify the purchase. The VRI outline does not establish real private ownership.' },
+    { id: 'BC20', title: 'Fictional BCTS acquisition case', supply: 'auction', area: .76, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'frozen'], retention: .2, ready: 1,
       rationale: 'Award, authorization, access and a viable operating plan are separate steps. This is not an actual timber sale.' },
-    { id: 'BC24', title: 'Excluded teaching area', area: 0, density: 160, age: 130,
-      species: { spruce: .5, fir: .5 }, mix: [.65, .35, 0, 0, 0],
+    { id: 'BC24', title: 'Excluded teaching area', supply: 'protected', area: 0, priceM3: 9,
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'wet', 'frozen'], retention: .8, ready: 1,
       rationale: 'Source geometry remains visible, but the entire area is excluded from the modelled treatment area. No acquisition or harvesting is permitted.' },
   ];
+  const inventory = vri.stands as unknown as Record<string, { liveM3PerHa175: number; ageYears: number | null; species: [string, number][] }>;
+  const speciesNames: Record<string, string> = { SX: 'hybrid spruce', SB: 'black spruce', BL: 'subalpine fir', FDI: 'Douglas-fir', PLI: 'lodgepole pine',
+    EP: 'paper birch', AT: 'trembling aspen', AC: 'cottonwood' };
+  const vriCase = (id: string) => {
+    const inv = inventory[id];
+    return { density: inv.liveM3PerHa175, age: inv.ageYears ?? 0, mix: vriMix(inv.species),
+      species: Object.fromEntries(inv.species.map(([code, pct]) => [speciesNames[code] ?? code, pct / 100])) };
+  };
+  // This lesson was authored on the first pilot: every source stand in one zone,
+  // the original supply categories and three yards on these trunk nodes. The
+  // pilot has since taken VRI volumes, species and new yards; pin the lesson's
+  // inherited inputs so its cases keep their meaning.
+  const pilotOrder = region.stands.map(s => s.id);
+  if (pilotOrder.length !== 24) throw Error('BC lesson expects the 24-stand pilot source.');
+  region.roads = { nodes: region.roads.nodes.filter(n => !n.id.startsWith('pg-')), edges: region.roads.edges.filter(e => !e.id.startsWith('pg-')) };
+  region.stands = region.stands.map(({ unavailableReason: _, ...s }, i) => ({ ...s, name: `${s.id} · ${s.name.replace(' (not merchantable)', '')}`, zone: 'north',
+    supply: profileRows.find(row => row.id === s.id)?.supply ?? legacyPilotSupply(i), auctionWeek: 1 + i % 5 * 2 }));
+  region.zones = [{ id: 'north', name: 'Pilot forest operating zone' }, { id: 'south', name: 'Illustrative comparison zone' }];
+  region.bcTenure = bcTeachingTenure(region);
+  const lessonYardNodes = ['bc-road-0', 'bc-road-7', 'bc-road-14'];
+  region.mills = region.mills.slice(0, 3).map((m, i) => ({ ...m, node: lessonYardNodes[i], position: region.roads.nodes.find(n => n.id === lessonYardNodes[i])!.position }));
+  region.center = [-122.91, 54.095];
+  region.zoom = 11.5;
+  region.sources = region.sources.map(src => src.title === 'BC VRI 2025 Rank 1' ? { ...src, note: 'Open Government Licence – British Columbia. Whole single-ring polygon geometry and area retained. Polygon selection does not establish tenure or timber availability. Lesson volumes, species and ages are authored teaching values (see the operating profile), not VRI values.' } : src);
   const byId = new Map(region.stands.map(s => [s.id, s]));
   for (const row of profileRows) if (!byId.has(row.id)) throw Error(`BC lesson source is missing ${row.id}.`);
-  const products = ['soft-saw', 'soft-pulp', 'hard-saw', 'hard-pulp', 'poplar'];
   region.id = 'bc-prince-george-operating-lesson-v1';
   region.name = 'Prince George · access, recovery & commitments';
   region.description = 'Ten-site authored BC teaching lesson using the pilot inventory outlines and roads. Net treatment areas, forest attributes, systems, recovery, load limits, costs and receiving businesses are fictional. This is not a surveyed block layout, heavy-vehicle routing service, appraisal or forestry prescription.';
   region.stands = profileRows.map(row => {
-    const source = byId.get(row.id)!;
+    const source = byId.get(row.id)!, inv = vriCase(row.id);
     const netArea = source.hectares * row.area;
-    const volume = Math.round(netArea * row.density);
-    return { ...source, name: `${row.id} · ${row.title}`, volume,
-      mix: Object.fromEntries(products.map((p, i) => [p, row.mix[i]])),
-      productivity: row.id === 'BC05' ? 10 : row.id === 'BC03' ? 12 : 15,
-      harvestCost: row.id === 'BC05' ? 19 : row.id === 'BC03' ? 17 : 15,
-      askingPrice: volume * (row.id === 'BC11' ? 5 : 9),
-      auctionWeek: row.id === 'BC18' ? 1 : source.auctionWeek,
-      sourceNote: 'Only the inventory outline and inventory area come from the pilot source. Net treatment area, exclusions, species, age, volume range and recovery below are authored teaching assumptions. No treatment/exclusion boundary has been surveyed or mapped.' };
+    const volume = Math.round(netArea * inv.density);
+    return { ...source, name: row.title, volume, mix: inv.mix,
+      productivity: row.id === 'BC15' ? 10 : row.id === 'BC03' ? 12 : 15,
+      harvestCost: row.id === 'BC15' ? 19 : row.id === 'BC03' ? 17 : 15,
+      askingPrice: volume * row.priceM3,
+      auctionWeek: row.id === 'BC20' ? 1 : source.auctionWeek,
+      sourceNote: 'Inventory outline, area, species, age and projected live volume (17.5 cm) come from VRI 2025 via the pilot. Net treatment area, exclusions, the product split and the volume range below are authored teaching assumptions. No treatment/exclusion boundary has been surveyed or mapped.' };
   });
-  region.crews = region.crews.slice(0, 3).map((c, i) => ({ ...c, hours: 40,
+  // The lesson's own fleet and road speeds predate the pilot's BC-sourced rates; keep them.
+  for (const edge of region.roads.edges) edge.speed = edge.id.startsWith('access-') ? 15 : edge.id.startsWith('fsr-') ? 35 : edge.speed;
+  region.crews = region.crews.slice(0, 3).map((c, i) => ({ ...c, hours: 40, relocationSpeed: 40, relocationCostKm: 8,
     name: i === 1 ? 'CTL crew · teaching system' : `Full-tree crew ${i === 0 ? 1 : 2} · teaching system`,
     productivityFactor: 1, hourlyCost: i === 1 ? 72 : 65 }));
   region.trucks = region.trucks.slice(0, 3).map((t, i) => ({ ...t, name: `Teaching truck ${i + 1}`,
-    hours: 40, payload: [22, 30, 34][i], fixedWeekly: 350 }));
+    hours: 40, payload: [22, 30, 34][i], fixedWeekly: 350, costKm: 1.85, loadingHours: .6, unloadingHours: .4 }));
   if (region.mills.length < 3 || region.crews.length < 3 || region.trucks.length < 3)
     throw Error('BC lesson requires three receiving yards, crews and trucks in its source.');
-  const intake: Record<string, number>[] = [
-    { 'soft-saw': 1050, 'soft-pulp': 150 },
-    { 'soft-pulp': 300, 'hard-pulp': 150, poplar: 200 },
-    { 'hard-saw': 100, 'soft-saw': 150, poplar: 100 },
-  ];
+  // Each yard keeps its authored outlets; monthly intake (2,200 m³ in total)
+  // follows the offered cases' product mix, split across yards buying a product.
+  const outlets = [['soft-saw', 'soft-pulp'], ['soft-pulp', 'hard-pulp', 'poplar'], ['hard-saw', 'soft-saw', 'poplar']];
+  const offered: Record<string, number> = {};
+  for (const stand of region.stands) if (stand.supply !== 'protected') for (const [p, share] of Object.entries(stand.mix)) offered[p] = (offered[p] ?? 0) + stand.volume * share;
+  const offeredTotal = Object.values(offered).reduce((a, b) => a + b, 0);
+  const intake: Record<string, number>[] = outlets.map(list => Object.fromEntries(list.map(p =>
+    [p, Math.max(50, Math.round(2200 * (offered[p] ?? 0) / offeredTotal / outlets.filter(o => o.includes(p)).length / 10) * 10)])));
   const prices: Record<string, number>[] = [
     { 'soft-saw': 112, 'soft-pulp': 38 },
     { 'soft-pulp': 43, 'hard-pulp': 39, poplar: 42 },
@@ -131,17 +153,18 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
   }
   const dossiers: Record<string, StandDossier> = Object.fromEntries(profileRows.map(row => {
     const source = byId.get(row.id)!, net = source.hectares * row.area;
-    const owner = row.id === 'BC18' ? 'bcts' : row.id === 'BC11' ? 'owner' : 'operator';
+    const owner = row.id === 'BC20' ? 'bcts' : row.id === 'BC11' ? 'owner' : 'operator';
+    const inv = vriCase(row.id);
     return [row.id, {
       inventoryReference: source.name, inventoryAreaHa: source.hectares,
       netTreatmentAreaHa: net, excludedAreaHa: source.hectares - net,
-      species: row.species, ageYears: row.age,
-      merchantableM3PerHa: { low: Math.round(row.density * .8), central: row.density, high: Math.round(row.density * 1.2) },
+      species: inv.species, ageYears: inv.age,
+      merchantableM3PerHa: { low: Math.round(inv.density * .8), central: inv.density, high: Math.round(inv.density * 1.2) },
       slopeDescription: row.systems.length === 1 ? 'Authored CTL-only site suitability; no surveyed slope or certified equipment limit.' : 'Authored ground-based site suitability; no surveyed slope or certified equipment limit.',
       soil: row.weather.includes('wet') ? 'firm' : 'sensitive',
-      systems: row.systems, treatments: row.id === 'BC05' ? ['thinning'] : ['final', 'thinning'],
+      systems: row.systems, treatments: row.id === 'BC15' ? ['thinning'] : ['final', 'thinning'],
       layoutReadyWeek: row.ready, allowedWeather: row.weather, minimumRetention: row.retention,
-      systemRateFactors: { 'full-tree': row.id === 'BC03' ? .8 : 1, 'cut-to-length': row.id === 'BC05' ? .9 : 1 },
+      systemRateFactors: { 'full-tree': row.id === 'BC03' ? .8 : 1, 'cut-to-length': row.id === 'BC15' ? .9 : 1 },
       rationale: row.rationale,
       planningAssumptions: ['Upstream land-use and rights-holder processes are assumed addressed in this fictional case; they are not simulated by a timer.',
         'Area exclusions are numerical assumptions, not mapped riparian buffers, habitat assessments or visual-quality compliance.',

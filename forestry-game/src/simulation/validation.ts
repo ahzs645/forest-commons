@@ -136,6 +136,12 @@ export function validateRegion(value: unknown): RegionDefinition {
       !positive(s.volume, true) ||
       !positive(s.hectares) ||
       (s.sourceNote !== undefined && !text(s.sourceNote)) ||
+      (s.unavailableReason !== undefined && (!text(s.unavailableReason) || s.supply !== "protected")) ||
+      (s.priceBasis !== undefined && (!s.priceBasis || !positive(s.priceBasis.averageM3) ||
+        (s.priceBasis.capped !== undefined && !["upper", "lower"].includes(s.priceBasis.capped)) ||
+        !Array.isArray(s.priceBasis.factors) || s.priceBasis.factors.length > 12 ||
+        !s.priceBasis.factors.every(x => x && ["deciduous", "tree-size", "hembal", "density", "lot-size", "haul"].includes(x.factor) &&
+          [x.value, x.average, x.effect].every(Number.isFinite)))) ||
       !positive(s.productivity) ||
       !positive(s.harvestCost, true) ||
       !positive(s.askingPrice, true) ||

@@ -1,7 +1,37 @@
 import type { Game, Position } from "./types";
+/**
+ * Road geometry is stored in traversal order, so a route along an edge
+ * references consecutive dictionary points. Format 4 writes a run of three or
+ * more consecutive indices as [start, signed extra count]: [7, 3] is 7,8,9,10
+ * and [7, -2] is 7,6,5. Single indices stay plain numbers.
+ */
+type PackedPath = (number | [number, number])[];
+function compressRuns(indices: number[]): PackedPath {
+  const out: PackedPath = [];
+  for (let i = 0; i < indices.length;) {
+    const step = indices[i + 1] - indices[i];
+    let j = i;
+    if (step === 1 || step === -1) while (j + 1 < indices.length && indices[j + 1] - indices[j] === step) j++;
+    if (j - i >= 2) { out.push([indices[i], (j - i) * step]); i = j + 1; }
+    else { out.push(indices[i]); i++; }
+  }
+  return out;
+}
+function expandRuns(path: unknown[], limit: number): number[] | null {
+  const out: number[] = [];
+  for (const item of path) {
+    if (Number.isInteger(item)) out.push(item as number);
+    else if (Array.isArray(item) && item.length === 2 && Number.isInteger(item[0]) && Number.isInteger(item[1]) && item[1] !== 0 && Math.abs(item[1]) <= limit) {
+      const [start, extra] = item as [number, number], step = Math.sign(extra);
+      for (let k = 0; k <= Math.abs(extra); k++) out.push(start + k * step);
+    } else return null;
+    if (out.length > limit) return null;
+  }
+  return out;
+}
 /** Routes repeat for every load and week. Store each coordinate sequence once. */
 export function serializeGame(game: Game): string {
-  const paths: number[][] = [],
+  const paths: PackedPath[] = [],
     points: Position[] = [],
     pointIndices = new Map<string, number>(),
     indices = new Map<string, number>();
@@ -14,19 +44,19 @@ export function serializeGame(game: Game): string {
       if (index === undefined) {
         index = paths.length;
         indices.set(signature, index);
-        paths.push(value.map((point: Position) => {
+        paths.push(compressRuns(value.map((point: Position) => {
           const coordinate = JSON.stringify(point);
           let pointIndex = pointIndices.get(coordinate);
           if (pointIndex === undefined) { pointIndex = points.length; pointIndices.set(coordinate, pointIndex); points.push(point); }
           return pointIndex;
-        }));
+        })));
       }
       return { routePath: index };
     }),
   );
   return JSON.stringify({
     format: "forest-commons-save",
-    formatVersion: 3,
+    formatVersion: 4,
     points,
     paths,
     game: packed,
@@ -42,19 +72,20 @@ export function unpackGame(value: unknown): unknown {
   };
   if (envelope?.format !== "forest-commons-save") return value;
   if (
-    ![1,2,3].includes(envelope.formatVersion ?? 0) ||
+    ![1,2,3,4].includes(envelope.formatVersion ?? 0) ||
     !Array.isArray(envelope.paths) ||
     envelope.paths.length > 100000 ||
     !envelope.game
   )
     throw Error("Invalid packed save.");
   let paths = envelope.paths;
-  if (envelope.formatVersion === 3) {
+  if (envelope.formatVersion === 3 || envelope.formatVersion === 4) {
     const points = envelope.points;
     if (!Array.isArray(points) || points.length > 1000000 || !points.every(p => Array.isArray(p) && p.length === 2 && p.every(n => typeof n === 'number' && Number.isFinite(n)) && Math.abs(p[0]) <= 180 && Math.abs(p[1]) <= 90)) throw Error('Invalid saved coordinate dictionary.');
     paths = paths.map(path => {
-      if (!Array.isArray(path) || path.length > 100000 || !path.every(i => Number.isInteger(i) && i >= 0 && i < points.length)) throw Error('Invalid saved coordinate reference.');
-      return path.map(i => points[i]);
+      const indices = Array.isArray(path) && path.length <= 100000 ? envelope.formatVersion === 4 ? expandRuns(path, 100000) : path : null;
+      if (!indices || !indices.every(i => Number.isInteger(i) && i >= 0 && i < points.length)) throw Error('Invalid saved coordinate reference.');
+      return indices.map(i => points[i]);
     });
   }
   return JSON.parse(JSON.stringify(envelope.game), (key, v) => {
@@ -71,7 +102,7 @@ export function unpackGame(value: unknown): unknown {
         }
       }
     }
-    if (!(envelope.formatVersion === 3 ? ["path", "geometry", "polygon"].includes(key) : key === "path")) return v;
+    if (!((envelope.formatVersion ?? 0) >= 3 ? ["path", "geometry", "polygon"].includes(key) : key === "path")) return v;
     if (
       !v ||
       !Number.isInteger(v.routePath) ||

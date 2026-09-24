@@ -35,8 +35,24 @@ export interface RoadEdge {
   geometry: Position[];
   name: string;
 }
+export type PriceFactor = 'deciduous' | 'tree-size' | 'hembal' | 'density' | 'lot-size' | 'haul';
+export interface PriceBasis {
+  /** District average asking price per m³ of offered timber. */
+  averageM3: number;
+  /** The price was held at the allowed range around the average. */
+  capped?: 'upper' | 'lower';
+  factors: { factor: PriceFactor; value: number; average: number; effect: number }[];
+}
 export interface StandDefinition {
   sourceNote?: string;
+  /** Why a protected stand is not offered, shown instead of "Conservation" (e.g. not merchantable). */
+  unavailableReason?: string;
+  /**
+   * Why the asking price sits where it does against the district average:
+   * each factor's effect in currency per m³ when only that attribute is set to
+   * the district average (one at a time, so effects need not sum exactly).
+   */
+  priceBasis?: PriceBasis;
   id: string;
   name: string;
   position: Position;

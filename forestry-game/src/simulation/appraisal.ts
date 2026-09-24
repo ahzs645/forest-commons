@@ -18,7 +18,12 @@ export function appraise(game: Game, id: string, price?: number, bucking?:string
   const authorizationProblem = state.owned ? harvestAuthorizationProblem(game, id) : null;
   const stumpage = stumpageCost(r, id, Object.fromEntries(Object.entries(mix).map(([p, share]) => [p, share * eligible])));
   const obligations = obligationRateM3(game, id) * eligible;
-  const operating = r;
+  // Value the lot as if its own access road were authorized: a buyer applies
+  // for it after acquiring the lot, so it is not usable before purchase.
+  const access = game.region.roads.edges.find((e) => e.id === `access-${id}`);
+  const operating = access && !r.roads.edges.some((e) => e.id === access.id) &&
+    !activeDisruptions(game).some((x) => x.kind === "road" && x.target === access.id)
+    ? { ...r, roads: { ...r.roads, edges: [...r.roads.edges, access] } } : r;
   const cases: Weather[] = ["frozen", "normal", "wet", "thaw"];
   const casesResult = cases.map((weather) => {
     const w = Object.fromEntries(r.zones.map((z) => [z.id, weather])),
