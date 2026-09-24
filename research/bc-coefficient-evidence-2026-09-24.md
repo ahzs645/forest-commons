@@ -82,66 +82,130 @@ Buying and bidding on every lot delivered less and ended at a loss, about −477
   - Current allowable annual cut is 6,917,231 m³/yr.
 - OSRM demo server (car profile) over OpenStreetMap (ODbL). Cached routes and request URLs are in `research/bc-inputs/pg-connector-osrm/manifest.json`.
 
-## Documents supplied on 24 September 2026
+## Documents supplied or found on 24 September 2026
 
-Four documents were checked against the pilot. None of them changed a game value yet.
+The user supplied five documents, and a search of the Legislative Library of BC catalogue (searchcollections.llbc.leg.bc.ca) found five more. None of them has changed a game value yet.
 
-### Interior market pricing specification (Revenue Branch, 2006 and July 2009)
+### Interior market pricing specifications (2009 and November 2010)
 
-The 2009 specification gives the full equation for the estimated winning bid on an Interior timber sale. It starts from a constant of 41.74 $/m³ in 2009 real dollars and adds a term for each stand attribute. The terms that matter for the pilot are:
+Both specifications give the full equation for the estimated winning bid on an Interior timber sale. The 2009 version was supplied; the November 2010 version was found in the library. Every term is in real dollars per m³ of **coniferous** cruise volume, and deciduous volume is not part of that base.
 
-- selling price index × 0.162, deflated by CPI ÷ 109.3;
-- US$/C$ exchange rate × −15.93;
-- hemlock and balsam fraction × −19.10, and deciduous fraction × −8.44;
-- ln(sale volume ÷ 1,000) × 2.06;
-- ln(volume per tree) × 8.22, and 1 ÷ volume per tree × −0.530;
-- total cycle time (hours) × −1.37;
-- a district value × 0.922, where Prince George is 3.7.
+| Term | 2009 | 2010 |
+|---|---|---|
+| Constant | 41.74 | 32.85 |
+| Selling price index ÷ (CPI ÷ 109.3) | × 0.162 | × 0.152 |
+| US$/C$ exchange rate | × −15.93 | × −11.86 |
+| Hemlock/balsam fraction | × −19.10 | × −18.91 |
+| ln(coniferous volume ÷ 1,000) | × 2.06 | × 1.71 |
+| ln(volume per tree) | × 8.22 | × 8.70 |
+| 1 ÷ volume per tree | × −0.530 | not used |
+| ln(coniferous m³/ha) | not used | × 1.50 |
+| Deciduous fraction | × −8.44 | replaced by a flag for competitive deciduous sales |
+| Total cycle time (hours) | × −1.37 | × −1.01 |
+| District average number of bidders (Prince George) | 3.7 × 0.922 | 3.6 × 0.871 |
+| Beetle attack fraction | −6.40 green, −6.05 red/grey | −5.56 total attack |
 
-The equation was tried on the pilot's five auction lots. Species, volume per tree and sale size came from the cached VRI record, and cycle time from the game's route to the nearest mill. Lumber values, recovery and CPI are **assumed**, not taken from the specification: 230 fbm/m³ recovery, then either $330/Mbm, 0.88 US$/C$ and CPI 114.7, or $520/Mbm, 0.73 US$/C$ and CPI 165.
+The equations were tried on the pilot's five auction lots:
 
-| Lot | Volume (m³) | m³ per tree | Deciduous | Estimated bid, 2009-like ($/m³) | Estimated bid, 2026-like ($/m³) | Game asking price ($/m³) |
-|---|---|---|---|---|---|---|
-| BC19 | 4,626 | 0.48 | 10% | 32.85 | 52.39 | 9.0 |
-| BC20 | 5,170 | 0.82 | 25% | 33.19 | 52.61 | 9.0 |
-| BC21 | 5,543 | 0.36 | 48% | 19.67 | 32.78 | 9.0 |
-| BC22 | 5,574 | 1.08 | 25% | 34.01 | 53.80 | 9.0 |
-| BC23 | 8,326 | 1.18 | 10% | 44.20 | 68.71 | 9.0 |
+- Species, volume per tree and m³/ha came from the cached VRI record, and cycle time from the game's route to the nearest mill.
+- Decay was set at 5%, slope at 10%, ground-based clearcut. The VRI shows no dead volume in these stands.
+- Hemlock/balsam includes subalpine fir (BL). The 2010 text defines it from hemlock volume, so this may overstate the penalty.
+- Lumber values, recovery and CPI are **assumed**, not taken from either specification: 230 fbm/m³ recovery, then either $330/Mbm, 0.88 US$/C$ and CPI 114.7 ("2009-like"), or $520/Mbm, 0.73 US$/C$ and CPI 165 ("2026-like").
+
+| Lot | Volume (m³) | Coniferous | m³ per tree | 2009 equation, 2009-like ($/conifer m³) | 2010 equation, 2009-like ($/conifer m³) | 2010 equation, 2009-like ($ per lot m³) | 2010 equation, 2026-like ($ per lot m³) | Game asking price ($/m³) |
+|---|---|---|---|---|---|---|---|---|
+| BC19 | 4,626 | 90% | 0.48 | 33.75 | 35.65 | 32.09 | 50.00 | 9.0 |
+| BC20 | 5,170 | 75% | 0.82 | 34.67 | 39.71 | 29.79 | 46.05 | 9.0 |
+| BC21 | 5,543 | 52% | 0.36 | 20.79 | 27.42 | 14.26 | 22.73 | 9.0 |
+| BC22 | 5,574 | 75% | 1.08 | 34.84 | 40.02 | 30.02 | 46.38 | 9.0 |
+| BC23 | 8,326 | 90% | 1.18 | 45.24 | 48.12 | 43.31 | 66.14 | 9.0 |
+
+An earlier version of this table spread coniferous value over deciduous volume as well, which understated every lot slightly. The pattern between lots did not change.
 
 What this shows:
 
-- **The totals cannot be compared directly.** The equation estimates the whole winning bid. The game charges a separate premium and then its own stumpage, which comes to roughly 17–19 $/m³ in total.
-- **The spread between lots is usable now.** The game prices every lot at a flat 9 $/m³. The equation values the small-tree, half-aspen lot (BC21) at about 60% of the others, and the large-tree lot (BC23) about a third higher. A rival bid that followed these ratios would reward players who read the stand data.
+- **The totals cannot be compared directly.** The equation estimates the whole winning bid. The game charges a separate premium and then its own stumpage, which comes to roughly 17–19 $/m³ in total. For scale, BC Timber Sales' 2022/23 average billed rate across the province was $60.85/m³.
+- **The spread between lots is usable now.** The game prices every lot at a flat 9 $/m³. Per m³ of lot volume, the equation values the small-tree, half-aspen lot (BC21) at about half the typical lot, and the large-tree lot (BC23) about 40% higher. A rival bid that followed these ratios would reward players who read the stand data.
 - **Using the equation directly** would need the lumber values, recovery factors and CPI for the same period, plus a revised stumpage model. That is a balance change and has not been made.
 
-### BC Timber Sales quarterly performance reports (2014/15 Q1 and 2018/19 Q3)
+### Prince George TSA timber supply review data package (April 2015)
 
-- BCTS sells timber partly to supply price data for the market pricing system.
-- From April to December 2018, the Prince George business area sold 1.09 million m³ against a 1.36 million target (−20%). Stuart–Nechako sold 0.79 million against 1.22 million (−36%).
-- In Q1 2014/15, BCTS advertised 4.1% of the projected provincial harvest against a 4.6% target.
+This is the Prince George TSA's own set of analysis inputs, found in the library.
 
-These figures give context for the auction share only. The pilot's 5 auction lots out of 19 offered are a teaching ratio.
-
-### Cranbrook TSA timber supply analysis report v3 (2004)
-
-This report comes from another district, so its values are a method template only:
-
-- Utilization is a 17.5 cm minimum dbh (12.5 cm for lodgepole pine), a 30 cm maximum stump and a 10 cm minimum top.
-- For unmanaged stands, the model's standard decay, waste and breakage factors apply.
-- Managed stands lose 15% (OAF1) and a further 5–10.8% (OAF2).
-- The minimum harvestable stand is 150 m³/ha, or 100 m³/ha for pine on slopes under 40%.
+- **Utilization:** pine 12.5 cm minimum dbh; other species 17.5 cm; 30 cm maximum stump; 10 cm minimum top (15 cm for cedar older than 141 years).
+- **Minimum merchantable stand, net volume:**
+  - 182 m³/ha for stands not affected by the beetle;
+  - 140 m³/ha for beetle-affected pine-leading stands;
+  - taken from 30 years of appraisal data. The first percentile was 153 m³/ha for pine-leading stands and 186 m³/ha for others.
+- **Recent net volumes:** the median for pine-leading cutting permits fell from about 280 m³/ha (2008) to 240 m³/ha (2013).
+- **Decay, waste and breakage:** built into the model's natural-stand yield curves. Managed stands lose up to 5% by age 100 (OAF2).
+- **Stand types excluded** as uneconomic:
+  - hemlock-leading, black spruce-leading and non-commercial deciduous stands;
+  - deciduous-leading stands in Vanderhoof District.
+  - Stands over 80% balsam are handled separately: balsam-leading stands are 22% of the area but only 1.6% of the harvest.
+- **Deciduous:** 160,000 m³/yr of the cut was set aside for deciduous stands in 2011. By 2015 every deciduous licence had expired, with no significant deciduous-leading harvest since.
+- **Haul limit:** historic harvesting stops at a cycle-time index of about 22.1 hours.
+- **In-block retention:** a median of 12.1% of stand area.
 
 Checked against the pilot:
 
-- The pilot counts a stand as merchantable at 60 m³/ha. Raising this to 100 would change nothing, and 150 would drop one stand, which is 110.6 m³/ha and 65% aspen.
-- The pilot uses gross VRI volume at the same 17.5 cm utilization. Net volume after decay, waste and breakage would be lower. The Prince George TSA's own analysis report would give the factors to use.
+- **Merchantability:** the pilot counts a stand at 60 m³/ha of gross VRI volume. A 140 m³/ha floor would drop one offered stand, the 110.6 m³/ha stand that is 65% aspen. A 182 m³/ha floor would also drop the 161.9 m³/ha stand. The data package's floors apply to net volume, so they would bite harder on gross VRI figures.
+- **Aspen:** the aspen/poplar outlet is fictional, and the data package confirms there is no current deciduous market in the TSA.
+- **Retention:** the pilot takes no retention off harvest volume. Taking off 12.1% would lower every stand's volume.
+
+### 2016 Prince George TSA timber supply analysis discussion paper
+
+- The base case starts at 10.1 million m³/yr.
+- The harvest request includes deciduous-leading stands at 4% of the total.
+- Sawlog shelf life of dead pine is assumed to decline exponentially.
+
+### BC Timber Sales performance reports (2014/15 Q1, 2018/19 Q3, annual 2022/23)
+
+- BCTS sells timber partly to supply price data for the market pricing system.
+- **2018/19, April to December:**
+  - Prince George business area sold 1.09 million m³ against a 1.36 million target (−20%);
+  - Stuart–Nechako sold 0.79 million against 1.22 million (−36%).
+- **2014/15 Q1:** BCTS advertised 4.1% of the projected provincial harvest against a 4.6% target.
+- **2022/23:**
+  - the North Interior sold 0.9 million m³ against 2.4 million;
+  - the average billed rate across the province was $60.85/m³;
+  - developed timber cost $12.30/m³, and access $11.29/m³ sold.
+
+These figures give context for the auction share and price level only. The pilot's 5 auction lots out of 19 offered are a teaching ratio.
+
+### Cranbrook TSA timber supply analysis report v3 (2004)
+
+This report comes from another district, so it is a cross-check only. The Prince George data package above supersedes it for the pilot.
+
+- Utilization is a 17.5 cm minimum dbh (12.5 cm for lodgepole pine), a 30 cm maximum stump and a 10 cm minimum top.
+- Managed stands lose 15% (OAF1) and a further 5–10.8% (OAF2).
+- The minimum harvestable stand is 150 m³/ha, or 100 m³/ha for pine on slopes under 40%.
+
+### Library holdings still to read
+
+- Interior Appraisal Manual, 2017 and July 2019 editions: https://www.llbc.leg.bc.ca/public/pubdocs/bcdocs2019_2/696139/iam_july_2019_master.pdf
+- Interior market pricing system, 2006: the tenure obligation adjustments and specified operations components.
+- *An assessment of the strategic importance of the hardwood resource in British Columbia* (1994): https://www.llbc.leg.bc.ca/public/pubdocs/bcdocs2012_2/183356/frr221.pdf
+- *Paper birch managers' handbook for British Columbia* (1997): https://www.llbc.leg.bc.ca/public/pubdocs/bcdocs2012_2/305246/frr271_1.pdf
+- *Cubic foot log-scaling and lumber-recovery studies in the Prince George Forest District* (1954): too old for current recovery.
+- BC Timber Sales annual performance reports, 2013/14 to 2022/23.
+
+Not in the catalogue: the Interior Logging Cost Report, Interior Log Market Reports, published market pricing parameters (lumber values, CPI) and load-restriction notices.
+
+## Sources for this section
+
+- Prince George TSA data package (2015): https://www.llbc.leg.bc.ca/public/pubdocs/bcdocs2018_2/688303/prince_george_tsa_data_package.pdf
+- Prince George TSA discussion paper (2016): https://www.llbc.leg.bc.ca/public/pubdocs/bcdocs2016/595458/24tspdp16_final.pdf
+- *Specifications: the Interior market pricing system* (November 2010): https://www.llbc.leg.bc.ca/public/pubdocs/bcdocs2011/469332/mps-interior-spec.pdf
+- *Specifications: calculation of the Interior average market price* (July 2009): https://www.llbc.leg.bc.ca/public/PubDocs/bcdocs/459169/Specs-InteriorAMV-Jul09.pdf
+- BC Timber Sales annual performance report 2022/23: https://www.llbc.leg.bc.ca/public/PubDocs/bcdocs2024/736594/736594_BCTimber_Annual_Performance_Report_2022_23.pdf
 
 ## Still missing
 
 - **Grapple skidder and processor productivity for Prince George:** literature ranges were too wide to use, so a system rate stands in.
 - **A current stump-to-truck average:** the Interior Logging Cost Report data is confidential.
-- **Tonnes-to-m³ conversion** for loads, and **decay/waste/breakage factors** for VRI volumes.
+- **Tonnes-to-m³ conversion** for loads.
 - **Deciduous prices and birch recovery.**
-- **Lumber values, recovery factors and CPI** from the same period as the 2009 bid equation, and any later coefficients.
+- **Lumber values, recovery factors and CPI** for the same period as the 2010 bid equation.
 - **Exact break-up dates** for the FSRs themselves.
 - **Qualified review** of every item above before the scenario is described as calibrated.
