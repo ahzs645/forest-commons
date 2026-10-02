@@ -219,6 +219,13 @@ export default function MapWorkspace({
               <button aria-pressed={role === 'production'} onClick={() => setRole('production')}>{language === 'fr' ? 'Planifier la récolte' : 'Plan harvest'}</button>
               <button aria-pressed={role === 'transport'} onClick={() => setRole('transport')}>{language === 'fr' ? 'Planifier le transport' : 'Plan haul'}</button>
             </div>}
+            <section className="map-site-information" aria-label={language === 'fr' ? 'Informations du chantier' : 'Site information'}>
+              <p>{tr(r.zones.find(zone => zone.id === stand.zone)?.name ?? stand.zone)} · {state.owned ? tr('Secured timber') : tr(stand.supply)}</p>
+              <dl className="map-site-facts">
+                <div><dt>{tr('Base productivity')}</dt><dd>{stand.productivity} m³/h</dd></div>
+                <div><dt>{language === 'fr' ? 'Accès au terrain prévu' : 'Forecast terrain access'}</dt><dd>{done ? tr('Season complete') : canAccess(stand.terrain, weatherAt(game, true)[stand.zone]) ? tr('Open terrain') : tr('Terrain closed')}</dd></div>
+              </dl>
+            </section>
             <StandReadiness compact key={stand.id} game={game} standId={stand.id}
               selection={{ crew, treatment: selectedTreatment }} onChange={onChange} onNavigate={onNavigate} />
             {state.owned && !done && role === 'production' && (
@@ -273,9 +280,7 @@ export default function MapWorkspace({
             {!state.owned&&stand.supply==='auction'&&stand.auctionWeek===game.week&&<BidCompositionDesk game={game} standId={stand.id} onChange={onChange}/>}
             {!state.owned&&!done&&stand.supply==='auction'&&stand.auctionWeek===game.week&&<label>{tr("Sealed lot bid (")}{r.currency})<input type="number" min="0" value={game.plan.bids[stand.id]??0} onChange={e=>{const value=Number(e.target.value);if(!Number.isFinite(value)||value<0)return;const next=structuredClone(game);if(value)next.plan.bids[stand.id]=value;else delete next.plan.bids[stand.id];next.plan.ready={purchase:false,production:false,transport:false};onChange(next);}}/><small>{tr("Awards settle after this week’s operations.")}</small></label>}
             {state.owned && !done && role !== 'purchase' && <button className="wide" onClick={() => onNavigate('Planning desk')}>{tr('Rehearse plan')}</button>}
-            <details className="map-site-information"><summary>{language === 'fr' ? 'Informations du chantier' : 'Site information'}</summary>
-              <p>{tr(r.zones.find(zone => zone.id === stand.zone)?.name ?? stand.zone)} · {state.owned ? tr('Secured timber') : tr(stand.supply)}</p>
-              <dl className="facts"><dt>{tr('Base productivity')}</dt><dd>{stand.productivity} m³/h</dd></dl>
+            <details className="map-site-sources"><summary>{language === 'fr' ? 'Sources et détails du lot' : 'Sources & lot details'}</summary>
               {stand.sourceNote && <p className="muted">{stand.sourceNote}</p>}
               <button className="wide" onClick={() => onNavigate('Forest & timber')}>{tr('Lot details, bids & appraisal →')}</button>
               {state.owned && <details><summary>{tr('Reserve a destination')}</summary><ReservationDesk game={game} standId={stand.id} onChange={onChange}/></details>}

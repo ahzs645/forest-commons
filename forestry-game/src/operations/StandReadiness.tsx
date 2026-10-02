@@ -31,9 +31,12 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
   const state = game.stands.find(s => s.id === standId);
   const bottleneck = selection.crew ? chainBottleneck(game.region, selection.crew, standId) : null;
   const number = (n: number) => n.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', { maximumFractionDigits: 1 });
+  // The sheet exposes decision facts and every concern without another tap.
+  // The exhaustive audit and longer evidence remain optional reading.
+  const visibleChecks = checks.filter(check => check.level !== 'ready' || ['volume', 'route'].includes(check.code));
   const evidenceDetails = <>
     <details className="operating-checks">
-      <summary>{text('What can happen here now?', 'Que peut-on faire ici maintenant?')}</summary>
+      <summary>{compact ? text('All readiness checks', 'Toutes les vérifications') : text('What can happen here now?', 'Que peut-on faire ici maintenant?')}</summary>
       <p className="muted">{text('Forecast conditions, not authorization to operate. Route readiness does not reserve stock, truck time or mill capacity.',
         'Conditions prévues, et non autorisation réelle. Un itinéraire disponible ne réserve ni bois, ni heures de camion, ni capacité de réception.')}</p>
       <dl>{checks.map(check => <div key={`${check.scope}:${check.code}`} data-level={check.level}>
@@ -101,12 +104,16 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
       {(['harvest', 'haul'] as const).map(scope => {
         const list = checks.filter(c => c.scope === scope);
         const blocked = list.filter(c => c.level === 'blocked').length;
-        return <span key={scope} data-level={blocked ? 'blocked' : 'ready'}>
+        const warning = list.some(c => c.level === 'warning');
+        return <span key={scope} data-level={blocked ? 'blocked' : compact && warning ? 'warning' : 'ready'}>
           {scope === 'harvest' ? text('Harvest', 'Récolte') : text('Haul', 'Transport')}:
-          {' '}{compact ? (!list.length ? text('Season ended', 'Saison terminée') : blocked ? `${blocked} ${text('issues', 'points à vérifier')}` : text('Ready', 'Prêt')) : !list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
+          {' '}{compact ? (!list.length ? text('Season ended', 'Saison terminée') : blocked ? `${blocked} ${text('issues', 'points à vérifier')}` : warning ? text('Review', 'À vérifier') : text('Ready', 'Prêt')) : !list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
         </span>;
       })}
     </div>
-    {compact ? <details className="compact-readiness-details"><summary>{text('Checks & site evidence', 'Vérifications et preuves du chantier')}</summary>{evidenceDetails}</details> : evidenceDetails}
+    {compact && <dl className="map-readiness-facts">{visibleChecks.map(check => <div key={`${check.scope}:${check.code}`} data-level={check.level}>
+      <dt>{t(check.label)}</dt><dd>{t(check.message)}{check.level !== 'ready' && check.action && onNavigate && <button type="button" onClick={() => onNavigate(destinations[check.action!])}>{text('Review details', 'Voir les détails')}</button>}</dd>
+    </div>)}</dl>}
+    {evidenceDetails}
   </section>;
 }

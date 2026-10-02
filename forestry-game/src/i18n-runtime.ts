@@ -5,6 +5,8 @@ const frNumber=(n:string)=>n.replace(/,/g,'\u202f').replace(/\.(?=\d)/,',');
 const frAmount=(text:string)=>{const money=text.match(/^([A-Z]{3}) ([\d,.]+)$/);return money?`${frNumber(money[2])} ${money[1]}`:frNumber(text);};
 /** Translate known engine templates at presentation time; preserve authored names and saved evidence. */
 const patterns: [RegExp,(...parts:string[])=>string][] = [
+ [/^([\d,]+) m³ available above the treatment retention floor\.$/,(_,n)=>`${frNumber(n)} m³ disponibles au-delà du seuil de rétention du traitement.`],
+ [/^(.+) → (.+): ([\d.]+) km, ([\d.]+) h first cycle, at most ([\d.]+) m³\/load\. This is not a dispatch guarantee\.$/,(_,truck,mill,km,hours,payload)=>`${truck} → ${mill} : ${frNumber(km)} km, ${frNumber(hours)} h au premier cycle, au plus ${frNumber(payload)} m³/chargement. Cela ne garantit pas l’exécution du transport.`],
  [/^([\d,]+) m³ now\. Same-turn harvest may add stock; rehearsal checks fulfillment\.$/,(_,n)=>`${n} m³ actuellement. La récolte du même tour peut ajouter du stock; la simulation vérifie l’exécution.`],
  [/^([\d,]+) m³ now; this turn’s crew plan harvests here first\. Rehearsal checks fulfillment\.$/,(_,n)=>`${n} m³ actuellement; le plan des équipes récolte d’abord ce site ce tour-ci. La simulation vérifie l’exécution.`],
  [/^Below (\d+) m³\/ha \(TSA minimum\)$/,(_,n)=>`Moins de ${n} m³/ha (minimum de la TSA)`],

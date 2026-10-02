@@ -12,8 +12,13 @@ describe('map workbench',()=>{
   expect(html).not.toContain('<h3>Q01</h3>');
   expect(html).not.toContain('OPERATING READINESS');
   expect(html).toContain('Harvest:');
-  expect(html).toContain('Checks &amp; site evidence');
-  expect(html).toContain('What can happen here now?');
+  expect(html).not.toContain('compact-readiness-details');
+  expect(html).toContain('All readiness checks');
+  const visible=html.match(/<dl class="map-readiness-facts">(.*?)<\/dl>/)?.[1] ?? '';
+  expect(visible).toContain('available above the treatment retention floor');
+  expect(visible).toContain('Same-turn harvest may add stock');
+  expect(visible).toContain('first cycle');
+  expect(html).toContain('Haul: Review');
  });
  it('shows one dispatch form with an assortment choice and no full analysis desk',()=>{
   const game=createGame(quebec);
