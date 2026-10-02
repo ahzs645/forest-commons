@@ -59,6 +59,7 @@
 .map-lens-workbench .map-lens-values>ul {max-height:none;overflow:visible}
 .map-first .adaptive-map-workspace .geo-caption {max-width:calc(100% - 24px);box-sizing:border-box;white-space:normal}
 @container game-main (max-width:950px) {
+ .map-first .adaptive-map-workspace[data-sheet=half]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:55%;max-height:55%}
  .map-first .adaptive-map-workspace .map-inspector:not([hidden]) {height:45%;max-height:45%;min-height:0}
  .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector:not([hidden]) {height:85%;max-height:85%}
  .map-first .adaptive-map-workspace .map-inspector::before {display:none}
@@ -79,4 +80,27 @@
 @media(pointer:coarse) {.geo-map .maplibregl-ctrl-group>button {width:44px;height:44px}.geo-map .map-legend>summary,.geo-map .map-layer-menu>summary {min-height:44px;align-content:center}}
 .map-first .adaptive-map-workspace .map-inspector-header .operating-sheet-controls {display:flex;align-items:center;justify-content:space-between;gap:6px}
 .map-first .adaptive-map-workspace .map-role-panel .workbench-sites {max-height:none}
-@container game-main (max-width:950px) {.map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:94px;max-height:94px}}
+/* Feature taps reveal facts first; tools and search remain below the dossier. */
+.map-entity-search {padding:12px 0;border-bottom:1px solid #dfe5da}
+.map-nearby ul {list-style:none;margin:8px 0;padding:0}
+.map-nearby li {margin:6px 0}
+.map-nearby li button {width:100%;min-height:44px;white-space:normal;text-align:left;overflow-wrap:anywhere}
+.map-nearby label {display:block}
+.map-nearby input {width:100%;min-height:44px;font-size:16px;box-sizing:border-box}
+.map-sheet-handle,.map-sheet-close {display:none}
+.map-selection-announcement {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.adaptive-map-workspace .operating-readiness>header .eyebrow {margin-top:0}
+@container game-main (max-width:950px) {
+ .map-first .adaptive-map-workspace .map-sheet-handle {display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;height:44px;padding:0;border:0;background:transparent;touch-action:none;cursor:ns-resize}
+ .map-sheet-handle>span:first-child {width:32px;height:4px;flex:none;background:#7b9285;border-radius:3px}
+ .map-sheet-handle-label {font-size:10px;font-weight:500;color:#52685b}
+ .map-first .adaptive-map-workspace .map-inspector-header {padding-top:0}
+ .map-first .adaptive-map-workspace .map-sheet-close {display:block;font-size:24px;line-height:1;padding:0;width:44px;flex:none}
+ .map-first .adaptive-map-workspace .mobile-workspace-controls {gap:0}
+ .map-first .adaptive-map-workspace .mobile-workspace-controls .operating-sheet-size {padding:0 6px;font-size:11px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:104px;max-height:104px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-sheet-handle {height:44px;min-height:44px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector-summary {display:none}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-sheet-handle {display:none}
+ .map-first .adaptive-map-workspace .map-inspector-header .operating-sheet-title {min-width:0}
+}

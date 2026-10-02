@@ -15,7 +15,8 @@ import MapRolePanel, {type MapRole} from './MapRolePanel';
 import {EquipmentStatus,ProductSymbol} from './OperationalSymbols';
 import './map-workbench.css';
 import ReservationDesk from "./ReservationDesk";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import MapSheetHandle, {type MapSheetSize} from './maps/MapSheetHandle';
 import type { Game } from "./simulation/types";
 import OperationsMap from "./maps/LazyMap";
 import type { MapPick } from "./maps/OperationsMap";
@@ -55,9 +56,15 @@ export default function MapWorkspace({
   const [role,setRole]=useState<MapRole>('purchase');
   const [workspaceView, setWorkspaceView] = useState<'map' | 'list'>('map');
   // Phone sheet: 'peek' leaves the map clear with only the header showing.
-  const [sheetSize, setSheetSize] = useState<'peek' | 'half' | 'full'>('half');
+  const [sheetSize, setSheetSize] = useState<MapSheetSize>('peek');
+  const detailsId = useId();
+  const mapStageRef = useRef<HTMLDivElement>(null);
+  const previousSelected = useRef(selected);
+  const [inspectorHeightPx, setInspectorHeightPx] = useState(0);
+  const [inspectRequest, setInspectRequest] = useState(0);
   const [lens, setLens] = useState<MapLens>('rights');
   const [nearby, setNearby] = useState<MapPick[] | null>(null);
+  const [nearbySearch, setNearbySearch] = useState('');
   const openSheet = () => setSheetSize(size => size === 'peek' ? 'half' : size);
   useEffect(() => {
     const frame = requestAnimationFrame(anchorWorkbench);
@@ -65,9 +72,11 @@ export default function MapWorkspace({
   }, []);
   const [treatmentChoice, setTreatmentChoice] = useState('final');
   useEffect(() => {
+    if (previousSelected.current === selected) return;
+    previousSelected.current = selected;
     setInspect({ kind: 'stand', id: selected });
     if (featureRef.current) featureRef.current.open = true;
-    setSheetSize('half');
+    setSheetSize(size => size === 'peek' ? 'half' : size);
   }, [selected]);
   const [product,setProduct]=useState('');
   const [zone,setZone]=useState('');
@@ -75,6 +84,22 @@ export default function MapWorkspace({
   const searchRef=useRef<HTMLInputElement>(null);
   const inspectorRef = useRef<HTMLElement>(null);
   const inspectorScrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const inspector = inspectorRef.current, stage = mapStageRef.current;
+    if (!inspector || !stage) return;
+    const measure = () => setInspectorHeightPx(workspaceView === 'map' && getComputedStyle(inspector).position === 'absolute'
+      ? Math.max(0, stage.getBoundingClientRect().bottom - inspector.getBoundingClientRect().top) : 0);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(inspector);
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [workspaceView]);
+  const closeSheet = () => {
+    setNearby(null);
+    setSheetSize('peek');
+    (mapStageRef.current?.querySelector('canvas') ?? mapStageRef.current)?.focus({preventScroll: true});
+  };
   const r = game.region,
     crew = r.crews.some(c => c.id === crewChoice) ? crewChoice : r.crews[0]?.id ?? '',
     truck = r.trucks.some(t => t.id === truckChoice) ? truckChoice : r.trucks[0]?.id ?? '',
@@ -82,6 +107,7 @@ export default function MapWorkspace({
   const inspectFeature = (kind: MapPick["kind"], id: string) => {
     setNearby(null);
     setInspect({ kind, id });
+    setInspectRequest(value => value + 1);
     if (kind === 'crew') { setCrew(id); setRole('production'); }
     if (kind === 'truck') { setTruck(id); setRole('transport'); }
     if (featureRef.current) featureRef.current.open = true;
@@ -94,6 +120,7 @@ export default function MapWorkspace({
     openSheet();
     onSelect(id);
     setInspect({ kind: "stand", id });
+    setInspectRequest(value => value + 1);
     if(featureRef.current) featureRef.current.open=true;
     if (workspaceView === 'list') {
       requestAnimationFrame(() => featureRef.current?.scrollIntoView({ block: 'nearest' }));
@@ -126,25 +153,34 @@ export default function MapWorkspace({
   return (
     <>
     <div className={`map-workspace adaptive-map-workspace ${workspaceView === 'list' ? 'operations-list-mode' : ''}`} data-sheet={sheetSize}>
-      <div className="map-stage">
+      <span role="status" className="map-selection-announcement">{nearby ? `${nearby.length} ${tr('features here · choose one')}` : `${kindLabel(inspect.kind)} · ${inspect.kind === 'stand' ? standTitle(inspect.id, stand?.name) : inspectName}`}</span>
+      <div className="map-stage" ref={mapStageRef} tabIndex={-1}>
         <OperationsMap
           game={game}
           visibleStandIds={r.stands.filter(s=>(!zone||s.zone===zone)&&(!product||standSupportsProduct(game,s.id,product))&&(!accessibleOnly||(game.stands.find(t=>t.id===s.id)?.owned&&canAccess(s.terrain,weatherAt(game,true)[s.zone])))).map(s=>s.id)}
           selected={selected}
           lens={lens} onLensChange={setLens} showLensControl={false} reserveInspectorSpace
+          inspectorHeightPx={inspectorHeightPx} inspectorFeature={{...inspect, requestId: inspectRequest}}
+          onFitRequest={() => {setNearby(null); setSheetSize('peek');}}
           onSelect={select}
           onInspect={inspectFeature}
-          onPick={(items) => { setNearby(items); openSheet(); inspectorScrollRef.current?.scrollTo({ top: 0, behavior: 'auto' }); }}
+          onPick={(items) => { setNearby(items); setNearbySearch(''); openSheet(); inspectorScrollRef.current?.scrollTo({ top: 0, behavior: 'auto' }); }}
           onBackgroundTap={() => { setNearby(null); setSheetSize('peek'); inspectorScrollRef.current?.scrollTo({ top: 0, behavior: 'auto' }); }}
         />
         <button className="map-inspector-jump" onClick={()=>{if(featureRef.current)featureRef.current.open=true;inspectorRef.current?.focus({preventScroll:true});inspectorRef.current?.scrollIntoView({behavior:'smooth',block:'start'});}}>{tr("View selected feature ↓")}</button>
       </div>
-      <aside ref={inspectorRef} tabIndex={-1} className="map-inspector" aria-label={tr("Selected map feature")}>
+      <aside ref={inspectorRef} tabIndex={-1} className="map-inspector" aria-label={tr("Selected map feature")}
+        onKeyDown={event => {
+          if (event.key === 'Escape' && !event.defaultPrevented && workspaceView === 'map') {
+            event.preventDefault(); closeSheet();
+          }
+        }}>
         <header className="map-inspector-header">
+        <MapSheetHandle size={sheetSize} onChange={setSheetSize} controls={detailsId}/>
         <div className="operating-sheet-controls">
-          <button className="operating-sheet-title" aria-expanded={sheetSize !== 'peek'} onClick={() => setSheetSize(sheetSize === 'peek' ? 'half' : 'peek')}>
-            <small>{kindLabel(inspect.kind)}</small>
-            <strong>{inspect.kind === 'stand' ? standTitle(inspect.id, stand?.name) : inspectName}</strong>
+          <button className="operating-sheet-title" aria-controls={detailsId} aria-expanded={workspaceView === 'list' || inspectorHeightPx === 0 || sheetSize !== 'peek'} onClick={() => setSheetSize(sheetSize === 'peek' ? 'half' : 'peek')}>
+            <small>{nearby ? (language === 'fr' ? 'Choisir un élément' : 'Choose a map item') : kindLabel(inspect.kind)}</small>
+            <strong>{nearby ? `${nearby.length} ${language === 'fr' ? 'éléments ici' : 'items here'}` : inspect.kind === 'stand' ? standTitle(inspect.id, stand?.name) : inspectName}</strong>
           </button>
           <div className="mobile-workspace-controls" aria-label={language === 'fr' ? 'Affichage' : 'Workspace view'}>
             <button aria-pressed={workspaceView === 'list'} onClick={() => {setWorkspaceView(workspaceView === 'list' ? 'map' : 'list'); inspectorScrollRef.current?.scrollTo({top: 0});}}>
@@ -153,67 +189,28 @@ export default function MapWorkspace({
             <button className="operating-sheet-size" aria-expanded={sheetSize === 'full'} onClick={() => setSheetSize(sheetSize === 'full' ? 'half' : 'full')}>
               {sheetSize === 'full' ? (language === 'fr' ? 'Réduire' : 'Collapse') : (language === 'fr' ? 'Développer' : 'Expand')}
             </button>
+            {sheetSize !== 'peek' && workspaceView === 'map' && <button className="map-sheet-close" aria-label={language === 'fr' ? 'Fermer les détails de la carte' : 'Close map details'} onClick={closeSheet}>×</button>}
           </div>
         </div>
-        <p className="map-inspector-summary">{stand && state ? `${language === 'fr' ? 'Sur pied' : 'Standing'} ${f(state.remaining)} m³ · ${language === 'fr' ? 'bord de route' : 'roadside'} ${f(sum(stockAt(game, stand.id)))} m³` : resource ? `${resource.hours} h · ${inspect.kind === 'crew' ? (game.plan.crews[resource.id]?.length ?? 0) : (game.plan.trucks[resource.id]?.length ?? 0)} ${tr('queued orders')}` : road ? `${road.km.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', {maximumFractionDigits: 2})} km · ${tr('Game forecast access:')}` : mill ? tr('Current period receipts / period demand') : ''}</p>
-        {nearby && nearby.length > 1 && <div className="map-nearby" role="group" aria-label={tr("Features at this spot")}>
-          <p>{nearby.length} {tr("features here · choose one")}</p>
-          {nearby.map(item => <button key={`${item.kind}-${item.id}`} onClick={() => item.kind === 'stand' ? select(item.id) : inspectFeature(item.kind, item.id)}>
-            <small>{kindLabel(item.kind)}</small> {item.kind === 'stand' ? standTitle(item.id, item.name) : item.name}
-          </button>)}
-        </div>}
-        <div className="operating-role-tabs" aria-label={tr("Planning role")}>
+        <p className="map-inspector-summary" hidden={!!nearby}>{stand && state ? `${language === 'fr' ? 'Sur pied' : 'Standing'} ${f(state.remaining)} m³ · ${language === 'fr' ? 'bord de route' : 'roadside'} ${f(sum(stockAt(game, stand.id)))} m³` : resource ? `${resource.hours} h · ${inspect.kind === 'crew' ? (game.plan.crews[resource.id]?.length ?? 0) : (game.plan.trucks[resource.id]?.length ?? 0)} ${tr('queued orders')}` : road ? `${road.km.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', {maximumFractionDigits: 2})} km · ${tr('Game forecast access:')}` : mill ? tr('Current period receipts / period demand') : ''}</p>
+        {!nearby && <div className="operating-role-tabs" aria-label={tr("Planning role")}>
           {(['purchase', 'production', 'transport'] as const).map(value => <button key={value}
             aria-pressed={role === value} onClick={() => setRole(value)}>
             {tr(value === 'purchase' ? 'Purchase' : value === 'production' ? 'Production' : 'Transport')}
           </button>)}
-        </div>
+        </div>}
         </header>
-        <div className="map-inspector-scroll" ref={inspectorScrollRef} tabIndex={0} role="region" aria-label={language === 'fr' ? 'Détails et commandes de la carte' : 'Map details and controls'}>
-        <details className="map-lens-details map-lens-workbench" open={workspaceView === 'list' ? true : undefined}><summary>{language === 'fr' ? 'Lecture de la carte' : 'Map lens'} · {mapLensName(lens, language)}</summary>
-          <MapLensSelect value={lens} onChange={setLens}/><MapLensLegend lens={lens}/>
-          <MapLensValues rows={mapStandValues(game).filter(value => {const s = r.stands.find(stand => stand.id === value.id)!;return (!zone || s.zone === zone) && (!product || standSupportsProduct(game, s.id, product)) && (!accessibleOnly || (value.owned && value.terrainOpen));})} lens={lens} selected={selected} onSelect={select} finished={done}/>
-        </details>
-        <div className="map-queue-undo">
-          <button disabled={!undoCount || done} onClick={undo}>{language === 'fr' ? 'Annuler la modification de file' : 'Undo queue edit'}{undoCount > 0 ? ` (${undoCount})` : ''}</button>
-          <small>{language === 'fr' ? 'Files de ce plan seulement. Achat, mise, restauration et tour exécuté effacent l’historique.' : 'This plan’s queues only. Purchases, bids, restored saves and executed turns clear undo.'}</small>
-        </div>
-        {role !== 'purchase' && <p className="map-resource-guide" role="status">{language === 'fr'
-          ? `1. Choisissez ${role === 'production' ? 'une équipe' : 'un camion'}. 2. Sélectionnez un chantier sur la carte ou dans la liste. 3. Ajoutez et ordonnez les arrêts. Les prévisions sont actualisées ci-dessous.`
-          : `1. Choose ${role === 'production' ? 'a crew' : 'a truck'}. 2. Select a site on the map or in the list. 3. Add and order stops. Forecast results update below.`}</p>}
-        <details ref={featureRef} className="selected-feature"><summary>{tr("Selected feature ·")} {inspect.id}</summary>
+        <div id={detailsId} className="map-inspector-scroll" ref={inspectorScrollRef} tabIndex={0} role="region" aria-label={language === 'fr' ? 'Détails et commandes de la carte' : 'Map details and controls'}>
+        {nearby ? <div className="map-nearby" role="group" aria-label={tr("Features at this spot")}>
+          <p>{nearby.length} {tr("features here · choose one")}</p>
+          {nearby.length > 8 && <label>{language === 'fr' ? 'Filtrer les éléments ici' : 'Filter items here'}<input value={nearbySearch} onChange={event => setNearbySearch(event.target.value)} placeholder={language === 'fr' ? 'Nom, identifiant ou type' : 'Name, ID or type'}/></label>}
+          <ul>{nearby.filter(item => `${item.name} ${item.id} ${kindLabel(item.kind)}`.toLocaleLowerCase().includes(nearbySearch.toLocaleLowerCase())).map(item => <li key={`${item.kind}-${item.id}`}><button onClick={() => item.kind === 'stand' ? select(item.id) : inspectFeature(item.kind, item.id)}>
+            <small>{kindLabel(item.kind)}</small> {item.kind === 'stand' ? standTitle(item.id, item.name) : `${item.id} · ${item.name}`}
+          </button></li>)}</ul>
+          {!nearby.some(item => `${item.name} ${item.id} ${kindLabel(item.kind)}`.toLocaleLowerCase().includes(nearbySearch.toLocaleLowerCase())) && <p role="status">{tr("No map features match your search.")}</p>}
+        </div> : <>
+        <details ref={featureRef} className="selected-feature" open><summary>{tr("Selected feature ·")} {inspect.id}</summary>
         
-        <label>
-          {tr("Find a stand, road, mill or fleet resource")}
-          <input
-            ref={searchRef}
-            aria-label={tr("Search map entities")}
-            placeholder={tr("Name or ID\u2026")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
-        {search && (
-          <div className="entity-results">
-            {!matchingEntities.length&&<p role="status">{tr("No map features match your search.")}</p>}
-            {matchingEntities
-              .slice(0, 12)
-              .map((e) => (
-                <button
-                  key={`${e.kind}-${e.id}`}
-                  onClick={() => {
-                    inspectFeature(e.kind, e.id);
-                    if (e.kind === "stand") onSelect(e.id);
-                    setSearch("");
-                    searchRef.current?.focus();
-                  }}
-                >
-                  {e.id} · {e.name}
-                  <small>{kindLabel(e.kind)}</small>
-                </button>
-              ))}
-          </div>
-        )}
         {inspect.kind === "stand" && stand && state && (
           <>
             <StandReadiness key={stand.id} game={game} standId={stand.id}
@@ -396,7 +393,52 @@ export default function MapWorkspace({
           {tr("Select map features to drill into operations. Search provides the same access without needing to hit a map marker.")}
         </p>
         </details>
+        <details className="map-lens-details map-lens-workbench" open={workspaceView === 'list' ? true : undefined}><summary>{language === 'fr' ? 'Lecture de la carte' : 'Map lens'} · {mapLensName(lens, language)}</summary>
+          <MapLensSelect value={lens} onChange={setLens}/><MapLensLegend lens={lens}/>
+          <MapLensValues rows={mapStandValues(game).filter(value => {const s = r.stands.find(stand => stand.id === value.id)!;return (!zone || s.zone === zone) && (!product || standSupportsProduct(game, s.id, product)) && (!accessibleOnly || (value.owned && value.terrainOpen));})} lens={lens} selected={selected} onSelect={select} finished={done}/>
+        </details>
+        <div className="map-queue-undo">
+          <button disabled={!undoCount || done} onClick={undo}>{language === 'fr' ? 'Annuler la modification de file' : 'Undo queue edit'}{undoCount > 0 ? ` (${undoCount})` : ''}</button>
+          <small>{language === 'fr' ? 'Files de ce plan seulement. Achat, mise, restauration et tour exécuté effacent l’historique.' : 'This plan’s queues only. Purchases, bids, restored saves and executed turns clear undo.'}</small>
+        </div>
+        {role !== 'purchase' && <p className="map-resource-guide" role="status">{language === 'fr'
+          ? `1. Choisissez ${role === 'production' ? 'une équipe' : 'un camion'}. 2. Sélectionnez un chantier sur la carte ou dans la liste. 3. Ajoutez et ordonnez les arrêts. Les prévisions sont actualisées ci-dessous.`
+          : `1. Choose ${role === 'production' ? 'a crew' : 'a truck'}. 2. Select a site on the map or in the list. 3. Add and order stops. Forecast results update below.`}</p>}
+        <div className="map-entity-search">
+        <label>
+          {tr("Find a stand, road, mill or fleet resource")}
+          <input
+            ref={searchRef}
+            aria-label={tr("Search map entities")}
+            placeholder={tr("Name or ID\u2026")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </label>
+        {search && (
+          <div className="entity-results">
+            {!matchingEntities.length&&<p role="status">{tr("No map features match your search.")}</p>}
+            {matchingEntities
+              .slice(0, 12)
+              .map((e) => (
+                <button
+                  key={`${e.kind}-${e.id}`}
+                  onClick={() => {
+                    inspectFeature(e.kind, e.id);
+                    if (e.kind === "stand") onSelect(e.id);
+                    setSearch("");
+                    searchRef.current?.focus();
+                  }}
+                >
+                  {e.id} · {e.name}
+                  <small>{kindLabel(e.kind)}</small>
+                </button>
+              ))}
+          </div>
+        )}
+        </div>
         <MapRolePanel accessibleOnly={accessibleOnly} setAccessibleOnly={setAccessibleOnly} game={game} role={role} setRole={setRole} product={product} setProduct={setProduct} zone={zone} setZone={setZone} selected={selected} select={select} onChange={onChange} onQueueChange={changeQueue} crewSelection={crew} truckSelection={truck} onTruckSelect={setTruck} onInspect={inspectFeature}/>
+        </>}
         </div>
       </aside>
     </div>

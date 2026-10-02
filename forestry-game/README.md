@@ -12,7 +12,7 @@ npm run build
 npm run preview
 ```
 
-The development app is served at http://127.0.0.1:5173/. Dependencies are pinned by `package-lock.json`. The map architecture follows PGMaps (direct MapLibre map and interleaved deck.gl `MapboxOverlay`); attribution is retained in `PGMAPS-LICENSE.txt`.
+The development app is served at http://127.0.0.1:5173/. Dependencies are pinned by `package-lock.json`. The map architecture follows PGMaps (direct MapLibre map and deck.gl `MapboxOverlay`); attribution is retained in `PGMAPS-LICENSE.txt`. The operations overlay uses its own synchronized canvas because shared-context rendering displaced visible markers from their tap targets in browser checks.
 
 ## Play a full season
 
@@ -151,7 +151,11 @@ The Planning desk's Analysis task selector opens one tool at a time and retains 
 
 The negotiation board previews the exact company groups and savings that publication freezes. It displays balance errors, changed offers and dataset differences before publication. Allocation inputs lead the focused lab; freight pooling and transport obligations live under Operating agreements.
 
-The map offers timber-rights, standing-volume, roadside-stock and terrain-access lenses, with exact values available in its accessible list. Reports separates route replay from Forest changes to keep one map canvas active. Recorded movement buttons seek route distance, not arrival times; named viewpoints are scoped to the campaign and region. Forest changes compares captured end states from a fixed camera, without reconstructing unrecorded starting states.
+The map offers timber-rights, standing-volume, roadside-stock and terrain-access lenses, with exact values available in its accessible list. Reports separates route replay from Forest changes to keep one map view active. Recorded movement buttons seek route distance, not arrival times; named viewpoints are scoped to the campaign and region. Forest changes compares captured end states from a fixed camera, without reconstructing unrecorded starting states.
+
+On a phone, the operating map starts with a minimized detail sheet. Tap a stand, mill, road, crew or truck to open its details and actions. Overlapping features open a scrollable chooser, with a name/ID/type filter for large groups; roads remain available alongside other features. The handle supports swipe and tap resizing, while Expand, Close and Escape provide explicit controls. Closing returns keyboard focus to the map. Forms scroll independently of the handle, and the List view provides the same feature access.
+
+Symbols retain a minimum screen size while zooming, and fleet clusters identify their members. District and plan fits minimize the sheet, include inventory outlines and destinations, and limit excessive zoom for a single-site plan. Selecting an obscured item pans it into the visible map area without changing zoom. Fit padding follows the actual sheet height rather than a fixed phone estimate.
 
 Stewardship separates Annual forest and Operating seasons. Annual choices can be rehearsed as A/B alternatives before advancing; advancing invalidates drafts from the previous forest and budget. New annual records capture per-stand observations for year comparisons, while older records without those observations stay unavailable. The timber/regeneration illustration represents the teaching model, not measured canopy or scenic visibility.
 

@@ -1,3 +1,6 @@
+import {mapFitPadding, mapSymbolScale, mapFocusOffset} from './map-viewport';
+import {mapPickDepth, mapPickItems, mapScreenHits, type MapPick, type MapScreenMarker, type MapScreenRoad} from './map-picking';
+export type {MapPick} from './map-picking';
 import {mapStandValues, standLensColor, type MapLens, type MapColor} from './map-lenses';
 import {MapLensLegend, MapLensSelect, MapLensValues, mapLensName} from './MapLensControls';
 import {validMapCamera, type MapCamera} from './map-viewpoints';
@@ -20,8 +23,6 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import type { Game, Position } from "../simulation/types";
 import { route, weatherAt, canAccess } from "../simulation/routing";
 import { layoutSymbols } from "./symbol-layout";
-export type MapPick = { kind: "stand" | "mill" | "crew" | "truck" | "road"; id: string; name: string };
-const pickKinds: Record<string, MapPick["kind"] | "fleet"> = { stands: "stand", "stand-points": "stand", labels: "stand", mills: "mill", fleet: "fleet", "fleet-count": "fleet", "fleet-status": "fleet", "replay-fleet": "fleet", network: "road" };
 export default function OperationsMap({
   game,
   selected,
@@ -35,6 +36,9 @@ export default function OperationsMap({
   showLensControl = true,
   endStateOnly = false,
   reserveInspectorSpace = false,
+  inspectorHeightPx,
+  inspectorFeature,
+  onFitRequest,
   cameraRequest,
   onCameraChange,
   followReplay = false,
@@ -58,6 +62,12 @@ export default function OperationsMap({
   endStateOnly?: boolean;
   /** Only the operating workbench places a sheet over the bottom half. */
   reserveInspectorSpace?: boolean;
+  /** Actual mobile sheet overlap; zero means a side-by-side desktop inspector. */
+  inspectorHeightPx?: number;
+  /** A user inspection request, used only to uncover an obscured feature. */
+  inspectorFeature?: {kind: MapPick["kind"]; id: string; requestId: number};
+  /** Let the workbench collapse an expanded sheet before an explicit fit. */
+  onFitRequest?: () => void;
   cameraRequest?: {id: string; camera: MapCamera};
   onCameraChange?: (camera: MapCamera) => void;
   followReplay?: boolean;
@@ -79,11 +89,15 @@ export default function OperationsMap({
   // because a development double mount saves the camera before the fit runs.
   const fitted=useRef<string|null>(null);
   const autoFit=useRef(false);
+  const inspectorInset = useRef(inspectorHeightPx);
+  inspectorInset.current = inspectorHeightPx;
+  const inspectionRequest = useRef<string | null>(null);
+  const screenPicks = useRef<{markers: MapScreenMarker[]; roads: MapScreenRoad[]}>({markers: [], roads: []});
   const [viewTick, setViewTick] = useState(0);
   // The map is created once per region, so its tap handler reads the latest
   // callbacks and names from this ref.
-  const handlers = useRef({ onSelect, onInspect, onPick, onBackgroundTap, onCameraChange, name: (_kind: MapPick["kind"], id: string) => id });
-  handlers.current = { onSelect, onInspect, onPick, onBackgroundTap, onCameraChange, name: (kind, id) => {
+  const handlers = useRef({ onSelect, onInspect, onPick, onBackgroundTap, onCameraChange, pickDepth: mapPickDepth({stands: game.region.stands.length, mills: game.region.mills.length, crews: game.region.crews.length, trucks: game.region.trucks.length, roads: game.region.roads.edges.length}), name: (_kind: MapPick["kind"], id: string) => id });
+  handlers.current = { onSelect, onInspect, onPick, onBackgroundTap, onCameraChange, pickDepth: mapPickDepth({stands: game.region.stands.length, mills: game.region.mills.length, crews: game.region.crews.length, trucks: game.region.trucks.length, roads: game.region.roads.edges.length}), name: (kind, id) => {
     const r = game.region;
     const entity = kind === "stand" ? r.stands.find(x => x.id === id) : kind === "mill" ? r.mills.find(x => x.id === id)
       : kind === "crew" ? r.crews.find(x => x.id === id) : kind === "truck" ? r.trucks.find(x => x.id === id) : r.roads.edges.find(x => x.id === id);
@@ -112,13 +126,15 @@ export default function OperationsMap({
         style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
         center: camera.current?.region===game.region.id?camera.current.center:game.region.center,
         zoom: camera.current?.region===game.region.id?camera.current.zoom:game.region.zoom,
+        minZoom: 0,
+        maxZoom: 22,
         bearing:camera.current?.region===game.region.id?camera.current.bearing:0,
         pitch:camera.current?.region===game.region.id?camera.current.pitch:0,
         locale: language==='fr'?{'Map.Title':'Carte','NavigationControl.ZoomIn':'Agrandir','NavigationControl.ZoomOut':'Réduire','NavigationControl.ResetBearing':'Faire pivoter; cliquer pour rétablir le nord','AttributionControl.ToggleAttribution':'Afficher les attributions','CooperativeGesturesHandler.WindowsHelpText':'Utilisez Ctrl et la molette pour zoomer','CooperativeGesturesHandler.MacHelpText':'Utilisez ⌘ et la molette pour zoomer','CooperativeGesturesHandler.MobileHelpText':'Utilisez deux doigts pour déplacer la carte'}:undefined,
         attributionControl: { compact: true },
         canvasContextAttributes: { antialias: true },
         pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-        cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
+        cooperativeGestures: !reserveInspectorSpace && window.matchMedia("(pointer: coarse)").matches,
       });
     } catch {
       setError(
@@ -128,9 +144,10 @@ export default function OperationsMap({
     }
     map.current = m;
     const deck = new MapboxOverlay({
-      interleaved: true,
+      interleaved: false,
       pickingRadius: window.matchMedia("(pointer: coarse)").matches ? 14 : 5,
-      // Interleaved deck shares MapLibre’s capped canvas; the numeric cap also covers a non-interleaved fallback.
+      // Each renderer owns its canvas. This avoids shared-context projection drift on touch maps.
+      // Both MapLibre and deck cap their drawing buffers at 2× device pixels.
       useDevicePixels: Math.min(window.devicePixelRatio || 1, 2),
       layers: [],
     });
@@ -148,26 +165,26 @@ export default function OperationsMap({
     // so everything within the touch radius is collected and the caller can
     // offer a choice instead of guessing the top layer.
     m.on("click", (e) => {
+      autoFit.current = false;
       const h = handlers.current, picker = overlay.current;
       if (!picker) return;
       let infos: { layer?: { id: string } | null; object?: unknown }[] = [];
-      try { infos = picker.pickMultipleObjects({ x: e.point.x, y: e.point.y, radius: coarse ? 14 : 5, depth: 12 }); } catch { /* picking needs a drawn frame */ }
-      const seen = new Map<string, MapPick>();
-      for (const info of infos) {
-        const layerKind = pickKinds[info.layer?.id ?? ""], object = info.object as { id?: string; kind?: string; members?: { id: string; kind: "mill" | "crew" | "truck" }[] } | undefined;
-        if (!layerKind || !object?.id) continue;
-        const entries = object.members ?? [{ id: object.id, kind: layerKind === "fleet" ? object.kind as "crew" | "truck" : layerKind }];
-        for (const { id, kind } of entries)
-          if (!seen.has(`${kind}:${id}`)) seen.set(`${kind}:${id}`, { kind, id, name: h.name(kind, id) });
-      }
-      const features = [...seen.values()], specific = features.filter(f => f.kind !== "road");
-      const items = specific.length ? specific : features.slice(0, 1);
+      try { infos = picker.pickMultipleObjects({ x: e.point.x, y: e.point.y, radius: coarse ? 14 : 5, depth: h.pickDepth }); } catch { /* picking needs a drawn frame */ }
+      const nearby = mapScreenHits(screenPicks.current.markers, screenPicks.current.roads, p => m.project(p), e.point, coarse ? 14 : 5);
+      const items = mapPickItems([...infos, ...nearby], h.name);
       if (!items.length) { h.onBackgroundTap?.(); return; }
       if (items.length > 1 && h.onPick) { h.onPick(items); return; }
       const [f] = items;
       if (f.kind === "stand") h.onSelect(f.id); else h.onInspect?.(f.kind, f.id);
     });
     m.on("moveend", () => {setViewTick(t => t + 1); emitCamera();});
+    // Recompute symbol collision and size while pinch-zooming, not only after
+    // the gesture ends. Quarter-level steps keep route recalculation bounded.
+    let layoutZoom = Math.round(m.getZoom() * 4);
+    m.on("zoom", () => {
+      const next = Math.round(m.getZoom() * 4);
+      if (next !== layoutZoom) { layoutZoom = next; setViewTick(t => t + 1); }
+    });
     // The authored centre/zoom suits a desktop frame. A phone frame is much
     // narrower and partly covered by the inspector sheet, so the first view of
     // a region is fitted to its stands and mills. The frame can still change
@@ -180,14 +197,13 @@ export default function OperationsMap({
       if (!autoFit.current || !frame || map.current !== m) return;
       const { clientWidth: w, clientHeight: h } = frame;
       const bounds = new maplibregl.LngLatBounds();
-      for (const s of game.region.stands) bounds.extend(s.position);
+      for (const s of game.region.stands) { bounds.extend(s.position); s.polygon.forEach(p => bounds.extend(p)); }
       for (const mill of game.region.mills) bounds.extend(mill.position);
       if (bounds.isEmpty() || w <= 0 || h <= 0) return;
       fitted.current = game.region.id;
       try {
-        m.fitBounds(bounds, { duration: 0, maxZoom: game.region.zoom + 1, padding: w < 700
-          ? { top: 64, left: 28, right: 28, bottom: reserveInspectorSpace ? Math.max(24, Math.min(h * 0.45 + 48, h - 160)) : 32 }
-          : { top: 70, left: 45, right: 45, bottom: 45 } });
+        m.fitBounds(bounds, { duration: 0, maxZoom: game.region.zoom + 1,
+          padding: mapFitPadding(w, h, inspectorInset.current, reserveInspectorSpace) });
       } catch { /* keep the authored view if the frame is too small to fit */ }
     };
     const stopAutoFit = (event: { originalEvent?: unknown }) => { if (event.originalEvent) autoFit.current = false; };
@@ -232,6 +248,35 @@ export default function OperationsMap({
     const center = map.current.getCenter();
     if (Math.abs(center.lng - frame.position[0]) + Math.abs(center.lat - frame.position[1]) > 1e-8) map.current.jumpTo({center: frame.position});
   }, [ready, followReplay, replay, replayResource, replayProgress, replayMovementIndex, endStateOnly]);
+  useEffect(() => {
+    if (!map.current || !inspectorFeature || inspectorFeature.requestId === 0) return;
+    const key = `${game.region.id}:${inspectorFeature.requestId}`;
+    if (inspectionRequest.current === key) return;
+    const m = map.current;
+    // Let the sheet reach its new size and its ResizeObserver report the inset.
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => {
+        if (map.current !== m) return;
+        inspectionRequest.current = key;
+        const report = replay === undefined ? undefined : game.history[replay];
+        const view = report?.snapshot ? {...game, ...report.snapshot} : game;
+        const {kind, id} = inspectorFeature, r = view.region;
+        let position: Position | undefined;
+        if (kind === "stand") position = r.stands.find(s => s.id === id)?.position;
+        else if (kind === "mill") position = r.mills.find(item => item.id === id)?.position;
+        else if (kind === "road") { const path = r.roads.edges.find(item => item.id === id)?.geometry; position = path?.[Math.floor(path.length / 2)]; }
+        else { const node = kind === "crew" ? view.crewPositions[id] : view.truckPositions[id]; position = r.roads.nodes.find(item => item.id === node)?.position; }
+        if (!position) return;
+        const frame = m.getContainer(), point = m.project(position);
+        const offset = mapFocusOffset(point, {w: frame.clientWidth, h: frame.clientHeight}, inspectorInset.current ?? 0);
+        if (!offset) return;
+        autoFit.current = false;
+        m.panBy(offset, {duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 250});
+      });
+    });
+    return () => { cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame); };
+  }, [inspectorFeature, ready, game.region.id]);
   useEffect(() => {
     if (!error.startsWith("Some basemap")) return;
     const timer = setTimeout(() => setError(e => e.startsWith("Some basemap") ? "" : e), 8000);
@@ -325,7 +370,8 @@ export default function OperationsMap({
     // Equipment icons are fixed-pixel; below the region's authored zoom they
     // would pile into one blob over the stands, so they shrink with the view.
     const zoom = map.current?.getZoom() ?? game.region.zoom;
-    const iconScale = Math.min(1, Math.max(0.5, 1 - 0.3 * (game.region.zoom - zoom)));
+    const iconScale = mapSymbolScale(zoom, game.region.zoom);
+    const touch = window.matchMedia("(pointer: coarse)").matches;
     const nodePosition = (node: string) => r.roads.nodes.find(n => n.id === node)?.position;
     // A legacy report has no recorded fleet snapshot: today's positions are
     // not evidence of where equipment finished a historical turn.
@@ -354,6 +400,15 @@ export default function OperationsMap({
     // One entry per drawn icon: a single feature, or a cluster whose tap lists every member.
     const symbolData = (kind: "mill" | "fleet") => symbols.symbols.filter(f => (f.kind === "mill") === (kind === "mill"))
       .map(f => ({ ...f, id: f.members[0].id, name: f.members.map(m => symbolName(m.kind, m.id)).join("\n") }));
+    screenPicks.current = {
+      markers: [
+        ...standData.map(s => ({id: s.id, kind: "stand" as const, position: s.position, radius: s.id === selected ? (touch ? 10 : 8) : (touch ? 8 : 5.5)})),
+        ...symbolData("mill").map(s => ({...s, radius: 18 * iconScale})),
+        ...symbolData("fleet").map(s => ({...s, radius: 16 * iconScale})),
+        ...replayMarker.map(s => ({...s, radius: 18})),
+      ],
+      roads: layers.roads ? view.region.roads.edges : [],
+    };
     overlay.current.setProps({
       getTooltip: ({ object }: { object?: Record<string, unknown> }) =>
         object
@@ -405,7 +460,7 @@ export default function OperationsMap({
           id: "stand-points",
           data: standData,
           getPosition: (d) => d.position,
-          getRadius: (d) => (d.id === selected ? 8 : 5.5),
+          getRadius: (d) => (d.id === selected ? (touch ? 10 : 8) : (touch ? 8 : 5.5)),
           radiusUnits: "pixels",
           getFillColor: standColor,
           getLineColor: (d) => (d.id === selected ? [232, 174, 51] : [255, 255, 255]),
@@ -509,13 +564,30 @@ export default function OperationsMap({
     });
   }, [language,game, selected, layers, lens, ready, replay, replayProgress, replayResource, replayMovementIndex, endStateOnly, visibleStandIds, viewTick]);
   const fit = (planOnly = false) => {
+    const activeMap = map.current;
+    if (!activeMap) return;
+    closeDetails(container.current?.parentElement?.querySelector<HTMLDetailsElement>(".map-layer-menu") ?? null);
+    onFitRequest?.();
+    // The workbench may first reduce the sheet height. Fit its newly visible
+    // viewport, with the updated inset from the sheet's ResizeObserver.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (map.current === activeMap) fitView(planOnly);
+    }));
+  };
+  const fitView = (planOnly = false) => {
     autoFit.current = false;
     const bounds = new maplibregl.LngLatBounds();
+    const frame = map.current?.getContainer();
+    const fitOptions = {
+      padding: mapFitPadding(frame?.clientWidth ?? 800, frame?.clientHeight ?? 600, inspectorInset.current, reserveInspectorSpace),
+      maxZoom: Math.min(22, game.region.zoom + 2),
+      duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 600,
+    };
     if (replay !== undefined && planOnly) {
       const recorded = game.history[replay];
       for (const movement of recordedMovements(recorded?.movements))
         for (const position of movement.path) bounds.extend(position);
-      if (!bounds.isEmpty()) map.current?.fitBounds(bounds, {padding: 45, duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 600});
+      if (!bounds.isEmpty()) map.current?.fitBounds(bounds, fitOptions);
       return;
     }
     const ids = new Set([
@@ -529,7 +601,8 @@ export default function OperationsMap({
     const areas = game.region.stands.filter(
       (s) => !planOnly || (!ids.size && !game.plan.facilityTransfers?.length) || ids.has(s.id),
     );
-    areas.forEach((s) => bounds.extend(s.position));
+    areas.forEach((s) => { bounds.extend(s.position); s.polygon.forEach(p => bounds.extend(p)); });
+    if (!planOnly) game.region.mills.forEach(m => bounds.extend(m.position));
     if (planOnly)
       for (const o of Object.values(game.plan.trucks).flat()) {
         const m = game.region.mills.find((m) => m.id === o.mill);
@@ -551,7 +624,7 @@ export default function OperationsMap({
       for(const id of [pair.millA,pair.millB]){const mill=game.region.mills.find(m=>m.id===id);if(mill)bounds.extend(mill.position);}
     }
     if(bounds.isEmpty()) return;
-    map.current?.fitBounds(bounds, { padding: 45, duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 600 });
+    map.current?.fitBounds(bounds, fitOptions);
   };
   // Both map tool panels dismiss the same way. In the narrow sheet layout an
   // open panel covers its own summary, so it also needs an in-panel control.
