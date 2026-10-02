@@ -3,6 +3,15 @@ import {translate,french} from './i18n';
 import {debriefMarkdown,worksheetCSV} from './simulation/debrief';
 import {createGame} from './simulation/engine';
 import {quebec} from './scenarios/quebec';
+it('translates every default Québec event title and explanation without rewriting scenario data',()=>{
+ const before=JSON.stringify(quebec.disruptions);
+ for(const event of quebec.disruptions!){
+  expect(translate(event.title,'fr')).not.toBe(event.title);
+  expect(translate(event.description,'fr')).not.toBe(event.description);
+  expect(translate(event.title,'en')).toBe(event.title);
+ }
+ expect(JSON.stringify(quebec.disruptions)).toBe(before);
+});
 it('translates controls and known server errors with honest fallback for unknown scenario text',()=>{
  expect(translate('Map','fr')).toBe('Carte');expect(translate('Map','en')).toBe('Map');
  expect(translate('Error: Room changed. Refresh before submitting your decision.','fr')).toContain('Actualisez');

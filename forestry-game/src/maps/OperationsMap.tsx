@@ -1,4 +1,8 @@
+import {mapStandValues, standLensColor, type MapLens, type MapColor} from './map-lenses';
+import {MapLensLegend, MapLensSelect, MapLensValues, mapLensName} from './MapLensControls';
+import {validMapCamera, type MapCamera} from './map-viewpoints';
 import {replayRoadIds} from '../simulation/replay-roads';
+import {recordedMovements, routeReplayFrame} from './route-replay';
 import {useLanguage} from "../i18n";
 import {equipmentStatus,ProductSymbol} from '../OperationalSymbols';
 import { operatingRegion } from "../simulation/disruptions";
@@ -15,15 +19,25 @@ import {
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { Game, Position } from "../simulation/types";
 import { route, weatherAt, canAccess } from "../simulation/routing";
-import { stockAt, sum } from "../simulation/engine";
 import { layoutSymbols } from "./symbol-layout";
 export type MapPick = { kind: "stand" | "mill" | "crew" | "truck" | "road"; id: string; name: string };
-const pickKinds: Record<string, MapPick["kind"] | "fleet"> = { stands: "stand", "stand-points": "stand", labels: "stand", mills: "mill", fleet: "fleet", "fleet-count": "fleet", "fleet-status": "fleet", network: "road" };
+const pickKinds: Record<string, MapPick["kind"] | "fleet"> = { stands: "stand", "stand-points": "stand", labels: "stand", mills: "mill", fleet: "fleet", "fleet-count": "fleet", "fleet-status": "fleet", "replay-fleet": "fleet", network: "road" };
 export default function OperationsMap({
   game,
   selected,
   onSelect,
   replay,
+  replayProgress,
+  replayResource,
+  replayMovementIndex,
+  lens: suppliedLens,
+  onLensChange,
+  showLensControl = true,
+  endStateOnly = false,
+  reserveInspectorSpace = false,
+  cameraRequest,
+  onCameraChange,
+  followReplay = false,
   visibleStandIds,
   onInspect,
   onPick,
@@ -33,6 +47,20 @@ export default function OperationsMap({
   selected: string;
   onSelect: (id: string) => void;
   replay?: number;
+  /** Normalized route distance, not elapsed operating time. */
+  replayProgress?: number;
+  replayResource?: string;
+  replayMovementIndex?: number;
+  lens?: MapLens;
+  onLensChange?: (lens: MapLens) => void;
+  showLensControl?: boolean;
+  /** Captured end state without movement paths or current planned orders. */
+  endStateOnly?: boolean;
+  /** Only the operating workbench places a sheet over the bottom half. */
+  reserveInspectorSpace?: boolean;
+  cameraRequest?: {id: string; camera: MapCamera};
+  onCameraChange?: (camera: MapCamera) => void;
+  followReplay?: boolean;
   visibleStandIds?: string[];
   onInspect?: (kind: "mill" | "crew" | "truck" | "road", id: string) => void;
   /** Several features under one tap; without it the top feature is selected. */
@@ -41,6 +69,11 @@ export default function OperationsMap({
   onBackgroundTap?: () => void;
 }) {
   const {t:tr,language}=useLanguage();
+  const [localLens, setLocalLens] = useState<MapLens>('rights');
+  const lens = suppliedLens ?? localLens;
+  const changeLens = (next: MapLens) => {setLocalLens(next); onLensChange?.(next);};
+  const lensRows = mapStandValues(game, replay === undefined ? undefined : game.history[replay]);
+  const appliedCameraRequest = useRef<string | null>(null);
   const camera=useRef<{region:string;center:Position;zoom:number;bearing:number;pitch:number}|null>(null);
   // Region whose first view has been fitted; kept apart from the saved camera
   // because a development double mount saves the camera before the fit runs.
@@ -49,8 +82,8 @@ export default function OperationsMap({
   const [viewTick, setViewTick] = useState(0);
   // The map is created once per region, so its tap handler reads the latest
   // callbacks and names from this ref.
-  const handlers = useRef({ onSelect, onInspect, onPick, onBackgroundTap, name: (_kind: MapPick["kind"], id: string) => id });
-  handlers.current = { onSelect, onInspect, onPick, onBackgroundTap, name: (kind, id) => {
+  const handlers = useRef({ onSelect, onInspect, onPick, onBackgroundTap, onCameraChange, name: (_kind: MapPick["kind"], id: string) => id });
+  handlers.current = { onSelect, onInspect, onPick, onBackgroundTap, onCameraChange, name: (kind, id) => {
     const r = game.region;
     const entity = kind === "stand" ? r.stands.find(x => x.id === id) : kind === "mill" ? r.mills.find(x => x.id === id)
       : kind === "crew" ? r.crews.find(x => x.id === id) : kind === "truck" ? r.trucks.find(x => x.id === id) : r.roads.edges.find(x => x.id === id);
@@ -84,7 +117,7 @@ export default function OperationsMap({
         locale: language==='fr'?{'Map.Title':'Carte','NavigationControl.ZoomIn':'Agrandir','NavigationControl.ZoomOut':'Réduire','NavigationControl.ResetBearing':'Faire pivoter; cliquer pour rétablir le nord','AttributionControl.ToggleAttribution':'Afficher les attributions','CooperativeGesturesHandler.WindowsHelpText':'Utilisez Ctrl et la molette pour zoomer','CooperativeGesturesHandler.MacHelpText':'Utilisez ⌘ et la molette pour zoomer','CooperativeGesturesHandler.MobileHelpText':'Utilisez deux doigts pour déplacer la carte'}:undefined,
         attributionControl: { compact: true },
         canvasContextAttributes: { antialias: true },
-        pixelRatio: Math.max(window.devicePixelRatio || 1, 2),
+        pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
         cooperativeGestures: window.matchMedia("(pointer: coarse)").matches,
       });
     } catch {
@@ -97,14 +130,19 @@ export default function OperationsMap({
     const deck = new MapboxOverlay({
       interleaved: true,
       pickingRadius: window.matchMedia("(pointer: coarse)").matches ? 14 : 5,
-      useDevicePixels: true,
+      // Interleaved deck shares MapLibre’s capped canvas; the numeric cap also covers a non-interleaved fallback.
+      useDevicePixels: Math.min(window.devicePixelRatio || 1, 2),
       layers: [],
     });
     overlay.current = deck;
     m.addControl(deck);
     m.addControl(new maplibregl.NavigationControl(), "top-right");
     m.addControl(new maplibregl.ScaleControl(), "bottom-left");
-    m.on("load", () => setReady(true));
+    const emitCamera = () => {
+      const current: MapCamera = {center: m.getCenter().toArray() as Position, zoom: m.getZoom(), bearing: m.getBearing(), pitch: m.getPitch()};
+      if (validMapCamera(current)) handlers.current.onCameraChange?.(current);
+    };
+    m.on("load", () => {setReady(true); emitCamera();});
     const coarse = window.matchMedia("(pointer: coarse)").matches;
     // One handler resolves every tap: a finger covers several small features,
     // so everything within the touch radius is collected and the caller can
@@ -129,7 +167,7 @@ export default function OperationsMap({
       const [f] = items;
       if (f.kind === "stand") h.onSelect(f.id); else h.onInspect?.(f.kind, f.id);
     });
-    m.on("moveend", () => setViewTick(t => t + 1));
+    m.on("moveend", () => {setViewTick(t => t + 1); emitCamera();});
     // The authored centre/zoom suits a desktop frame. A phone frame is much
     // narrower and partly covered by the inspector sheet, so the first view of
     // a region is fitted to its stands and mills. The frame can still change
@@ -148,7 +186,7 @@ export default function OperationsMap({
       fitted.current = game.region.id;
       try {
         m.fitBounds(bounds, { duration: 0, maxZoom: game.region.zoom + 1, padding: w < 700
-          ? { top: 64, left: 28, right: 28, bottom: Math.max(24, Math.min(h * 0.45 + 48, h - 160)) }
+          ? { top: 64, left: 28, right: 28, bottom: reserveInspectorSpace ? Math.max(24, Math.min(h * 0.45 + 48, h - 160)) : 32 }
           : { top: 70, left: 45, right: 45, bottom: 45 } });
       } catch { /* keep the authored view if the frame is too small to fit */ }
     };
@@ -180,6 +218,21 @@ export default function OperationsMap({
     // Remount only for a different region; plan changes update overlay data below.
   }, [game.region.id,language]);
   useEffect(() => {
+    const requestKey = cameraRequest ? `${game.region.id}:${cameraRequest.id}` : '';
+    if (!map.current || !cameraRequest || requestKey === appliedCameraRequest.current || !validMapCamera(cameraRequest.camera)) return;
+    appliedCameraRequest.current = requestKey;
+    autoFit.current = false;
+    map.current.jumpTo({...cameraRequest.camera});
+  }, [cameraRequest, ready, game.region.id]);
+  useEffect(() => {
+    if (!map.current || !followReplay || replay === undefined || replayProgress === undefined || !replayResource || endStateOnly) return;
+    const frame = routeReplayFrame(game.history[replay]?.movements, replayResource, replayProgress, replayMovementIndex);
+    if (!frame) return;
+    autoFit.current = false;
+    const center = map.current.getCenter();
+    if (Math.abs(center.lng - frame.position[0]) + Math.abs(center.lat - frame.position[1]) > 1e-8) map.current.jumpTo({center: frame.position});
+  }, [ready, followReplay, replay, replayResource, replayProgress, replayMovementIndex, endStateOnly]);
+  useEffect(() => {
     if (!error.startsWith("Some basemap")) return;
     const timer = setTimeout(() => setError(e => e.startsWith("Some basemap") ? "" : e), 8000);
     return () => clearTimeout(timer);
@@ -198,16 +251,19 @@ export default function OperationsMap({
     const view: Game = historical?.snapshot
       ? { ...game, ...historical.snapshot }
       : game;
-    const openRoads=replayRoadIds(game,historical);
-    const r = historical?view.region:operatingRegion(game, true),
+    const finished = !historical && game.week > game.region.weeks;
+    const openRoads = finished ? null : replayRoadIds(game,historical);
+    const replayFrame = !endStateOnly && historical && replayResource && replayProgress !== undefined
+      ? routeReplayFrame(historical.movements, replayResource, replayProgress, replayMovementIndex) : null;
+    const r = historical || finished ? view.region : operatingRegion(game, true),
       w = historical?.weather ?? weatherAt(game, true);
     const paths: {
       path: Position[];
       kind: string;
       resource: string;
       volume?: number;
-    }[] = historical ? historical.movements.map((m) => ({ ...m })) : [];
-    if (!historical) {
+    }[] = historical && !endStateOnly ? recordedMovements(historical.movements).map((m) => ({ ...m })) : [];
+    if (!historical && !finished) {
       for (const c of r.crews) {
         let at = view.crewPositions[c.id];
         for (const o of game.plan.crews[c.id] ?? []) {
@@ -254,19 +310,15 @@ export default function OperationsMap({
         }
       }
     }
-    const standColor = (d: { id: string; supply: string }): [number, number, number, number] =>
-      d.id === selected
-        ? [232, 174, 51, 220]
-        : d.supply === "protected"
-          ? [136, 93, 160, 150]
-          : view.stands.find((s) => s.id === d.id)?.owned
-            ? [34, 124, 79, 185]
-            : [205, 149, 89, 165];
+    const values = new Map(mapStandValues(game, historical).map(row => [row.id, row]));
+    const standColor = (d: {id: string}): MapColor => lens === 'rights' && d.id === selected ? [232, 174, 51, 220] : standLensColor(values.get(d.id)!, lens);
+    const volume = (n: number | null) => n === null ? (language === 'fr' ? 'Non enregistré' : 'Not recorded') : `${n.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', {maximumFractionDigits: 1})} m³`;
     const standData = layers.stands
-      ? r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id)).map((s) => ({
-          ...s,
-          tooltip: `${s.id} · ${s.name}\n${Math.round(view.stands.find((t) => t.id === s.id)!.remaining).toLocaleString()} m³ standing · ${Math.round(sum(stockAt(view, s.id)))} m³ roadside\n${s.zone} · ${s.supply}`,
-        }))
+      ? r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id)).map((s) => {
+          const value = values.get(s.id)!;
+          const terrain = value.terrainOpen === null ? (language === 'fr' ? 'Accès inconnu' : 'Access unknown') : value.terrainOpen ? (language === 'fr' ? 'Terrain accessible' : 'Terrain accessible') : (language === 'fr' ? 'Terrain restreint' : 'Terrain restricted');
+          return {...s, tooltip: `${s.id} · ${s.name}\n${language === 'fr' ? 'Sur pied' : 'Standing'}: ${volume(value.standing)} · ${language === 'fr' ? 'Bord de route' : 'Roadside'}: ${volume(value.roadside)}\n${terrain}`};
+        })
       : [];
     const planned = new Set([selected, ...Object.values(game.plan.crews).flat().map(o => o.stand), ...Object.values(game.plan.trucks).flat().map(o => o.stand)]);
     const labelStands = r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id));
@@ -274,11 +326,19 @@ export default function OperationsMap({
     // would pile into one blob over the stands, so they shrink with the view.
     const zoom = map.current?.getZoom() ?? game.region.zoom;
     const iconScale = Math.min(1, Math.max(0.5, 1 - 0.3 * (game.region.zoom - zoom)));
-    const nodePosition = (node: string) => r.roads.nodes.find(n => n.id === node)!.position;
-    const fleetMembers = layers.fleet ? [
+    const nodePosition = (node: string) => r.roads.nodes.find(n => n.id === node)?.position;
+    // A legacy report has no recorded fleet snapshot: today's positions are
+    // not evidence of where equipment finished a historical turn.
+    const fleetMembers = layers.fleet && (!historical || historical.snapshot) ? [
       ...r.crews.map(c => ({ id: c.id, kind: "crew" as const, node: view.crewPositions[c.id], position: nodePosition(view.crewPositions[c.id]) })),
       ...r.trucks.map(t => ({ id: t.id, kind: "truck" as const, node: view.truckPositions[t.id], position: nodePosition(view.truckPositions[t.id]) })),
-    ] : [];
+    ].filter((member): member is typeof member & {position: Position} =>
+      !!member.position && (!replayFrame || member.id !== replayResource)) : [];
+    const replayMarker = layers.fleet && replayFrame ? [{
+      id: replayFrame.movement.resource, kind: replayFrame.movement.kind,
+      position: replayFrame.position,
+      name: `${replayFrame.movement.resource} · ${language === "fr" ? "Progression du trajet" : "Route progression"} · ${replayFrame.movementIndex + 1}/${replayFrame.movementCount}`,
+    }] : [];
     const container = map.current?.getContainer();
     const symbols = map.current ? layoutSymbols({
       map: map.current, frame: { w: container?.clientWidth ?? 0, h: container?.clientHeight ?? 0 }, scale: iconScale,
@@ -333,7 +393,7 @@ export default function OperationsMap({
           getPolygon: (d) => d.polygon,
           getFillColor: standColor,
           getLineColor: (d) =>
-            d.id === selected ? [255, 242, 159] : [255, 255, 255],
+            d.id === selected ? [232, 174, 51] : [255, 255, 255],
           getLineWidth: 2,
           lineWidthUnits: "pixels",
           stroked: true,
@@ -348,7 +408,7 @@ export default function OperationsMap({
           getRadius: (d) => (d.id === selected ? 8 : 5.5),
           radiusUnits: "pixels",
           getFillColor: standColor,
-          getLineColor: (d) => (d.id === selected ? [255, 242, 159] : [255, 255, 255]),
+          getLineColor: (d) => (d.id === selected ? [232, 174, 51] : [255, 255, 255]),
           getLineWidth: (d) => (d.id === selected ? 2.5 : 1.5),
           lineWidthUnits: "pixels",
           stroked: true,
@@ -359,12 +419,19 @@ export default function OperationsMap({
           data: layers.routes ? paths : [],
           getPath: (d) => d.path,
           getColor: (d) =>
-            d.kind === "crew" ? [226, 148, 35, 210] : [32, 117, 194, 210],
+            d.kind === "crew" ? [226, 148, 35, replayFrame ? 70 : 210] : [32, 117, 194, replayFrame ? 70 : 210],
           getWidth: 4,
           widthUnits: "pixels",
           jointRounded: true,
           capRounded: true,
           pickable: true,
+        }),
+        new PathLayer({
+          id: "replay-travelled",
+          data: layers.routes && replayFrame ? replayFrame.travelled.filter(path => path.length > 1) : [],
+          getPath: (path) => path,
+          getColor: replayFrame?.movement.kind === "crew" ? [226, 148, 35, 255] : [32, 117, 194, 255],
+          getWidth: 5, widthUnits: "pixels", jointRounded: true, capRounded: true,
         }),
         new IconLayer({
           id: "mills",
@@ -384,6 +451,22 @@ export default function OperationsMap({
           sizeUnits: "pixels",
           getPixelOffset: (d) => d.offset,
           pickable: true,
+        }),
+        new ScatterplotLayer({
+          id: "replay-marker-halo",
+          data: replayMarker,
+          getPosition: (d) => d.position,
+          getRadius: 22, radiusUnits: "pixels",
+          getFillColor: [255, 255, 255, 210],
+          getLineColor: [23, 62, 50, 230],
+          stroked: true, getLineWidth: 2, lineWidthUnits: "pixels",
+        }),
+        new IconLayer({
+          id: "replay-fleet",
+          data: replayMarker,
+          getPosition: (d) => d.position,
+          getIcon: (d) => ({url:`${import.meta.env.BASE_URL}icons/${d.kind === "crew" ? "harvester" : "log-truck"}.svg`,width:48,height:48,anchorY:24}),
+          getSize: 36, sizeUnits: "pixels", pickable: true,
         }),
         new TextLayer({
           id: "fleet-count",
@@ -424,10 +507,17 @@ export default function OperationsMap({
         }),
       ],
     });
-  }, [language,game, selected, layers, ready, replay, visibleStandIds, viewTick]);
+  }, [language,game, selected, layers, lens, ready, replay, replayProgress, replayResource, replayMovementIndex, endStateOnly, visibleStandIds, viewTick]);
   const fit = (planOnly = false) => {
     autoFit.current = false;
     const bounds = new maplibregl.LngLatBounds();
+    if (replay !== undefined && planOnly) {
+      const recorded = game.history[replay];
+      for (const movement of recordedMovements(recorded?.movements))
+        for (const position of movement.path) bounds.extend(position);
+      if (!bounds.isEmpty()) map.current?.fitBounds(bounds, {padding: 45, duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 600});
+      return;
+    }
     const ids = new Set([
       ...Object.values(game.plan.crews)
         .flat()
@@ -461,7 +551,7 @@ export default function OperationsMap({
       for(const id of [pair.millA,pair.millB]){const mill=game.region.mills.find(m=>m.id===id);if(mill)bounds.extend(mill.position);}
     }
     if(bounds.isEmpty()) return;
-    map.current?.fitBounds(bounds, { padding: 45, duration: 600 });
+    map.current?.fitBounds(bounds, { padding: 45, duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 600 });
   };
   // Both map tool panels dismiss the same way. In the narrow sheet layout an
   // open panel covers its own summary, so it also needs an in-panel control.
@@ -479,7 +569,7 @@ export default function OperationsMap({
     closeDetails(event.currentTarget);
   };
   return (
-    <div className="geo-map">
+    <div className="geo-map" data-map-ready={ready}>
       <div
         ref={container}
         className="map-canvas"
@@ -488,7 +578,7 @@ export default function OperationsMap({
       <div className="geo-tools">
         <details className="map-legend" onKeyDown={dismissOnEscape}><summary>{tr("Map legend")}</summary><div>
           <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
-          <p>{tr("Green area: secured timber · ochre: unsecured supply · purple: protected · gold: selected.")}</p>
+          <MapLensLegend lens={lens}/>
           <p>{tr("Roads: olive = modelled open; red = seasonal, authorization or closure restriction; blue = upgraded; gray = historical access not recorded.")}</p>
           <p>{tr("Routes: amber = crew relocation; blue = truck movement. Stand labels show area IDs.")}</p>
           <p style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}><img src={`${import.meta.env.BASE_URL}icons/harvester.svg`} width="28" height="28" alt={tr("Harvester")}/> {tr("Harvest crew")} <img src={`${import.meta.env.BASE_URL}icons/log-truck.svg`} width="28" height="28" alt={tr("Log truck")}/> {tr("Truck")} <img src={`${import.meta.env.BASE_URL}icons/mill.svg`} width="28" height="28" alt={tr("Mill")}/> {tr("Receiving / processing mill")}</p>
@@ -496,10 +586,11 @@ export default function OperationsMap({
           <p>{tr("Fleet states: ○ Idle · ▣ Scheduled · ⊘ Unavailable · ✓ Season complete. These describe orders and known disruptions, not guaranteed fulfillment.")}</p>
           <div>{game.region.products.map(p=><p key={p.id}><ProductSymbol product={p}/></p>)}</div>
           <p>{tr("Select a feature or search by its name or ID to inspect it.")}</p>
+          <details className="map-lens-details"><summary>{language === 'fr' ? 'Valeurs accessibles sans la carte' : 'Values without the map'}</summary><MapLensValues rows={lensRows.filter(row => !visibleStandIds || visibleStandIds.includes(row.id))} lens={lens} selected={selected} onSelect={onSelect} recorded={replay !== undefined} finished={game.week > game.region.weeks}/></details>
         </div></details>
         <button className="map-fit-control" onClick={() => fit()}>{tr("Fit district")}</button>
-        <button className="map-fit-control" onClick={() => fit(true)}>{tr("Fit plan")}</button>
-        <div className="map-layer-controls-desktop">        <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
+        {!endStateOnly && <button className="map-fit-control" onClick={() => fit(true)}>{replay === undefined ? tr("Fit plan") : language === "fr" ? "Cadrer les trajets enregistrés" : "Fit recorded routes"}</button>}
+        <div className="map-layer-controls-desktop">{showLensControl && <MapLensSelect value={lens} onChange={changeLens}/>}        <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
           {tr(style === "light" ? "Dark map" : "Light map")}
         </button>
         {Object.entries(layers).map(([id, on]) => (
@@ -513,9 +604,10 @@ export default function OperationsMap({
           </label>
         ))}</div>
         <details className="map-layer-menu" onKeyDown={dismissOnEscape}><summary>{language==='fr'?'Outils':'Map tools'}</summary><div className="map-layer-options">
+        {showLensControl && <MapLensSelect value={lens} onChange={changeLens}/>}
         <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
         <button onClick={() => fit()}>{tr("Fit district")}</button>
-        <button onClick={() => fit(true)}>{tr("Fit plan")}</button>
+        {!endStateOnly && <button onClick={() => fit(true)}>{replay === undefined ? tr("Fit plan") : language === "fr" ? "Cadrer les trajets enregistrés" : "Fit recorded routes"}</button>}
         <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
           {tr(style === "light" ? "Dark map" : "Light map")}
         </button>
@@ -531,7 +623,7 @@ export default function OperationsMap({
         ))}</div></details>
       </div>
       <div className="geo-caption">
-        {replay===undefined?tr("Forecast plan"):`${tr("Turn")} ${replay+1} · ${tr("actual routes")}`} · {tr("Mapped roads / teaching operations")}
+        {replay===undefined?(game.week > game.region.weeks ? tr('Season complete') : tr("Forecast plan")):`${tr("Turn")} ${game.history[replay]?.week ?? replay+1} · ${endStateOnly ? (language === 'fr' ? 'état de fin' : 'end state') : tr("actual routes")}`} · {mapLensName(lens, language)} · {tr("Mapped roads / teaching operations")}
         {game.region.sources.some(s => s.note.includes("Open Government Licence")) && <span> {tr("· Data: Province of British Columbia (OGL–BC)")}</span>}
       </div>
       {error && (

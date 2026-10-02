@@ -46,3 +46,37 @@
   .map-workspace .geo-tools .map-legend > summary {min-height:44px;box-sizing:border-box}
   .map-workspace .maplibregl-ctrl-group > button {width:44px;height:44px}
 }
+/* One bounded scroll port keeps the selected-feature summary and planning role in view. */
+.map-first .adaptive-map-workspace .map-inspector:not([hidden]) {display:flex;flex-direction:column;overflow:hidden;padding:0;height:calc(100dvh - 220px);min-width:0}
+.map-first .adaptive-map-workspace .map-inspector-header {flex:none;padding:8px 12px 0;background:white;min-width:0;border-bottom:1px solid #dfe5da}
+.map-first .adaptive-map-workspace .map-inspector-scroll {flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 12px 12px;scroll-padding-top:8px;scrollbar-gutter:stable}
+.adaptive-map-workspace .map-inspector-header .operating-role-tabs {position:static;top:auto;padding:0 0 8px;margin:0;background:white}
+.adaptive-map-workspace .map-inspector-header .operating-role-tabs button {min-height:44px;min-width:44px;box-sizing:border-box}
+.adaptive-map-workspace .map-inspector-header .operating-sheet-controls {position:static;top:auto;margin:0;padding:0;background:white}
+.adaptive-map-workspace .map-inspector-header .operating-sheet-controls button {min-height:44px;min-width:44px}
+.map-inspector-summary {margin:0 0 6px;font-size:12px;line-height:1.45;color:#52685b;overflow-wrap:anywhere}
+.map-lens-workbench {border-bottom:1px solid #dfe5da;padding:4px 0}
+.map-lens-workbench .map-lens-values>ul {max-height:none;overflow:visible}
+.map-first .adaptive-map-workspace .geo-caption {max-width:calc(100% - 24px);box-sizing:border-box;white-space:normal}
+@container game-main (max-width:950px) {
+ .map-first .adaptive-map-workspace .map-inspector:not([hidden]) {height:45%;max-height:45%;min-height:0}
+ .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector:not([hidden]) {height:85%;max-height:85%}
+ .map-first .adaptive-map-workspace .map-inspector::before {display:none}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:82px;max-height:82px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector-header {padding-bottom:2px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .operating-role-tabs,
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector-scroll {display:none}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-inspector:not([hidden]) {height:100%;max-height:none;padding:0}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-inspector-scroll {display:flex;flex-direction:column}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-lens-workbench {order:-1}
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-legend>summary,
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-layer-menu>summary {min-height:44px;height:44px}
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-legend>summary::before,
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-layer-menu>summary::before {display:none}
+ .map-first .adaptive-map-workspace .geo-map .maplibregl-ctrl-group>button {width:44px;height:44px;min-height:44px}
+ .map-first .adaptive-map-workspace .workbench-sites {max-height:none;overflow:visible}
+}
+@media(pointer:coarse) {.geo-map .maplibregl-ctrl-group>button {width:44px;height:44px}.geo-map .map-legend>summary,.geo-map .map-layer-menu>summary {min-height:44px;align-content:center}}
+.map-first .adaptive-map-workspace .map-inspector-header .operating-sheet-controls {display:flex;align-items:center;justify-content:space-between;gap:6px}
+.map-first .adaptive-map-workspace .map-role-panel .workbench-sites {max-height:none}
+@container game-main (max-width:950px) {.map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:94px;max-height:94px}}

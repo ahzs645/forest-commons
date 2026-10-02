@@ -1,0 +1,10 @@
+import type { RegionDefinition } from './simulation/types';
+import type { StewardshipState } from './simulation/stewardship';
+import {useAnnualLanguage} from './annual-language';
+export default function AnnualStandPreview({region,opening,result,id}:{region:RegionDefinition;opening:StewardshipState;result:StewardshipState;id:string}){
+ const {t,language}=useAnnualLanguage();const before=opening.stands.find(s=>s.id===id),after=result.stands.find(s=>s.id===id),d=region.stands.find(d=>d.id===id);if(!before||!after||!d)return null;
+ const max=Math.max(before.volume,after.volume,1),number=(n:number)=>Math.round(n).toLocaleString(language==='fr'?'fr-CA':'en-CA'),p=region.stewardship!;
+ const treated=result.history.some(h=>['thin','final'].includes(h.actions[id]??''));const cooldown=treated?Math.max(0,5-after.yearsSinceTreatment):0;
+ const capacity=Math.max(d.volume,d.hectares*p.carryingCapacityM3Ha),delay=after.volume>=capacity*.5?0:Math.max(0,(after.planted?p.plantedRegenerationYears:p.naturalRegenerationYears)-after.regenerationAge);
+ return <details className="annual-stand-preview"><summary>{t('Illustrative treatment preview')} · {id}</summary><svg viewBox="0 0 500 100" role="img" aria-label={`${t('Opening timber')}: ${number(before.volume)} m³; ${t('Year-end timber')}: ${number(after.volume)} m³`}><text x="0" y="18" fontSize="13">{t('Opening timber')}</text><rect x="160" y="4" width={300*before.volume/max} height="25" fill="#748b7c"/><text x="0" y="65" fontSize="13">{t('Year-end timber')}</text><rect x="160" y="51" width={300*after.volume/max} height="25" fill="#277b59"/></svg><p>{number(before.volume)} → {number(after.volume)} m³ · {t(after.planted?'Planted':'Natural')}</p><dl className="annual-map-observations"><div><dt>{t('Regeneration age')}</dt><dd>{after.regenerationAge}</dd></div><div><dt>{t('Growth establishment delay')}</dt><dd>{delay}</dd></div><div><dt>{t('Years remaining until harvest cooldown ends')}</dt><dd>{cooldown}</dd></div></dl><p className="muted">{t('Bars show modelled timber volume, not tree density, canopy cover or measured habitat.')}</p></details>;
+}

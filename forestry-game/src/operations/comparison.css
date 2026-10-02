@@ -1,0 +1,12 @@
+.plan-comparison-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0; }
+.plan-comparison-slot { padding: 1rem; border: 1px solid var(--line, #d4ded5); border-radius: .65rem; }
+.plan-comparison-slot label { display: grid; gap: .4rem; font-weight: 600; }
+.plan-comparison-slot input { width: 100%; min-width: 0; box-sizing: border-box; }
+.plan-comparison-slot .button-row { flex-wrap: wrap; }
+.plan-comparison-table { overflow-x: auto; margin: 1rem 0; }
+.plan-comparison-table table { width: 100%; min-width: 430px; border-collapse: collapse; }
+.plan-comparison-table caption { text-align: left; font-weight: 600; margin-bottom: .5rem; }
+.plan-comparison-table th, .plan-comparison-table td { padding: .6rem; border-bottom: 1px solid var(--line, #d4ded5); text-align: right; overflow-wrap: anywhere; }
+.plan-comparison-table th:first-child { text-align: left; }
+.plan-comparison-table:focus-visible { outline: 2px solid var(--accent, #2b6848); outline-offset: 3px; }
+@media (max-width: 700px) { .plan-comparison-slots { grid-template-columns: 1fr; } }

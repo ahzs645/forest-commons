@@ -25,6 +25,22 @@ The development app is served at http://127.0.0.1:5173/. Dependencies are pinned
 
 The operating screens use one saved campaign; Classroom rooms are separate; the Stewardship screen can link annual management to operating seasons. Export/import JSON saves through the header. **Scenario studio** imports/exports validated regional packages, changes starting cash, selects weather and seeds, and starts a new campaign. Shared-device role mode requires purchase, production and transport readiness. For networked classroom roles, run `FOREST_ALLOW_LOCAL_CREATE=1 npm run server` for local development and open **Classroom**; see [CLASSROOM.md](CLASSROOM.md).
 
+## Interactive operating workspace
+
+The English/French interface separates the immediate task from analysis tools. Production edits one crew queue at a time; Transport edits one truck; Planning, Reports and Collaboration have task tabs. The complete plan remains visible on the map.
+
+- **First delivery guide:** choose a learning site, check timber rights and authorization, assign crews and trucks, rehearse, and review a recorded delivery. Progress follows the campaign; opening the forecast alone does not count as rehearsal.
+- **Map queue editing:** select equipment, edit hours or loads, move or remove stops, and undo recent queue edits. Numeric drafts apply on Enter or when leaving the field; Escape restores the saved amount. Restoring a campaign, running a turn or changing other campaign state clears queue undo.
+- **Turn readiness and events:** distinguish idle, waiting and productive turns; review revealed disruption choices and repair timing before advancing. These views do not reveal hidden future events.
+- **Plan A / B:** save two sets of current operating orders and compare their forecasts without advancing. Applying a plan preserves current cash, rights, stock, bids, commitments and future schedules, and resets role readiness. Changes to campaign conditions invalidate saved alternatives. Drafts are device-local interface data, separate from exported campaign JSON.
+- **Turn results and route replay:** see settled deliveries, cash movements, inventory losses and follow-up actions after advancing. Replay recorded route geometry with play, pause, speed and a scrubber. Progress represents geographic distance along each resource's recorded routes, not synchronized operating time. Legacy records without equipment snapshots do not substitute today's fleet positions.
+- **Negotiation board:** inspect frozen proposals, changes in offered savings and actual recorded responses. The allocation lab remains available separately. Standalone company responses are shared-device decisions; authenticated classroom roles retain their existing server controls.
+- **Recorded year explorer:** select a stewardship year to inspect recorded closing timber, habitat, budget and treatments. It uses annual observations rather than inventing historical stand measurements from the present forest.
+
+The guide and saved alternatives are scoped to the current campaign. Another tab changing the campaign pauses saving and disables alternative application until the latest campaign is restored or reloaded. Browser storage failure is reported while in-memory play remains available.
+
+On 2 October 2026, a twelve-agent team exercised beginner, full-season, phone, French, comparison, negotiation, map queue, BC lesson, replay, save recovery, stewardship and keyboard journeys. Both Québec and the BC lesson completed twelve turns. The pass found and corrected numeric draft handling, historical site-report selection and misleading save status after storage failure; focused browser retests passed. The unit suite passed 521 tests (two skipped), with 25 operations checks, a production build and server type check also passing. The longer analysis, allocation and annual-action screens remain candidates for further interface simplification.
+
 ## Implemented operating model
 
 - Québec training scenario: 32 supply areas, seven mill destinations, five assortments, ten crews, ten trucks, three weather schedules and twelve weeks.
@@ -128,6 +144,20 @@ The latest preset includes explicit BC tenure, harvest/road authorizations, Crow
 Choose **Prince George FSR pilot, British Columbia** in Scenario studio, then start a new campaign. The preset has 24 real inventory outlines and 83.2 km of connected mapped Forest Service Roads (7695/01, 7695/02 and 7727/03). Stand volume, species and age come from VRI 2025 (live volume at 17.5 cm). Stands are offered only above the Prince George TSA minimums (140 m³/ha pine-leading, 182 m³/ha others), plans leave at least the TSA's 12.1% median retention, and lot asking prices are ranked by BC's 2010 Interior bid equation. Four secured stands hold less wood than the fleet can move, so which lots to buy is a real, weather-dependent decision. Receiving businesses in Prince George are reached by a labelled teaching connector. Crew, truck, price, speed and weather values now follow published BC sources ([evidence](../research/bc-coefficient-evidence-2026-09-24.md)), recorded as source-identified, not reviewed. Access spurs, harvest rights, demand scale and ecological values remain teaching assumptions. Export the current campaign before replacing it. [Source and complete-campaign verification](../research/prince-george-playable-pilot.md).
 
 Save format 3 deduplicates coordinate pairs across road geometry, stand outlines and historical route sequences without rounding; format 4 also writes consecutive coordinate references as runs. Formats 1–3 and raw regional saves remain readable. This resolves the BC full-season browser storage issue found during playthrough.
+
+## Interactive workflows and mobile play
+
+The Planning desk's Analysis task selector opens one tool at a time and retains its entered settings when switching tools. Supply gaps, current-plan forecasts, deliverability, season outlook, dispatch reference plans and harvest strategies have separate views. Production and Transport keep a compact first-delivery guide and touch/keyboard model glossary. Numeric queue edits apply on Enter or blur; Escape restores the saved value.
+
+The negotiation board previews the exact company groups and savings that publication freezes. It displays balance errors, changed offers and dataset differences before publication. Allocation inputs lead the focused lab; freight pooling and transport obligations live under Operating agreements.
+
+The map offers timber-rights, standing-volume, roadside-stock and terrain-access lenses, with exact values available in its accessible list. Reports separates route replay from Forest changes to keep one map canvas active. Recorded movement buttons seek route distance, not arrival times; named viewpoints are scoped to the campaign and region. Forest changes compares captured end states from a fixed camera, without reconstructing unrecorded starting states.
+
+Stewardship separates Annual forest and Operating seasons. Annual choices can be rehearsed as A/B alternatives before advancing; advancing invalidates drafts from the previous forest and budget. New annual records capture per-stand observations for year comparisons, while older records without those observations stay unavailable. The timber/regeneration illustration represents the teaching model, not measured canopy or scenic visibility.
+
+The Landscape lesson links the PGMaps visual-quality workflow and downloads the selected inventory outline and learner notes as GeoJSON. That outline is labelled as an unreviewed inventory reference, not an assessment cutblock or landform. No official visual-quality rating is inferred from the Commons habitat index or retained timber fraction. BC lot summaries distinguish rights, authorizations and physical access; VRI projections and authored scenario assumptions have separate source labels.
+
+Mobile controls use at least 44px targets and 16px text entry, with safe-area bottom navigation, contained tables and an independently scrolling map inspector. Map rendering caps device pixel ratio at 2. Basemap loading requires the network; loaded simulation, list and planning controls remain usable without basemap tiles. Physical iOS/Android device testing is separate from browser touch emulation.
 
 ## GitHub Pages deployment
 

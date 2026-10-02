@@ -1,28 +1,11 @@
 import type { Game } from "./types";
-import { allocate, savings } from "../coalition";
+import { savings } from "../coalition";
+import { assessNegotiationDraft } from "./negotiation-draft";
 export function propose(game: Game): Game {
-  const g = structuredClone(game),
-    n = g.negotiation,
-    members = Array.from({ length: n.count }, (_, i) => String(i + 1));
-  const partition = [...new Set(n.groups.slice(0, n.count))].map((group) =>
-    members.filter((_, i) => n.groups[i] === group),
-  );
-  if (n.phase === "pairs" && partition.some((p) => p.length > 2))
-    throw Error("Round A allows only pairs and single companies.");
-  const shares: Record<string, number> = {};
-  for (const p of partition) {
-    const preset = allocate(p, n.method, n.count);
-    for (const c of p) shares[c] = n.custom[c] ?? preset[c];
-    if (p.some((c) => !Number.isFinite(shares[c]) || shares[c] < 0))
-      throw Error("Every company must receive nonnegative savings.");
-    if (
-      Math.abs(p.reduce((v, c) => v + shares[c], 0) - savings(p, n.count)) >
-      0.01
-    )
-      throw Error(
-        "Allocate each group’s savings exactly before making a proposal.",
-      );
-  }
+  const g = structuredClone(game), n = g.negotiation;
+  const draft = assessNegotiationDraft(n);
+  if (!draft.canPublish) throw Error(draft.issues[0].message);
+  const shares = draft.shares;
   const offers = (n.offers ??= []);
   for (const o of offers) if (o.status === "proposed") o.status = "superseded";
   offers.push({

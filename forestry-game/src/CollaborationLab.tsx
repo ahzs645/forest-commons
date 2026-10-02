@@ -1,22 +1,25 @@
-import { useLanguage } from "./i18n";
+import { useNegotiationLanguage } from "./negotiation-language";
+import { assessNegotiationDraft } from "./simulation/negotiation-draft";
+import { DraftValidation } from "./NegotiationDraftPreview";
+import NegotiationSavingsInput from "./NegotiationSavingsInput";
+import "./negotiation-workspace.css";
 import {lazy, Suspense} from "react";
 const TeachingPackets=lazy(()=>import("./TeachingPackets"));
-import TransportObligationsLab from './TransportObligationsLab';
 import CoalitionCharts from "./CoalitionCharts";
 import { companyProfiles } from "./company-profiles";
-import PartnerComparison from "./PartnerComparison";
-import NegotiationOffers from "./NegotiationOffers";
-import { allocate, cost, savings, stability } from "./coalition";
+import { cost, savings, stability } from "./coalition";
 import type { Method } from "./coalition";
 import type { Game, Negotiation } from "./simulation/types";
 export default function CollaborationLab({
   game,
   onChange,
+  onOpenBoard,
 }: {
   game: Game;
   onChange: (g: Game) => void;
+  onOpenBoard?: () => void;
 }) {
- const {t: tr, language}=useLanguage();
+ const {t: tr, language}=useNegotiationLanguage();
   const money = (value: number) => value.toLocaleString(language === "fr" ? "fr-CA" : "en-CA", {minimumFractionDigits: 2, maximumFractionDigits: 2});
   const { count, groups, method, custom, phase } = game.negotiation;
   const negotiate = (patch: Partial<Negotiation>) =>
@@ -25,24 +28,9 @@ export default function CollaborationLab({
     partition = [...new Set(groups.slice(0, count))].map((group) =>
       members.filter((_, i) => groups[i] === group),
     );
-  const proposals = partition.map((coalition) => ({
-    members: coalition,
-    shares: {
-      ...allocate(coalition, method, count),
-      ...Object.fromEntries(
-        coalition
-          .filter((c) => custom[c] !== undefined)
-          .map((c) => [c, custom[c]]),
-      ),
-    },
-  }));
-  const efficient = proposals.every(
-      (p) =>
-        Math.abs(
-          Object.values(p.shares).reduce((a, b) => a + b, 0) -
-            savings(p.members, count),
-        ) < 0.01,
-    ),
+  const draft = assessNegotiationDraft(game.negotiation);
+  const proposals = draft.groups.map(group => ({ members: group.members, shares: Object.fromEntries(group.members.map(company => [company, draft.shares[company]])) }));
+  const efficient = draft.groups.every(group => Number.isFinite(group.residual) && Math.abs(group.residual) <= 0.01),
     rational = proposals.every((p) =>
       Object.values(p.shares).every((v) => v >= 0),
     ),
@@ -54,24 +42,15 @@ export default function CollaborationLab({
     savings(members, count) -
     Object.values(allShares).reduce<number>((n, v) => n + Number(v), 0);
   if (grandGap > 1e-6) cross.push({ members, gap: grandGap });
-  const agreement = (cooperation: Game["cooperation"]) =>
-    onChange({
-      ...game,
-      cooperation,
-      plan: {
-        ...game.plan,
-        ready: { purchase: false, production: false, transport: false },
-      },
-    });
   return (
     <>
       <div className="section-heading">
         <div>
           <h2>{tr("Collaboration laboratory")}</h2>
-          <p>{tr("Negotiate a complete partition and test whether each group would stay together.")}{" "}</p>
+          <p>{tr("Edit groups and savings first; review the draft on the negotiation board before publishing.")}{" "}</p>
         </div>
       </div>
-      <div className="panel">
+      <div className="panel negotiation-allocation-editor">
         <div className="form-row">
           <label>
             {tr("Teaching dataset")}
@@ -120,6 +99,57 @@ export default function CollaborationLab({
             </select>
           </label>
         </div>
+        <div className="table-wrap" tabIndex={0} role="region" aria-label={language==='fr'?'Tableau défilant des allocations de coalition':'Scrollable coalition allocation table'}>
+          <table>
+            <thead>
+              <tr>
+                <th>{tr("Company")}</th>
+                <th>{tr("Group")}</th>
+                <th>{tr("Standalone cost")}</th>
+                <th>{tr("Negotiated savings")}</th>
+                <th>{tr("Allocated cost")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {members.map((c, i) => (
+                <tr key={c}>
+                  <td>{tr("Company")} {c}</td>
+                  <td>
+                    <select
+                      aria-label={`${tr("Group for company")} ${c}`}
+                      value={groups[i]}
+                      onChange={(e) => {
+                        const next = [...groups];
+                        next[i] = Number(e.target.value);
+                        negotiate({ groups: next, custom: {} });
+                      }}
+                    >
+                      {members.map((g) => (
+                        <option key={g} value={g}>
+                          {tr("Group")} {g}
+                        </option>
+                      ))}
+                    </select>
+                  </td>
+                  <td>{money(cost([c], count))}</td>
+                  <td>
+                    <NegotiationSavingsInput
+                      label={`${tr("Savings for company")} ${c}`}
+                      value={allShares[c]}
+                      onCommit={amount => negotiate({ custom: { ...custom, [c]: amount } })}
+                    />
+                  </td>
+                  <td>
+                    {money(cost([c], count) - allShares[c])}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="muted">{tr('Press Enter or leave the savings field to apply it. Escape restores its saved value. Negative draft savings prevent publication.')}</p>
+        <DraftValidation draft={draft}/>
+        {onOpenBoard && <button className="primary" onClick={onOpenBoard}>{tr('Review on negotiation board')}</button>}
         <p className="muted">{tr("Each company belongs to exactly one group. Savings below use the handout’s kSEK units; they are separate from campaign CAD. Proportional allocation is not the constrained equal-profit method.")}{" "}</p>
         <details>
           <summary>{tr("Company profiles from the handouts")}</summary>
@@ -156,61 +186,7 @@ export default function CollaborationLab({
           )}
         </details>
         <Suspense fallback={<p>{tr("Loading teaching materials…")}</p>}><TeachingPackets negotiation={game.negotiation} /></Suspense>
-        <CoalitionCharts count={count} groups={groups} shares={allShares} />
-        <div className="table-wrap" tabIndex={0} role="region" aria-label={language==='fr'?'Tableau défilant des allocations de coalition':'Scrollable coalition allocation table'}>
-          <table>
-            <thead>
-              <tr>
-                <th>{tr("Company")}</th>
-                <th>{tr("Group")}</th>
-                <th>{tr("Standalone cost")}</th>
-                <th>{tr("Negotiated savings")}</th>
-                <th>{tr("Allocated cost")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.map((c, i) => (
-                <tr key={c}>
-                  <td>{tr("Company")} {c}</td>
-                  <td>
-                    <select
-                      aria-label={`${tr("Group for company")} ${c}`}
-                      value={groups[i]}
-                      onChange={(e) => {
-                        const next = [...groups];
-                        next[i] = Number(e.target.value);
-                        negotiate({ groups: next, custom: {} });
-                      }}
-                    >
-                      {members.map((g) => (
-                        <option key={g} value={g}>
-                          {tr("Group")} {g}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                  <td>{money(cost([c], count))}</td>
-                  <td>
-                    <input
-                      aria-label={`${tr("Savings for company")} ${c}`}
-                      type="number"
-                      step="0.01"
-                      value={Math.round(allShares[c] * 100) / 100}
-                      onChange={(e) =>
-                        negotiate({
-                          custom: { ...custom, [c]: Number(e.target.value) },
-                        })
-                      }
-                    />
-                  </td>
-                  <td>
-                    {money(cost([c], count) - allShares[c])}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <details><summary>{tr('Allocation evidence and charts')}</summary><CoalitionCharts count={count} groups={groups} shares={allShares}/></details>
         <div className="metric-grid">
           <article>
             <small>{tr("Partition savings")}</small>
@@ -254,42 +230,10 @@ export default function CollaborationLab({
           )}
         </details>
       </div>
+      <details className="panel"><summary>{tr('How the allocation presets work')}</summary>
       <p className="muted">{tr("EPM solves a linear program: minimize the largest difference in relative savings while balancing each coalition and satisfying every subgroup’s stability constraint. It does not assume proportional savings are stable.")}{" "}</p>
       <p className="muted">{tr("The nucleolus lexicographically minimizes the sorted subgroup excesses over individually rational, budget-balanced savings allocations. Each LP stage checks constraints across the whole optimal face before fixing them. This bounded solver uses the four/five-company source tables with numerical tolerance, not shadow prices or a one-stage least-core approximation. Manual share overrides replace the calculated result and may lose its properties.")}</p>
-      <PartnerComparison game={game} />
-      <NegotiationOffers game={game} onChange={onChange} />
-      <div className="panel">
-        <h3>{tr("Partner freight contract")}</h3>
-        <p>{tr("Select explicit partner jobs on truck haul orders. A shared journey must visit the partner origin and destination before collecting your own timber; both loads consume time and the partner's finite stock is tracked separately. Payment covers added travel plus your share of measured joint savings, within the freight quote. There is no automatic empty-leg credit.")}{" "}</p>
-        <label className="check-label">
-          <input
-            type="checkbox"
-            checked={game.cooperation.pooling}
-            disabled={game.week > game.region.weeks}
-            onChange={(e) =>
-              agreement({ ...game.cooperation, pooling: e.target.checked })
-            }
-          />{" "}{" "}{tr("Enable partner freight dispatch")}{" "}</label>
-        <label>{tr("Our share of measured travel savings:")}{" "}
-          {Math.round(game.cooperation.partnerShare * 100)}%
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            disabled={game.week > game.region.weeks}
-            value={game.cooperation.partnerShare}
-            onChange={(e) =>
-              agreement({
-                ...game.cooperation,
-                partnerShare: Number(e.target.value),
-              })
-            }
-          />
-        </label>
-        <p className="muted">{tr("Each payment appears in the weekly ledger. The handout allocations remain separate from this regional freight contract.")}{" "}</p>
-      </div>
-      <TransportObligationsLab/>
+      </details>
     </>
   );
 }

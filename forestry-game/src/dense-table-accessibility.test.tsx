@@ -27,8 +27,10 @@ it('provides a full-label touch target for each available private acquisition',(
 
 it('names the company profiles, coalition and partner comparison scroll regions',async()=>{
  const {default:CollaborationLab}=await import('./CollaborationLab');
+ const {default:OperatingAgreementTools}=await import('./OperatingAgreementTools');
  const html=renderToStaticMarkup(<CollaborationLab game={createGame(quebec)} onChange={()=>{}}/>);
  expect(html).toContain('aria-label="Scrollable company profiles table"');
  expect(html).toContain('aria-label="Scrollable coalition allocation table"');
- expect(html).toContain('aria-label="Scrollable partner freight comparison table"');
+ const agreements=renderToStaticMarkup(<OperatingAgreementTools game={createGame(quebec)} onChange={()=>{}}/>);
+ expect(agreements).toContain('aria-label="Scrollable partner freight comparison table"');
 });

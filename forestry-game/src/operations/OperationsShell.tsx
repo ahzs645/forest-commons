@@ -51,8 +51,8 @@ export function OperationsStatus({ game, onNavigate, onSelect }: {
   </section>;
 }
 
-export function MobileOperationsNav({ page, onNavigate, onMenu }: {
-  page: string; onNavigate: (page: string) => void; onMenu: () => void;
+export function MobileOperationsNav({ page, onNavigate, onMenu, menuOpen = false }: {
+  page: string; onNavigate: (page: string) => void; onMenu: () => void; menuOpen?: boolean;
 }) {
   const { language } = useLanguage();
   const active = page === 'Overview' ? 'map' : ['Planning desk', 'Production', 'Transport', 'Commitments', 'Forest & timber'].includes(page) ? 'plan' : page === 'Reports' ? 'results' : 'more';
@@ -60,7 +60,7 @@ export function MobileOperationsNav({ page, onNavigate, onMenu }: {
     <button aria-current={active === 'map' ? 'page' : undefined} onClick={() => onNavigate('Overview')}>{language === 'fr' ? 'Carte' : 'Map'}</button>
     <button aria-current={active === 'plan' ? 'page' : undefined} onClick={() => onNavigate('Planning desk')}>Plan</button>
     <button aria-current={active === 'results' ? 'page' : undefined} onClick={() => onNavigate('Reports')}>{language === 'fr' ? 'Résultats' : 'Results'}</button>
-    <button aria-current={active === 'more' ? 'page' : undefined} onClick={onMenu}>{language === 'fr' ? 'Plus' : 'More'}</button>
+    <button aria-current={active === 'more' ? 'page' : undefined} aria-expanded={menuOpen} aria-controls="main-navigation" onClick={onMenu}>{language === 'fr' ? 'Plus' : 'More'}</button>
   </nav>;
 }
 
@@ -74,9 +74,10 @@ export function LessonLauncher({ regions, onChoose, welcome = false, onDismiss }
       {onDismiss && <button onClick={onDismiss}>{text('Continue current case', 'Continuer le cas actuel')}</button>}</div>
     <p>{text('Select a lesson or full regional scenario. You will review and confirm before the current campaign is replaced.',
       'Choisir une leçon ou un scénario régional complet. Un examen et une confirmation précèdent le remplacement de la campagne.')}</p>
-    <div className="operating-lesson-cards">{regions.map(region => <article key={region.id}>
-      <h3>{region.name}</h3><p>{region.operations ? text('Guided case: ten contrasting sites, compatible equipment, load constraints and a focused decision loop.',
-        'Cas guidé : dix sites différents, équipement compatible, contraintes de chargement et décisions ciblées.') : text('Full existing regional scenario, with its original mechanics and coefficients.',
+    <div className="operating-lesson-cards">{regions.map(region => <article key={region.id} className={region.operations ? 'first-delivery-recommended' : undefined}>
+      {region.operations && <span className="first-delivery-recommendation">{text('Recommended first case', 'Premier cas recommandé')}</span>}
+      <h3>{region.name}</h3><p>{region.operations ? text('Learn one complete delivery cycle: inspect a site, verify rights and authorizations, schedule compatible equipment, then compare forecast and recorded results.',
+        'Apprendre un cycle complet de livraison : examiner un site, vérifier les droits et autorisations, planifier un équipement compatible, puis comparer les prévisions aux résultats enregistrés.') : text('Full existing regional scenario, with its original mechanics and coefficients.',
         'Scénario régional complet existant, avec ses mécanismes et coefficients d’origine.')}</p>
       <p>{region.stands.length} {text('sites', 'sites')} · {region.crews.length} {text('crews', 'équipes')} · {region.trucks.length} {text('trucks', 'camions')}</p>
       <button onClick={() => onChoose(region)}>{text('Review this case', 'Examiner ce cas')}</button>
