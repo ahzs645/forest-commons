@@ -12,10 +12,10 @@ it('keeps readable fixed-pixel fleet markers throughout the supported 0–22 zoo
 });
 
 it('fits above the actual mobile sheet and leaves desktop maps unreserved', () => {
-  expect(mapFitPadding(390, 600, 240)).toEqual({top: 64, left: 28, right: 28, bottom: 248});
+  expect(mapFitPadding(390, 600, 240)).toEqual({top: 64, left: 28, right: 28, bottom: 264});
   expect(mapFitPadding(1440, 800, 0)).toEqual({top: 70, left: 45, right: 45, bottom: 45});
   expect(mapFitPadding(390, 600, 580).bottom).toBe(440);
-  expect(mapFitPadding(390, 600, undefined, true).bottom).toBe(326);
+  expect(mapFitPadding(390, 600, undefined, true).bottom).toBe(342);
 });
 
 it('keeps every dense tap candidate, de-duplicates stand representations and includes roads under polygons', () => {
@@ -63,4 +63,14 @@ it('recovers every co-located stand, offset fleet cluster and road when GPU hits
   expect(items.some(item => item.id === 'outside')).toBe(false);
   // The caller supplies only currently drawn features: no hidden-layer picks.
   expect(mapScreenHits([], [], project, {x: 100, y: 100}, 14)).toEqual([]);
+});
+
+it('rechecks visibility against late portal geometry after a point was visible above the peek', () => {
+  const point = {x: 195, y: 480}, frame = {w: 390, h: 600};
+  expect(mapFocusOffset(point, frame, 60)).toBeNull();
+  const offset = mapFocusOffset(point, frame, 397)!;
+  const finalY = point.y - offset[1];
+  expect(finalY).toBeGreaterThan(80);
+  expect(finalY).toBeLessThan(frame.h - 397 - 16);
+  expect(mapFocusOffset({x: point.x - offset[0], y: finalY}, frame, 397)).toBeNull();
 });

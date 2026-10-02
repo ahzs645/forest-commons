@@ -90,6 +90,35 @@
 .map-sheet-handle,.map-sheet-close {display:none}
 .map-selection-announcement {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .adaptive-map-workspace .operating-readiness>header .eyebrow {margin-top:0}
+.map-feature-actions {display:flex;gap:8px;margin:0 0 12px}
+.map-feature-actions button {flex:1;min-height:44px;font-weight:650;white-space:normal}
+.map-feature-actions button[aria-pressed=true] {background:#173e32;color:white}
+.compact-map-readiness {padding:0!important;margin:0 0 10px;border:0}
+.compact-map-readiness .operating-scope-status {display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.compact-map-readiness .operating-scope-status>span {padding:4px 8px;border:0;border-radius:6px;font-size:12px}
+.compact-map-readiness>.compact-readiness-details {margin-top:0;padding:0;border:0}
+.map-site-information>summary {min-height:44px;align-content:center}
+.map-inspector-scroll .map-dispatch-form fieldset {border:0;padding:0}
+.map-inspector-scroll .map-dispatch-form legend {display:none}
+.map-inspector-scroll>.selected-feature>summary {display:none}
+/* The open phone sheet belongs to the viewport, above the bottom navigation. */
+.map-sheet-portal.map-first {position:fixed;inset:0;width:100vw;height:100dvh;z-index:80;pointer-events:none;container-type:inline-size;container-name:game-main}
+.map-sheet-portal.map-first>.adaptive-map-workspace {position:absolute;inset:0;width:100%;height:100%;min-height:0;display:block;margin:0;pointer-events:none}
+.map-sheet-portal .adaptive-map-workspace .map-inspector:not([hidden]) {position:absolute;left:0;right:0;bottom:0;top:auto;width:100%;height:55%;max-height:55%;margin:0;pointer-events:auto;border-radius:18px 18px 0 0;padding:0;box-sizing:border-box;box-shadow:0 -8px 28px #173e3230}
+.map-sheet-portal .adaptive-map-workspace[data-sheet=full] .map-inspector:not([hidden]) {height:85%;max-height:85%}
+.map-sheet-portal .map-inspector-scroll {padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.map-sheet-portal .map-inspector-header .mobile-workspace-controls button {padding:0;width:44px;display:flex;align-items:center;justify-content:center}
+@media(max-width:600px) {
+ .map-first .first-delivery-guide.is-minimized {margin-bottom:8px}
+ .map-first .first-delivery-guide.is-minimized .first-delivery-heading {padding:6px 10px}
+ .map-first .first-delivery-guide.is-minimized .first-delivery-heading span {display:none}
+}
+@container game-main (max-width:950px) {
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:60px;max-height:60px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-sheet-handle {display:none}
+ .map-first .adaptive-map-workspace .map-inspector-summary {margin-bottom:10px}
+ .map-first .adaptive-map-workspace .mobile-workspace-controls button {padding:0;width:44px;display:flex;align-items:center;justify-content:center}
+}
 @container game-main (max-width:950px) {
  .map-first .adaptive-map-workspace .map-sheet-handle {display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;height:44px;padding:0;border:0;background:transparent;touch-action:none;cursor:ns-resize}
  .map-sheet-handle>span:first-child {width:32px;height:4px;flex:none;background:#7b9285;border-radius:3px}
@@ -98,8 +127,6 @@
  .map-first .adaptive-map-workspace .map-sheet-close {display:block;font-size:24px;line-height:1;padding:0;width:44px;flex:none}
  .map-first .adaptive-map-workspace .mobile-workspace-controls {gap:0}
  .map-first .adaptive-map-workspace .mobile-workspace-controls .operating-sheet-size {padding:0 6px;font-size:11px}
- .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:104px;max-height:104px}
- .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-sheet-handle {height:44px;min-height:44px}
  .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector-summary {display:none}
  .map-first .adaptive-map-workspace.operations-list-mode .map-sheet-handle {display:none}
  .map-first .adaptive-map-workspace .map-inspector-header .operating-sheet-title {min-width:0}

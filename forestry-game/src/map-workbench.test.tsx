@@ -4,7 +4,27 @@ import MapRolePanel from './MapRolePanel';
 import {equipmentStatus} from './OperationalSymbols';
 import {createGame} from './simulation/engine';
 import {quebec} from './scenarios/quebec';
+import StandReadiness from './operations/StandReadiness';
 describe('map workbench',()=>{
+ it('keeps compact map checks without repeating the selected site identity',()=>{
+  const game=createGame(quebec);
+  const html=renderToStaticMarkup(<StandReadiness compact game={game} standId="Q01"/>);
+  expect(html).not.toContain('<h3>Q01</h3>');
+  expect(html).not.toContain('OPERATING READINESS');
+  expect(html).toContain('Harvest:');
+  expect(html).toContain('Checks &amp; site evidence');
+  expect(html).toContain('What can happen here now?');
+ });
+ it('shows one dispatch form with an assortment choice and no full analysis desk',()=>{
+  const game=createGame(quebec);
+  const html=renderToStaticMarkup(<MapRolePanel mode="dispatch" game={game} role="transport" setRole={()=>{}} product="" setProduct={()=>{}} zone="" setZone={()=>{}} selected="Q01" select={()=>{}} onChange={()=>{}} onInspect={()=>{}} accessibleOnly={false} setAccessibleOnly={()=>{}}/>);
+  expect(html.match(/<fieldset/g)).toHaveLength(1);
+  expect(html).toContain('<label>Product<select');
+  expect(html).toContain('Append haul');
+  expect(html).not.toContain('change the product filter above');
+  expect(html).not.toContain('Forecast and access');
+  expect(html).not.toContain('Targets and forecast');
+ });
  it('shows only forecast categories without changing game state',()=>{const g=createGame(quebec);for(const w of Object.values(g.region.weather))for(const z of g.region.zones){w.forecast[z.id].fill('frozen');w.actual[z.id].fill('thaw');}const before=JSON.stringify(g);const html=renderToStaticMarkup(<MapRolePanel game={g} role="transport" setRole={()=>{}} product="" setProduct={()=>{}} zone="" setZone={()=>{}} selected={g.region.stands[0].id} select={()=>{}} onChange={()=>{}} onInspect={()=>{}} accessibleOnly={false} setAccessibleOnly={()=>{}}/>);expect(html).toContain('data-weather="frozen"');expect(html).not.toContain('data-weather="thaw"');expect(html).toContain('Forecast delivery');expect(JSON.stringify(g)).toBe(before);});
  it('distinguishes disruption, planned transfer and idle resources without hidden events',()=>{const g=createGame(quebec),t=g.region.trucks[0].id;expect(equipmentStatus(g,'truck',t)).toBe('Idle');g.plan.facilityTransfers=[{truck:t,link:'test',loads:1}];expect(equipmentStatus(g,'truck',t)).toBe('Scheduled');g.region.disruptions=[{id:'x',kind:'truck',target:t,title:'Test',description:'',week:1,endWeek:3,revealWeek:2,repairCost:0,repairWeeks:1}];expect(equipmentStatus(g,'truck',t)).toBe('Scheduled');g.week=2;expect(equipmentStatus(g,'truck',t)).toBe('Unavailable');g.week=g.region.weeks+1;expect(equipmentStatus(g,'truck',t)).toBe('Season complete');});
 });

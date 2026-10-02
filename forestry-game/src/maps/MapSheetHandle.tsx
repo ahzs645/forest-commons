@@ -37,6 +37,5 @@ export default function MapSheetHandle({size, onChange, controls}: {
       onChange(current => current === 'peek' ? 'half' : current === 'full' ? 'half' : 'full');
     }}>
     <span aria-hidden="true" />
-    <span className="map-sheet-handle-label">{language === 'fr' ? 'Glisser ou toucher pour redimensionner' : 'Swipe or tap to resize'}</span>
   </button>;
 }

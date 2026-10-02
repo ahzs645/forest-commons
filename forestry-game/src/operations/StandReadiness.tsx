@@ -7,6 +7,7 @@ import { dossierInventoryEvidence } from '../simulation/lot-evidence';
 
 export interface StandReadinessProps {
   game: Game;
+  compact?: boolean;
   standId: string;
   selection?: ReadinessSelection;
   onNavigate?: (page: string) => void;
@@ -14,7 +15,7 @@ export interface StandReadinessProps {
   onChange?: (game: Game) => void;
 }
 const destinations = { permits: 'Forest & timber', production: 'Production', transport: 'Transport', commitments: 'Commitments', evidence: 'Scenario studio' };
-export default function StandReadiness({ game, standId, selection = {}, onNavigate, onChange }: StandReadinessProps) {
+export default function StandReadiness({ game, standId, selection = {}, onNavigate, onChange, compact = false }: StandReadinessProps) {
   const { language, t } = useLanguage();
   const text = (en: string, fr: string) => language === 'fr' ? fr : en;
   const checks = useMemo(() => siteReadiness(game, standId, selection),
@@ -30,20 +31,7 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
   const state = game.stands.find(s => s.id === standId);
   const bottleneck = selection.crew ? chainBottleneck(game.region, selection.crew, standId) : null;
   const number = (n: number) => n.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', { maximumFractionDigits: 1 });
-  return <section className="operating-readiness" aria-label={text('Site readiness', 'État de préparation du site')}>
-    <header><div><span className="eyebrow">{text('OPERATING READINESS', 'PRÉPARATION DES OPÉRATIONS')}</span><h3>{standId}</h3></div>
-      {game.region.operations && <span className="operating-badge">{text('Authored case', 'Cas pédagogique')}</span>}
-    </header>
-    <div className="operating-scope-status">
-      {(['harvest', 'haul'] as const).map(scope => {
-        const list = checks.filter(c => c.scope === scope);
-        const blocked = list.filter(c => c.level === 'blocked').length;
-        return <span key={scope} data-level={blocked ? 'blocked' : 'ready'}>
-          {scope === 'harvest' ? text('Harvest', 'Récolte') : text('Haul', 'Transport')}:
-          {' '}{!list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
-        </span>;
-      })}
-    </div>
+  const evidenceDetails = <>
     <details className="operating-checks">
       <summary>{text('What can happen here now?', 'Que peut-on faire ici maintenant?')}</summary>
       <p className="muted">{text('Forecast conditions, not authorization to operate. Route readiness does not reserve stock, truck time or mill capacity.',
@@ -104,5 +92,21 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
       {!onChange && <p>{text('Read-only here. Field evidence writes require an authorized campaign action.', 'Lecture seule ici. La consignation exige une action de campagne autorisée.')}</p>}
       {notice && <p role="status">{notice}</p>}
     </details>}
+  </>;
+  return <section className={`operating-readiness${compact ? ' compact-map-readiness' : ''}`} aria-label={text('Site readiness', 'État de préparation du site')}>
+    {!compact && <header><div><span className="eyebrow">{text('OPERATING READINESS', 'PRÉPARATION DES OPÉRATIONS')}</span><h3>{standId}</h3></div>
+      {game.region.operations && <span className="operating-badge">{text('Authored case', 'Cas pédagogique')}</span>}
+    </header>}
+    <div className="operating-scope-status">
+      {(['harvest', 'haul'] as const).map(scope => {
+        const list = checks.filter(c => c.scope === scope);
+        const blocked = list.filter(c => c.level === 'blocked').length;
+        return <span key={scope} data-level={blocked ? 'blocked' : 'ready'}>
+          {scope === 'harvest' ? text('Harvest', 'Récolte') : text('Haul', 'Transport')}:
+          {' '}{compact ? (!list.length ? text('Season ended', 'Saison terminée') : blocked ? `${blocked} ${text('issues', 'points à vérifier')}` : text('Ready', 'Prêt')) : !list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
+        </span>;
+      })}
+    </div>
+    {compact ? <details className="compact-readiness-details"><summary>{text('Checks & site evidence', 'Vérifications et preuves du chantier')}</summary>{evidenceDetails}</details> : evidenceDetails}
   </section>;
 }

@@ -14,7 +14,7 @@ export function mapFitPadding(width: number, height: number, inspectorHeight?: n
     right: mobile ? 28 : 45,
     // Leave a usable viewport even if a full-height sheet is open. Closing or
     // minimizing that sheet is then needed before a meaningful district fit.
-    bottom: Math.max(normalBottom, Math.min(overlay + (overlay ? 8 : 0), Math.max(normalBottom, height - 160))),
+    bottom: Math.max(normalBottom, Math.min(overlay + (overlay ? 24 : 0), Math.max(normalBottom, height - 160))),
   };
 }
 

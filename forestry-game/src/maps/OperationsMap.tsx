@@ -1,3 +1,5 @@
+import {mapDetail, groupMapSites, type MapSiteGroup} from './map-detail';
+import './map-detail.css';
 import {mapFitPadding, mapSymbolScale, mapFocusOffset} from './map-viewport';
 import {mapPickDepth, mapPickItems, mapScreenHits, type MapPick, type MapScreenMarker, type MapScreenRoad} from './map-picking';
 export type {MapPick} from './map-picking';
@@ -7,7 +9,7 @@ import {validMapCamera, type MapCamera} from './map-viewpoints';
 import {replayRoadIds} from '../simulation/replay-roads';
 import {recordedMovements, routeReplayFrame} from './route-replay';
 import {useLanguage} from "../i18n";
-import {equipmentStatus,ProductSymbol} from '../OperationalSymbols';
+import {equipmentStatus} from '../OperationalSymbols';
 import { operatingRegion } from "../simulation/disruptions";
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
@@ -66,7 +68,7 @@ export default function OperationsMap({
   inspectorHeightPx?: number;
   /** A user inspection request, used only to uncover an obscured feature. */
   inspectorFeature?: {kind: MapPick["kind"]; id: string; requestId: number};
-  /** Let the workbench collapse an expanded sheet before an explicit fit. */
+  /** Let the workbench make room before opening tools or fitting the map. */
   onFitRequest?: () => void;
   cameraRequest?: {id: string; camera: MapCamera};
   onCameraChange?: (camera: MapCamera) => void;
@@ -89,11 +91,15 @@ export default function OperationsMap({
   // because a development double mount saves the camera before the fit runs.
   const fitted=useRef<string|null>(null);
   const autoFit=useRef(false);
+  const initialFit = useRef<(() => void) | null>(null);
   const inspectorInset = useRef(inspectorHeightPx);
   inspectorInset.current = inspectorHeightPx;
   const inspectionRequest = useRef<string | null>(null);
-  const screenPicks = useRef<{markers: MapScreenMarker[]; roads: MapScreenRoad[]}>({markers: [], roads: []});
+  const inspectionIdentity = useRef<string | null>(null);
+  const inspectionGesture = useRef(false);
+  const screenPicks = useRef<{markers: MapScreenMarker[]; roads: MapScreenRoad[]; groups: MapSiteGroup[]}>({markers: [], roads: [], groups: []});
   const [viewTick, setViewTick] = useState(0);
+  const [frameHeight, setFrameHeight] = useState(535);
   // The map is created once per region, so its tap handler reads the latest
   // callbacks and names from this ref.
   const handlers = useRef({ onSelect, onInspect, onPick, onBackgroundTap, onCameraChange, pickDepth: mapPickDepth({stands: game.region.stands.length, mills: game.region.mills.length, crews: game.region.crews.length, trucks: game.region.trucks.length, roads: game.region.roads.edges.length}), name: (_kind: MapPick["kind"], id: string) => id });
@@ -166,12 +172,40 @@ export default function OperationsMap({
     // offer a choice instead of guessing the top layer.
     m.on("click", (e) => {
       autoFit.current = false;
+      inspectionGesture.current = true;
       const h = handlers.current, picker = overlay.current;
+      const exactMarker = screenPicks.current.markers.map(marker => {
+        const p = m.project(marker.position), offset = marker.offset ?? [0, 0];
+        return {marker, distance: Math.hypot(p.x + offset[0] - e.point.x, p.y + offset[1] - e.point.y)};
+      }).filter(hit => hit.distance <= hit.marker.radius).sort((a, b) => a.distance - b.distance
+        || Number(a.marker.kind === "stand") - Number(b.marker.kind === "stand"))[0]?.marker;
+      if (exactMarker && (!exactMarker.members || exactMarker.members.length === 1)) {
+        const kind = exactMarker.members?.[0].kind ?? exactMarker.kind, id = exactMarker.members?.[0].id ?? exactMarker.id;
+        if (kind === "stand") h.onSelect(id); else h.onInspect?.(kind as "mill" | "crew" | "truck" | "road", id);
+        return;
+      }
+      const hitGroup = screenPicks.current.groups.filter(g => g.members.length > 1).map(group => {
+        const p = m.project(group.position);
+        return {group, distance: Math.hypot(p.x - e.point.x, p.y - e.point.y)};
+      }).filter(hit => hit.distance <= (coarse ? 28 : 20)).sort((a, b) => a.distance - b.distance)[0]?.group;
+      if (hitGroup && m.getZoom() < m.getMaxZoom() - 0.5) {
+        const bounds = new maplibregl.LngLatBounds();
+        hitGroup.positions.forEach(p => bounds.extend(p));
+        const frame = m.getContainer();
+        m.fitBounds(bounds, {padding: mapFitPadding(frame.clientWidth, frame.clientHeight, inspectorInset.current, reserveInspectorSpace),
+          maxZoom: Math.min(22, m.getZoom() + 2), duration: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 300});
+        return;
+      }
       if (!picker) return;
       let infos: { layer?: { id: string } | null; object?: unknown }[] = [];
       try { infos = picker.pickMultipleObjects({ x: e.point.x, y: e.point.y, radius: coarse ? 14 : 5, depth: h.pickDepth }); } catch { /* picking needs a drawn frame */ }
       const nearby = mapScreenHits(screenPicks.current.markers, screenPicks.current.roads, p => m.project(p), e.point, coarse ? 14 : 5);
-      const items = mapPickItems([...infos, ...nearby], h.name);
+      const allItems = mapPickItems([...infos, ...nearby], h.name);
+      const pointItems = mapPickItems(nearby.filter(info => info.layer?.id !== "network"), h.name);
+      const roadItems = mapPickItems(nearby.filter(info => info.layer?.id === "network"), h.name);
+      // A marker takes priority over a road beneath it. An exposed road still
+      // opens its dossier even when it lies inside a large stand polygon.
+      const items = pointItems.length ? allItems.filter(item => item.kind !== "road") : roadItems.length ? roadItems : allItems;
       if (!items.length) { h.onBackgroundTap?.(); return; }
       if (items.length > 1 && h.onPick) { h.onPick(items); return; }
       const [f] = items;
@@ -198,7 +232,6 @@ export default function OperationsMap({
       const { clientWidth: w, clientHeight: h } = frame;
       const bounds = new maplibregl.LngLatBounds();
       for (const s of game.region.stands) { bounds.extend(s.position); s.polygon.forEach(p => bounds.extend(p)); }
-      for (const mill of game.region.mills) bounds.extend(mill.position);
       if (bounds.isEmpty() || w <= 0 || h <= 0) return;
       fitted.current = game.region.id;
       try {
@@ -206,7 +239,8 @@ export default function OperationsMap({
           padding: mapFitPadding(w, h, inspectorInset.current, reserveInspectorSpace) });
       } catch { /* keep the authored view if the frame is too small to fit */ }
     };
-    const stopAutoFit = (event: { originalEvent?: unknown }) => { if (event.originalEvent) autoFit.current = false; };
+    initialFit.current = fitRegion;
+    const stopAutoFit = (event: { originalEvent?: unknown }) => { if (event.originalEvent) {autoFit.current = false; inspectionGesture.current = true;} };
     m.on("dragstart", stopAutoFit);
     m.on("zoomstart", stopAutoFit);
     m.on("rotatestart", stopAutoFit);
@@ -220,11 +254,12 @@ export default function OperationsMap({
       tileNoticeShown = true;
       setError("Some basemap tiles could not load. Game roads and operations remain available.");
     });
-    const observer = new ResizeObserver(() => { m.resize(); fitRegion(); });
+    const observer = new ResizeObserver(() => { setFrameHeight(container.current?.clientHeight ?? 535); m.resize(); fitRegion(); });
     observer.observe(container.current);
     return () => {
       cancelAnimationFrame(fitFrame);
       observer.disconnect();
+      if (initialFit.current === fitRegion) initialFit.current = null;
       camera.current={region:game.region.id,center:m.getCenter().toArray() as Position,zoom:m.getZoom(),bearing:m.getBearing(),pitch:m.getPitch()};
       m.removeControl(deck);
       m.remove();
@@ -233,6 +268,12 @@ export default function OperationsMap({
     };
     // Remount only for a different region; plan changes update overlay data below.
   }, [game.region.id,language]);
+  useEffect(() => {
+    // Initial portal/peek geometry is measured after the map mounts. Refit once
+    // it arrives, while initial fitting is still active; user gestures stop it.
+    const frame = requestAnimationFrame(() => {if (autoFit.current) initialFit.current?.();});
+    return () => cancelAnimationFrame(frame);
+  }, [inspectorHeightPx, game.region.id]);
   useEffect(() => {
     const requestKey = cameraRequest ? `${game.region.id}:${cameraRequest.id}` : '';
     if (!map.current || !cameraRequest || requestKey === appliedCameraRequest.current || !validMapCamera(cameraRequest.camera)) return;
@@ -250,14 +291,19 @@ export default function OperationsMap({
   }, [ready, followReplay, replay, replayResource, replayProgress, replayMovementIndex, endStateOnly]);
   useEffect(() => {
     if (!map.current || !inspectorFeature || inspectorFeature.requestId === 0) return;
-    const key = `${game.region.id}:${inspectorFeature.requestId}`;
+    const identity = `${game.region.id}:${inspectorFeature.kind}:${inspectorFeature.id}:${inspectorFeature.requestId}`;
+    if (inspectionIdentity.current !== identity) {inspectionIdentity.current = identity; inspectionGesture.current = false;}
+    if (inspectionGesture.current) return;
+    const key = `${identity}:${Math.round(inspectorHeightPx ?? 0)}`;
     if (inspectionRequest.current === key) return;
     const m = map.current;
-    // Let the sheet reach its new size and its ResizeObserver report the inset.
+    // Portal layout can report its inset after the first inspection render.
+    // Treat the measured geometry as part of the request, so a late inset
+    // retries the visibility check instead of consuming it against the peek.
     let secondFrame = 0;
     const firstFrame = requestAnimationFrame(() => {
       secondFrame = requestAnimationFrame(() => {
-        if (map.current !== m) return;
+        if (map.current !== m || inspectionGesture.current) return;
         inspectionRequest.current = key;
         const report = replay === undefined ? undefined : game.history[replay];
         const view = report?.snapshot ? {...game, ...report.snapshot} : game;
@@ -276,7 +322,7 @@ export default function OperationsMap({
       });
     });
     return () => { cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame); };
-  }, [inspectorFeature, ready, game.region.id]);
+  }, [inspectorFeature, inspectorHeightPx, ready, game.region.id]);
   useEffect(() => {
     if (!error.startsWith("Some basemap")) return;
     const timer = setTimeout(() => setError(e => e.startsWith("Some basemap") ? "" : e), 8000);
@@ -366,12 +412,25 @@ export default function OperationsMap({
         })
       : [];
     const planned = new Set([selected, ...Object.values(game.plan.crews).flat().map(o => o.stand), ...Object.values(game.plan.trucks).flat().map(o => o.stand)]);
-    const labelStands = r.stands.filter(s=>!visibleStandIds || visibleStandIds.includes(s.id));
+
     // Equipment icons are fixed-pixel; below the region's authored zoom they
     // would pile into one blob over the stands, so they shrink with the view.
     const zoom = map.current?.getZoom() ?? game.region.zoom;
-    const iconScale = mapSymbolScale(zoom, game.region.zoom);
-    const touch = window.matchMedia("(pointer: coarse)").matches;
+    const detail = mapDetail(zoom, game.region.zoom);
+    const siteGroups = (map.current ? groupMapSites(standData, map.current, detail.clusterDistance) : []).map(group => ({...group,
+      tooltip: group.members.length > 1
+        ? language === "fr" ? `${group.members.length} emplacements proches · toucher pour agrandir` : `${group.members.length} nearby inventory locations · tap to zoom`
+        : standData.find(s => s.id === group.id)?.tooltip,
+    }));
+    const pointRadius = (d: MapSiteGroup) => d.members.length > 1 ? 14 : d.id === selected ? 9 : 6;
+    const pointColor = (d: MapSiteGroup): MapColor => d.members.length > 1 ? [42, 93, 69, 240] : standColor(d);
+    const pointSelected = (d: MapSiteGroup) => d.members.some(member => member.id === selected);
+    const polygonData = detail.polygons ? standData : standData.filter(s => s.id === selected && detail.band !== 'overview');
+    const individualSiteIds = new Set(siteGroups.filter(group => group.members.length === 1).map(group => group.id));
+    const labelStands = r.stands.filter(s => (!visibleStandIds || visibleStandIds.includes(s.id))
+      && (detail.allLabels || (individualSiteIds.has(s.id) && (s.id === selected || (detail.band === 'district' && planned.has(s.id))))));
+    const roadData = layers.roads ? view.region.roads.edges.filter(edge => detail.band !== 'overview' || edge.roadClass === 'public') : [];
+    const iconScale = detail.individualFleet ? mapSymbolScale(zoom, game.region.zoom) : 0.65;
     const nodePosition = (node: string) => r.roads.nodes.find(n => n.id === node)?.position;
     // A legacy report has no recorded fleet snapshot: today's positions are
     // not evidence of where equipment finished a historical turn.
@@ -379,18 +438,20 @@ export default function OperationsMap({
       ...r.crews.map(c => ({ id: c.id, kind: "crew" as const, node: view.crewPositions[c.id], position: nodePosition(view.crewPositions[c.id]) })),
       ...r.trucks.map(t => ({ id: t.id, kind: "truck" as const, node: view.truckPositions[t.id], position: nodePosition(view.truckPositions[t.id]) })),
     ].filter((member): member is typeof member & {position: Position} =>
-      !!member.position && (!replayFrame || member.id !== replayResource)) : [];
+      !!member.position && (!replayFrame || member.id !== replayResource)
+      && ((detail.individualFleet && !historical) || (inspectorFeature?.kind === member.kind && inspectorFeature.id === member.id))) : [];
     const replayMarker = layers.fleet && replayFrame ? [{
       id: replayFrame.movement.resource, kind: replayFrame.movement.kind,
       position: replayFrame.position,
       name: `${replayFrame.movement.resource} · ${language === "fr" ? "Progression du trajet" : "Route progression"} · ${replayFrame.movementIndex + 1}/${replayFrame.movementCount}`,
     }] : [];
     const container = map.current?.getContainer();
+    const visibleMills = detail.band === "overview" ? r.mills.filter(mill => inspectorFeature?.kind === "mill" && inspectorFeature.id === mill.id) : r.mills;
     const symbols = map.current ? layoutSymbols({
       map: map.current, frame: { w: container?.clientWidth ?? 0, h: container?.clientHeight ?? 0 }, scale: iconScale,
-      mills: r.mills, fleet: fleetMembers, stands: layers.labels ? labelStands : [], priority: planned, keep: selected,
-      showTags: !historical && iconScale > 0.7,
-    }) : { symbols: [...r.mills.map(m => ({ kind: "mill" as const, id: m.id, position: m.position })), ...fleetMembers]
+      mills: visibleMills, fleet: fleetMembers, stands: layers.labels ? labelStands : [], priority: planned, keep: selected,
+      showTags: !historical && detail.individualFleet,
+    }) : { symbols: [...visibleMills.map(m => ({ kind: "mill" as const, id: m.id, position: m.position })), ...fleetMembers]
       .map(f => ({ kind: f.kind, members: [{ id: f.id, kind: f.kind }], position: f.position, offset: [0, 0] as [number, number] })), tags: [], labels: [] };
     const symbolName = (kind: "mill" | "crew" | "truck", id: string) => {
       if (kind === "mill") return r.mills.find(m => m.id === id)?.name ?? id;
@@ -402,12 +463,13 @@ export default function OperationsMap({
       .map(f => ({ ...f, id: f.members[0].id, name: f.members.map(m => symbolName(m.kind, m.id)).join("\n") }));
     screenPicks.current = {
       markers: [
-        ...standData.map(s => ({id: s.id, kind: "stand" as const, position: s.position, radius: s.id === selected ? (touch ? 10 : 8) : (touch ? 8 : 5.5)})),
+        ...siteGroups.map(s => ({...s, kind: "stand" as const, radius: pointRadius(s)})),
         ...symbolData("mill").map(s => ({...s, radius: 18 * iconScale})),
         ...symbolData("fleet").map(s => ({...s, radius: 16 * iconScale})),
         ...replayMarker.map(s => ({...s, radius: 18})),
       ],
-      roads: layers.roads ? view.region.roads.edges : [],
+      roads: roadData,
+      groups: siteGroups,
     };
     overlay.current.setProps({
       getTooltip: ({ object }: { object?: Record<string, unknown> }) =>
@@ -426,7 +488,7 @@ export default function OperationsMap({
       layers: [
         new PathLayer({
           id: "network",
-          data: layers.roads ? view.region.roads.edges : [],
+          data: roadData,
           getPath: (d) => d.geometry,
           getColor: (d) =>
             openRoads===null?[145,145,145]:!openRoads.has(d.id)
@@ -436,7 +498,7 @@ export default function OperationsMap({
               : canAccess(d.bearing, w[d.zone])
                 ? [116, 120, 94]
                 : [198, 75, 57],
-          getWidth: 3,
+          getWidth: detail.roadWidth,
           widthUnits: "pixels",
           jointRounded: true,
           capRounded: true,
@@ -444,9 +506,9 @@ export default function OperationsMap({
         }),
         new PolygonLayer({
           id: "stands",
-          data: standData,
+          data: polygonData,
           getPolygon: (d) => d.polygon,
-          getFillColor: standColor,
+          getFillColor: d => {const c = standColor(d); return [c[0], c[1], c[2], 115];},
           getLineColor: (d) =>
             d.id === selected ? [232, 174, 51] : [255, 255, 255],
           getLineWidth: 2,
@@ -458,16 +520,21 @@ export default function OperationsMap({
         // every stand visible and large enough to tap.
         new ScatterplotLayer({
           id: "stand-points",
-          data: standData,
+          data: siteGroups,
           getPosition: (d) => d.position,
-          getRadius: (d) => (d.id === selected ? (touch ? 10 : 8) : (touch ? 8 : 5.5)),
+          getRadius: pointRadius,
           radiusUnits: "pixels",
-          getFillColor: standColor,
-          getLineColor: (d) => (d.id === selected ? [232, 174, 51] : [255, 255, 255]),
-          getLineWidth: (d) => (d.id === selected ? 2.5 : 1.5),
+          getFillColor: pointColor,
+          getLineColor: (d) => (pointSelected(d) ? [232, 174, 51] : [255, 255, 255]),
+          getLineWidth: (d) => (pointSelected(d) ? 3 : 1.5),
           lineWidthUnits: "pixels",
           stroked: true,
           pickable: true,
+        }),
+        new TextLayer({
+          id: "stand-group-count", data: siteGroups.filter(g => g.members.length > 1),
+          getPosition: d => d.position, getText: d => String(d.members.length),
+          getColor: [255, 255, 255], getSize: 12, fontWeight: 700, pickable: false,
         }),
         new PathLayer({
           id: "routes",
@@ -562,7 +629,7 @@ export default function OperationsMap({
         }),
       ],
     });
-  }, [language,game, selected, layers, lens, ready, replay, replayProgress, replayResource, replayMovementIndex, endStateOnly, visibleStandIds, viewTick]);
+  }, [language,game, selected, layers, lens, ready, replay, replayProgress, replayResource, replayMovementIndex, endStateOnly, visibleStandIds, inspectorFeature, viewTick]);
   const fit = (planOnly = false) => {
     const activeMap = map.current;
     if (!activeMap) return;
@@ -602,7 +669,6 @@ export default function OperationsMap({
       (s) => !planOnly || (!ids.size && !game.plan.facilityTransfers?.length) || ids.has(s.id),
     );
     areas.forEach((s) => { bounds.extend(s.position); s.polygon.forEach(p => bounds.extend(p)); });
-    if (!planOnly) game.region.mills.forEach(m => bounds.extend(m.position));
     if (planOnly)
       for (const o of Object.values(game.plan.trucks).flat()) {
         const m = game.region.mills.find((m) => m.id === o.mill);
@@ -642,58 +708,39 @@ export default function OperationsMap({
     closeDetails(event.currentTarget);
   };
   return (
-    <div className="geo-map" data-map-ready={ready}>
+    <div className="geo-map" data-map-ready={ready} style={{"--map-visible-height": `${Math.max(120, frameHeight - (inspectorHeightPx ?? 0))}px`} as React.CSSProperties}>
       <div
         ref={container}
         className="map-canvas"
         aria-label={`${tr("Interactive map of")} ${game.region.name}`}
       />
       <div className="geo-tools">
-        <details className="map-legend" onKeyDown={dismissOnEscape}><summary>{tr("Map legend")}</summary><div>
-          <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
-          <MapLensLegend lens={lens}/>
-          <p>{tr("Roads: olive = modelled open; red = seasonal, authorization or closure restriction; blue = upgraded; gray = historical access not recorded.")}</p>
-          <p>{tr("Routes: amber = crew relocation; blue = truck movement. Stand labels show area IDs.")}</p>
-          <p style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}><img src={`${import.meta.env.BASE_URL}icons/harvester.svg`} width="28" height="28" alt={tr("Harvester")}/> {tr("Harvest crew")} <img src={`${import.meta.env.BASE_URL}icons/log-truck.svg`} width="28" height="28" alt={tr("Log truck")}/> {tr("Truck")} <img src={`${import.meta.env.BASE_URL}icons/mill.svg`} width="28" height="28" alt={tr("Mill")}/> {tr("Receiving / processing mill")}</p>
-          <p>{tr("Fleet icons are slightly offset from their shared road-node locations for readability. Select an icon to inspect orders and capacity; tooltips describe scheduled or unavailable resources.")}</p>
-          <p>{tr("Fleet states: ○ Idle · ▣ Scheduled · ⊘ Unavailable · ✓ Season complete. These describe orders and known disruptions, not guaranteed fulfillment.")}</p>
-          <div>{game.region.products.map(p=><p key={p.id}><ProductSymbol product={p}/></p>)}</div>
-          <p>{tr("Select a feature or search by its name or ID to inspect it.")}</p>
-          <details className="map-lens-details"><summary>{language === 'fr' ? 'Valeurs accessibles sans la carte' : 'Values without the map'}</summary><MapLensValues rows={lensRows.filter(row => !visibleStandIds || visibleStandIds.includes(row.id))} lens={lens} selected={selected} onSelect={onSelect} recorded={replay !== undefined} finished={game.week > game.region.weeks}/></details>
-        </div></details>
-        <button className="map-fit-control" onClick={() => fit()}>{tr("Fit district")}</button>
-        {!endStateOnly && <button className="map-fit-control" onClick={() => fit(true)}>{replay === undefined ? tr("Fit plan") : language === "fr" ? "Cadrer les trajets enregistrés" : "Fit recorded routes"}</button>}
-        <div className="map-layer-controls-desktop">{showLensControl && <MapLensSelect value={lens} onChange={changeLens}/>}        <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
-          {tr(style === "light" ? "Dark map" : "Light map")}
-        </button>
-        {Object.entries(layers).map(([id, on]) => (
-          <label key={id}>
-            <input
-              type="checkbox"
-              checked={on}
-              onChange={() => setLayers({ ...layers, [id]: !on })}
-            />
-            {tr(id)}
-          </label>
-        ))}</div>
-        <details className="map-layer-menu" onKeyDown={dismissOnEscape}><summary>{language==='fr'?'Outils':'Map tools'}</summary><div className="map-layer-options">
-        {showLensControl && <MapLensSelect value={lens} onChange={changeLens}/>}
-        <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
-        <button onClick={() => fit()}>{tr("Fit district")}</button>
-        {!endStateOnly && <button onClick={() => fit(true)}>{replay === undefined ? tr("Fit plan") : language === "fr" ? "Cadrer les trajets enregistrés" : "Fit recorded routes"}</button>}
-        <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>
-          {tr(style === "light" ? "Dark map" : "Light map")}
-        </button>
-        {Object.entries(layers).map(([id, on]) => (
-          <label key={id}>
-            <input
-              type="checkbox"
-              checked={on}
-              onChange={() => setLayers({ ...layers, [id]: !on })}
-            />
-            {tr(id)}
-          </label>
-        ))}</div></details>
+        <details className="map-layer-menu" onKeyDown={dismissOnEscape} onToggle={event => {if (event.target === event.currentTarget && event.currentTarget.open) onFitRequest?.();}}>
+          <summary>{language === 'fr' ? 'Outils de carte' : 'Map tools'}</summary>
+          <div className="map-layer-options">
+            <button className="map-panel-close" onClick={closePanel}>{tr("Close")}</button>
+            {showLensControl && <MapLensSelect value={lens} onChange={changeLens}/>}
+            <button onClick={() => fit()}>{tr("Fit district")}</button>
+            {!endStateOnly && <button onClick={() => fit(true)}>{replay === undefined ? tr("Fit plan") : language === "fr" ? "Cadrer les trajets enregistrés" : "Fit recorded routes"}</button>}
+            <button onClick={() => setStyle(style === "light" ? "dark" : "light")}>{tr(style === "light" ? "Dark map" : "Light map")}</button>
+            <details className="map-tool-legend">
+              <summary>{tr("Map legend")}</summary>
+              <MapLensLegend lens={lens}/>
+              <p>{language === "fr" ? "Les groupes comptent les emplacements, pas les parcelles ni les valeurs de volume." : "Groups count inventory locations, rather than parcel boundaries or volume values."}</p>
+              <p>{language === 'fr' ? 'Les nombres regroupent les emplacements proches. Touchez un nombre pour agrandir; les sites, les noms et les équipements apparaissent progressivement.' : 'Counts group nearby locations. Tap a count to zoom in; sites, names and equipment appear as you get closer.'}</p>
+              <p>{tr("Roads: olive = modelled open; red = seasonal, authorization or closure restriction; blue = upgraded; gray = historical access not recorded.")}</p>
+              <p>{tr("Routes: amber = crew relocation; blue = truck movement. Stand labels show area IDs.")}</p>
+              <p>{tr("Fleet states: ○ Idle · ▣ Scheduled · ⊘ Unavailable · ✓ Season complete. These describe orders and known disruptions, not guaranteed fulfillment.")}</p>
+            </details>
+            <details><summary>{language === 'fr' ? 'Calques' : 'Layers'}</summary>
+              {Object.entries(layers).map(([id, on]) => <label key={id}><input type="checkbox" checked={on} onChange={() => setLayers({...layers, [id]: !on})}/>{tr(id)}</label>)}
+            </details>
+            <details className="map-lens-details">
+              <summary>{language === 'fr' ? 'Valeurs sans la carte' : 'Values without the map'}</summary>
+              <MapLensValues rows={lensRows.filter(row => !visibleStandIds || visibleStandIds.includes(row.id))} lens={lens} selected={selected} onSelect={onSelect} recorded={replay !== undefined} finished={game.week > game.region.weeks}/>
+            </details>
+          </div>
+        </details>
       </div>
       <div className="geo-caption">
         {replay===undefined?(game.week > game.region.weeks ? tr('Season complete') : tr("Forecast plan")):`${tr("Turn")} ${game.history[replay]?.week ?? replay+1} · ${endStateOnly ? (language === 'fr' ? 'état de fin' : 'end state') : tr("actual routes")}`} · {mapLensName(lens, language)} · {tr("Mapped roads / teaching operations")}
