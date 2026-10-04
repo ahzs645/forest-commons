@@ -139,3 +139,6 @@
 /* Dropdowns read as values, not headings; labels around them are bold. */
 select { font-weight:500; }
 .workspace-link-row { margin:0 0 12px; }
+/* Candidate rows stay one line high; the table scrolls sideways instead. */
+.harvest-candidates td { white-space:nowrap; }
+.harvest-candidates td button { white-space:nowrap;min-height:calc(var(--control-h) - 4px); }

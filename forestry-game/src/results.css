@@ -1,4 +1,4 @@
-.results-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+.results-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,140px),1fr)); gap:8px; }
 .results-metrics > div { padding:12px; background:var(--surface-soft,#f3f6f3); border-radius:10px; min-width:0; }
 .results-metrics dt { font-size:.85rem; color:#52635a; }
 .results-metrics dd { margin:6px 0 0; font-weight:650; overflow-wrap:anywhere; }

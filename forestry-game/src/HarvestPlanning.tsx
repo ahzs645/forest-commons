@@ -19,7 +19,7 @@ export default function HarvestPlanning({
   onChange: (g: Game) => void;
   onInspect: (id: string) => void;
 }) {
- const {t: tr}=useLanguage();
+ const {t: tr,language}=useLanguage();
  const weekly=(game.region.turnDurationWeeks??1)===1;
   const r = game.region,
     [crew, setCrew] = useState(r.crews[0].id),
@@ -29,6 +29,7 @@ export default function HarvestPlanning({
     [minRate, setMinRate] = useState(0),
     [minVolume, setMinVolume] = useState(0),
     [openOnly, setOpenOnly] = useState(true),
+    [showAll, setShowAll] = useState(false),
     [horizon, setHorizon] = useState<2 | 4>(2),
     [error, setError] = useState(""),
     [lookahead, setLookahead] = useState<ReturnType<
@@ -102,6 +103,10 @@ export default function HarvestPlanning({
             ))}
           </select>
         </label>
+      </div>
+      <details className="results-definitions">
+        <summary>{tr("Minimum assortment %")} · {tr("Minimum production m³/h")} · {tr("Planning horizon")}</summary>
+      <div className="form-row">
         <label>
           {tr("Minimum assortment %")}
           <input
@@ -146,6 +151,7 @@ export default function HarvestPlanning({
           </select>
         </label>
       </div>
+      </details>
       <label className="check-label">
         <input
           type="checkbox"
@@ -158,26 +164,41 @@ export default function HarvestPlanning({
         {candidates.length} {tr("suitable secured sites ·")} {f(hours)} {tr("unassigned crew hours. Rates use final harvest and current forecast conditions; travel is measured from the crew’s current location, before its queued stops.")}
       </p>
       {error && <p role="alert">{tr(error)}</p>}
-      <div className="table-wrap">
+      <div className="table-wrap harvest-candidates">
         <table>
           <thead>
             <tr>
               <th>{tr("Site")}</th>
+              <th>{tr("Action")}</th>
               <th>{tr("Eligible m³")}</th>
               <th>{tr("Assortment")}</th>
               <th>m³/h</th>
               <th>{tr("Relocation km / h")}</th>
               <th>{tr("Loaded km to mill")}</th>
               <th>{tr("Forecast crew access")}</th>
-              <th>{tr("Action")}</th>
             </tr>
           </thead>
           <tbody>
-            {candidates.map((s) => (
+            {(showAll ? candidates : candidates.slice(0, 5)).map((s) => (
               <tr key={s.stand.id}>
                 <td>
                   <button onClick={() => onInspect(s.stand.id)}>
                     {s.stand.id} · {s.stand.name}
+                  </button>
+                </td>
+                <td>
+                  <button
+                    disabled={hours <= 0 || game.week > r.weeks}
+                    onClick={() => {
+                      try {
+                        onChange(queueCandidate(game, crew, s.stand.id));
+                        setError("");
+                      } catch (e) {
+                        setError(String(e));
+                      }
+                    }}
+                  >
+                    {tr("Append to crew queue")}
                   </button>
                 </td>
                 <td>{f(s.eligible)}</td>
@@ -199,30 +220,19 @@ export default function HarvestPlanning({
                     )
                     .join(" · ")}
                 </td>
-                <td>
-                  <button
-                    disabled={hours <= 0 || game.week > r.weeks}
-                    onClick={() => {
-                      try {
-                        onChange(queueCandidate(game, crew, s.stand.id));
-                        setError("");
-                      } catch (e) {
-                        setError(String(e));
-                      }
-                    }}
-                  >
-                    {tr("Append to crew queue")}
-                  </button>
-                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {candidates.length > 5 && <button onClick={() => setShowAll(v => !v)}>{showAll
+        ? (language === "fr" ? "Afficher les 5 meilleurs sites" : "Show the top 5 sites")
+        : (language === "fr" ? `Afficher les ${candidates.length} sites` : `Show all ${candidates.length} sites`)}</button>}
       <p className="muted">
         {tr("Access windows use the published forecast and already revealed\n        disruptions. They do not reserve capacity or guarantee future weather.\n        Appending assigns remaining crew hours; edit treatment and stop order\n        below.")}
       </p>
-      <h3>{tr("Rehearse")} {horizon} {tr(weekly?"weeks":"turns")} {tr("before committing")}</h3>
+      <details className="results-definitions">
+      <summary>{tr("Rehearse")} {horizon} {tr(weekly?"weeks":"turns")} {tr("before committing")}</summary>
       <p>
         {tr("Repeat current queues on a copied campaign. Completed stops drop out; no\n        new supply is purchased and all auction bids are excluded. At a new\n        month, the normal full-demand commitment defaults apply. Future\n        unrevealed events are excluded.")}
       </p>
@@ -271,6 +281,7 @@ export default function HarvestPlanning({
           </div>
         </>
       )}
+      </details>
       <details>
         <summary>{tr(weekly?"Production efficiency by week":"Production efficiency by turn")}</summary>
         <p>

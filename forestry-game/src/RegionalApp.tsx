@@ -55,6 +55,7 @@ import TeamComparison from "./TeamComparison";
 import { CurrentTurnBriefing } from "./DisruptionDesk";
 import { respondToDisruption, activeDisruptions } from "./simulation/disruptions";
 import MapWorkspace from "./MapWorkspace";
+import useMapQueueUndo from "./operations/useMapQueueUndo";
 import ProcurementLab from "./ProcurementLab";
 import { serializeGame } from "./simulation/save-format";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -336,6 +337,11 @@ export default function RegionalApp() {
   const change = (next: Game) => {
     setGame(next);
   };
+  // The desks keep their own short undo history, like the map panel's.
+  const deskQueue = useMapQueueUndo(game, change);
+  const deskUndo = deskQueue.count > 0 && <div className="map-queue-undo">
+    <button disabled={done} onClick={deskQueue.undo}>{language === "fr" ? "Annuler la modification de file" : "Undo queue edit"} ({deskQueue.count})</button>
+  </div>;
   const replaceCampaign = (next: Game) => {
     setCampaignKey(newInterfaceSession());
     setWorkspaceViews({});
@@ -1082,7 +1088,8 @@ export default function RegionalApp() {
                     <span>{editingCrew.hours} h/{tr(periodLabel).toLowerCase()}</span>
                     <span>{tr("At")} <ResourceLocation game={game} nodeId={game.crewPositions[editingCrew.id]}/> · {fmt((game.plan.crews[editingCrew.id] ?? []).reduce((n, o) => n + o.hours, 0))} {tr("h scheduled")}</span>
                   </p>
-                  <QueueEditor variant="desk" game={game} kind="crew" resourceId={editingCrew.id} selected={selected} onSelect={select} onChange={change} addStand={chosen.id}/>
+                  <QueueEditor variant="desk" game={game} kind="crew" resourceId={editingCrew.id} selected={selected} onSelect={select} onChange={deskQueue.changeQueue} addStand={chosen.id}/>
+                  {deskUndo}
                 </>}
               </section>
             </>
@@ -1108,7 +1115,8 @@ export default function RegionalApp() {
                     <span>{editingTruck.payload} m³ · {editingTruck.hours} h/{tr(periodLabel).toLowerCase()}</span>
                     <span>{tr("At")} <ResourceLocation game={game} nodeId={game.truckPositions[editingTruck.id]}/> · {editingTruck.loadingHours + editingTruck.unloadingHours} {tr("h handling/load")}</span>
                   </p>
-                  <QueueEditor variant="desk" game={game} kind="truck" resourceId={editingTruck.id} selected={selected} onSelect={select} onChange={change} addStand={chosen.id}/>
+                  <QueueEditor variant="desk" game={game} kind="truck" resourceId={editingTruck.id} selected={selected} onSelect={select} onChange={deskQueue.changeQueue} addStand={chosen.id}/>
+                  {deskUndo}
                 </>}
               </section>
             </>

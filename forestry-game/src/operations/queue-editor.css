@@ -61,3 +61,10 @@
   .queue-desk-head > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .queue-desk-head-actions { text-align: right; }
 }
+/* Phone-width cards: names such as mills and assortments are long, so the
+   paired selects stack instead of truncating at half width. */
+@container (max-width: 479px) {
+  .queue-desk-row { grid-template-areas: "site site" "a a" "b b" "amount actions"; }
+  .queue-desk-truck .queue-desk-row { grid-template-areas: "site site" "a a" "b b" "amount actions" "meta meta"; }
+  .queue-desk-truck .queue-desk-row.has-partner { grid-template-areas: "site site" "a a" "b b" "amount actions" "partner partner" "meta meta"; }
+}
