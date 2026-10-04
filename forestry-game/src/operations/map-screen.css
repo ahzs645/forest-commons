@@ -142,3 +142,6 @@ select { font-weight:500; }
 /* Candidate rows stay one line high; the table scrolls sideways instead. */
 .harvest-candidates td { white-space:nowrap; }
 .harvest-candidates td button { white-space:nowrap;min-height:calc(var(--control-h) - 4px); }
+/* A panel holding only a folded section needs no extra space around it. */
+.panel > details.results-definitions:only-child { margin:0; }
+.two-cols > details.results-definitions { margin-top:12px;align-self:start; }

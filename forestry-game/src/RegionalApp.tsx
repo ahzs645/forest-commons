@@ -1245,8 +1245,9 @@ export default function RegionalApp() {
                     <RouteReplay game={game} reportIndex={reportIndex} campaignKey={campaignKey} onSelect={select}/>
                     <SettledReservationResults report={report} region={r}/>
                     <div className="two-cols">
-                      <div>
-                        <h3>{tr("Resource utilization")}</h3>
+                      {/* Twenty bars are reference detail; the summary names the exceptions. */}
+                      <details className="results-definitions">
+                        <summary>{tr("Resource utilization")} · {[...r.crews.map(c => (report.crewHours[c.id] ?? 0) <= 0), ...r.trucks.map(t => (report.truckHours[t.id] ?? 0) <= 0)].filter(Boolean).length} {language === "fr" ? "inactifs" : "idle"} · {[...r.crews.map(c => (report.crewHours[c.id] ?? 0) >= c.hours * 0.95), ...r.trucks.map(t => (report.truckHours[t.id] ?? 0) >= t.hours * 0.95)].filter(Boolean).length} {language === "fr" ? "à pleine capacité" : "at capacity"}</summary>
                         {r.crews.map((c) => (
                           <Meter
                             key={c.id}
@@ -1265,7 +1266,7 @@ export default function RegionalApp() {
                             unit="h"
                           />
                         ))}
-                      </div>
+                      </details>
                       <div>
                         <h3>{tr("Dispatch notes")}</h3>
                         {report.messages.length ? (
@@ -1322,7 +1323,8 @@ export default function RegionalApp() {
                 )}
               </section>
               <section className="panel">
-                <h2>{tr("Campaign history")}</h2>
+                <details className="results-definitions">
+                <summary>{tr("Campaign history")} · {game.history.length} {tr(periodLabel).toLowerCase()}{game.history.length === 1 ? "" : "s"}</summary>
                 <div className="table-wrap" tabIndex={0} role="region" aria-label={tr("Campaign history")}>
                   <table>
                     <thead>
@@ -1354,6 +1356,7 @@ export default function RegionalApp() {
                     </tbody>
                   </table>
                 </div>
+                </details>
               </section>
             </>
           )}
