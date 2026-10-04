@@ -31,6 +31,12 @@ export interface StewardshipStand {
   planted: boolean;
   yearsSinceTreatment: number;
 }
+/** Recorded model observations, not a measured stem or canopy inventory. */
+export type StewardshipStandSnapshot = Pick<StewardshipStand, 'id' | 'managed' | 'volume' | 'habitat' | 'regenerationAge' | 'planted' | 'yearsSinceTreatment'>;
+export function captureStewardshipStands(stands: StewardshipStand[]): StewardshipStandSnapshot[] {
+  return stands.map(({ id, managed, volume, habitat, regenerationAge, planted, yearsSinceTreatment }) =>
+    ({ id, managed, volume, habitat, regenerationAge, planted, yearsSinceTreatment }));
+}
 export interface StewardshipState {
   /** Explicit opening balance when linked to operating cash. */
   openingBudget?: number;
@@ -51,6 +57,8 @@ export interface StewardshipState {
     managedHabitat?: number | null;
     operatingSeason?: {startCalendarWeek:number;weeks:number;roadsideWriteOff:number};
     actions: Record<string, StewardshipAction>;
+    /** Optional for older saves; never reconstructed from the present forest. */
+    standSnapshots?: StewardshipStandSnapshot[];
   }[];
 }
 export function startStewardship(game: Game): StewardshipState {
@@ -97,6 +105,7 @@ export function stewardshipYear(
       habitat: 0,
       managedHabitat: null as number | null,
       actions: structuredClone(actions),
+      standSnapshots: [] as StewardshipStandSnapshot[],
     };
   for (const [id, action] of Object.entries(actions))
     if (
@@ -192,6 +201,7 @@ export function stewardshipYear(
       0,
     ) / region.stands.reduce((n, s) => n + s.hectares, 0);
   report.managedHabitat = stewardshipHabitat(region, g).managed;
+  report.standSnapshots = captureStewardshipStands(g.stands);
   g.history.push(report);
   g.year++;
   return g;
@@ -265,6 +275,33 @@ export function validateStewardship(
       Math.abs(h.opening + h.growth - h.harvest - h.closing) > 0.01
     )
       throw Error("Invalid stewardship history.");
+  for (const h of s.history) if (h.standSnapshots !== undefined) {
+    const rows = h.standSnapshots;
+    if (!Array.isArray(rows) || rows.length !== region.stands.length || new Set(rows.map(t => t?.id)).size !== rows.length)
+      throw Error('Invalid stewardship snapshot.');
+    let volume = 0, habitat = 0, managedHabitat = 0, managedArea = 0;
+    for (const t of rows) {
+      const d = region.stands.find(d => d.id === t?.id);
+      if (!d || typeof t.managed !== 'boolean' || (d.supply === 'protected' && t.managed) ||
+        !num(t.volume) || t.volume > Math.max(d.volume, d.hectares * p.carryingCapacityM3Ha) + .001 ||
+        !num(t.habitat) || t.habitat > 1 || typeof t.planted !== 'boolean' ||
+        !Number.isInteger(t.regenerationAge) || t.regenerationAge < 0 ||
+        !Number.isInteger(t.yearsSinceTreatment) || t.yearsSinceTreatment < 0)
+        throw Error('Invalid stewardship snapshot.');
+      volume += t.volume; habitat += t.habitat * d.hectares;
+      if (t.managed) { managedArea += d.hectares; managedHabitat += t.habitat * d.hectares; }
+    }
+    const area = region.stands.reduce((n, d) => n + d.hectares, 0);
+    if (Math.abs(volume - h.closing) > .01 || Math.abs(habitat / area - h.habitat) > .00001 ||
+      (h.managedHabitat != null && (!managedArea || Math.abs(managedHabitat / managedArea - h.managedHabitat) > .00001)))
+      throw Error('Invalid stewardship snapshot totals.');
+  }
+  const latestSnapshot = s.history.at(-1)?.standSnapshots;
+  if (latestSnapshot && latestSnapshot.some(record => {
+    const current = s.stands.find(t => t.id === record.id)!;
+    return (Object.keys(record) as (keyof StewardshipStandSnapshot)[]).some(key =>
+      key in current && record[key] !== current[key]);
+  })) throw Error('Invalid stewardship current snapshot.');
   if (
     s.history.length &&
     Math.abs(

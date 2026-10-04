@@ -46,3 +46,100 @@
   .map-workspace .geo-tools .map-legend > summary {min-height:44px;box-sizing:border-box}
   .map-workspace .maplibregl-ctrl-group > button {width:44px;height:44px}
 }
+/* One bounded scroll port keeps the selected-feature summary and planning role in view. */
+.map-first .adaptive-map-workspace .map-inspector:not([hidden]) {display:flex;flex-direction:column;overflow:hidden;padding:0;height:calc(100dvh - 220px);min-width:0}
+.map-first .adaptive-map-workspace .map-inspector-header {flex:none;padding:8px 12px 0;background:white;min-width:0;border-bottom:1px solid #dfe5da}
+.map-first .adaptive-map-workspace .map-inspector-scroll {flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 12px 12px;scroll-padding-top:8px;scrollbar-gutter:stable}
+.adaptive-map-workspace .map-inspector-header .operating-role-tabs {position:static;top:auto;padding:0 0 8px;margin:0;background:white}
+.adaptive-map-workspace .map-inspector-header .operating-role-tabs button {min-height:44px;min-width:44px;box-sizing:border-box}
+.adaptive-map-workspace .map-inspector-header .operating-sheet-controls {position:static;top:auto;margin:0;padding:0;background:white}
+.adaptive-map-workspace .map-inspector-header .operating-sheet-controls button {min-height:44px;min-width:44px}
+.map-inspector-summary {margin:0 0 6px;font-size:12px;line-height:1.45;color:#52685b;overflow-wrap:anywhere}
+.map-lens-workbench {border-bottom:1px solid #dfe5da;padding:4px 0}
+.map-lens-workbench .map-lens-values>ul {max-height:none;overflow:visible}
+.map-first .adaptive-map-workspace .geo-caption {max-width:calc(100% - 24px);box-sizing:border-box;white-space:normal}
+@container game-main (max-width:950px) {
+ .map-first .adaptive-map-workspace[data-sheet=half]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:55%;max-height:55%}
+ .map-first .adaptive-map-workspace .map-inspector:not([hidden]) {height:45%;max-height:45%;min-height:0}
+ .map-first .adaptive-map-workspace[data-sheet=full] .map-inspector:not([hidden]) {height:85%;max-height:85%}
+ .map-first .adaptive-map-workspace .map-inspector::before {display:none}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:82px;max-height:82px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector-header {padding-bottom:2px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .operating-role-tabs,
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector-scroll {display:none}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-inspector:not([hidden]) {height:100%;max-height:none;padding:0}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-inspector-scroll {display:flex;flex-direction:column}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-lens-workbench {order:-1}
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-legend>summary,
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-layer-menu>summary {min-height:44px;height:44px}
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-legend>summary::before,
+ .map-first .adaptive-map-workspace .geo-map .geo-tools .map-layer-menu>summary::before {display:none}
+ .map-first .adaptive-map-workspace .geo-map .maplibregl-ctrl-group>button {width:44px;height:44px;min-height:44px}
+ .map-first .adaptive-map-workspace .workbench-sites {max-height:none;overflow:visible}
+}
+@media(pointer:coarse) {.geo-map .maplibregl-ctrl-group>button {width:44px;height:44px}.geo-map .map-legend>summary,.geo-map .map-layer-menu>summary {min-height:44px;align-content:center}}
+.map-first .adaptive-map-workspace .map-inspector-header .operating-sheet-controls {display:flex;align-items:center;justify-content:space-between;gap:6px}
+.map-first .adaptive-map-workspace .map-role-panel .workbench-sites {max-height:none}
+/* Feature taps reveal facts first; tools and search remain below the dossier. */
+.map-entity-search {padding:12px 0;border-bottom:1px solid #dfe5da}
+.map-nearby ul {list-style:none;margin:8px 0;padding:0}
+.map-nearby li {margin:6px 0}
+.map-nearby li button {width:100%;min-height:44px;white-space:normal;text-align:left;overflow-wrap:anywhere}
+.map-nearby label {display:block}
+.map-nearby input {width:100%;min-height:44px;font-size:16px;box-sizing:border-box}
+.map-sheet-handle,.map-sheet-close {display:none}
+.map-selection-announcement {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.adaptive-map-workspace .operating-readiness>header .eyebrow {margin-top:0}
+.map-feature-actions {display:flex;gap:8px;margin:0 0 12px}
+.map-feature-actions button {flex:1;min-height:44px;font-weight:650;white-space:normal}
+.map-feature-actions button[aria-pressed=true] {background:#173e32;color:white}
+.compact-map-readiness {padding:0!important;margin:0 0 10px;border:0}
+.compact-map-readiness .operating-scope-status {display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.compact-map-readiness .operating-scope-status>span {padding:4px 8px;border:0;border-radius:6px;font-size:12px}
+.map-site-information {padding:0 0 12px}
+.map-site-information>p {margin:0 0 8px;color:#52685b;font-size:13px}
+.map-site-facts {display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
+.map-site-facts dt {font-size:12px;color:#52685b}
+.map-site-facts dd {margin:3px 0 0;font-weight:600}
+.map-readiness-facts {margin:0 0 8px}
+.map-readiness-facts>div {padding:8px 0;border-bottom:1px solid #dfe5da}
+.map-readiness-facts dt {font-weight:600;font-size:13px}
+.map-readiness-facts dd {margin:4px 0 0;font-size:13px;line-height:1.5}
+.map-readiness-facts [data-level=warning],.compact-map-readiness .operating-scope-status>[data-level=warning] {background:#fff4d9;color:#654719}
+.map-readiness-facts [data-level=blocked] {background:#fff1ed;color:#863b28}
+.map-readiness-facts [data-level=warning],.map-readiness-facts [data-level=blocked] {padding:8px;border-radius:6px;margin-bottom:6px}
+.map-readiness-facts button {display:block;margin-top:6px;min-height:44px}
+.map-site-sources>summary {min-height:44px;align-content:center}
+.map-inspector-scroll .map-dispatch-form fieldset {border:0;padding:0}
+.map-inspector-scroll .map-dispatch-form legend {display:none}
+.map-inspector-scroll>.selected-feature>summary {display:none}
+/* The open phone sheet belongs to the viewport, above the bottom navigation. */
+.map-sheet-portal.map-first {position:fixed;inset:0;width:100vw;height:100dvh;z-index:80;pointer-events:none;container-type:inline-size;container-name:game-main}
+.map-sheet-portal.map-first>.adaptive-map-workspace {position:absolute;inset:0;width:100%;height:100%;min-height:0;display:block;margin:0;pointer-events:none}
+.map-sheet-portal .adaptive-map-workspace .map-inspector:not([hidden]) {position:absolute;left:0;right:0;bottom:0;top:auto;width:100%;height:55%;max-height:55%;margin:0;pointer-events:auto;border-radius:18px 18px 0 0;padding:0;box-sizing:border-box;box-shadow:0 -8px 28px #173e3230}
+.map-sheet-portal .adaptive-map-workspace[data-sheet=full] .map-inspector:not([hidden]) {height:85%;max-height:85%}
+.map-sheet-portal .map-inspector-scroll {padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.map-sheet-portal .map-inspector-header .mobile-workspace-controls button {padding:0;width:44px;display:flex;align-items:center;justify-content:center}
+@media(max-width:600px) {
+ .map-first .first-delivery-guide.is-minimized {margin-bottom:8px}
+ .map-first .first-delivery-guide.is-minimized .first-delivery-heading {padding:6px 10px}
+ .map-first .first-delivery-guide.is-minimized .first-delivery-heading span {display:none}
+}
+@container game-main (max-width:950px) {
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector:not([hidden]) {height:60px;max-height:60px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-sheet-handle {display:none}
+ .map-first .adaptive-map-workspace .map-inspector-summary {margin-bottom:10px}
+ .map-first .adaptive-map-workspace .mobile-workspace-controls button {padding:0;width:44px;display:flex;align-items:center;justify-content:center}
+}
+@container game-main (max-width:950px) {
+ .map-first .adaptive-map-workspace .map-sheet-handle {display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;height:44px;padding:0;border:0;background:transparent;touch-action:none;cursor:ns-resize}
+ .map-sheet-handle>span:first-child {width:32px;height:4px;flex:none;background:#7b9285;border-radius:3px}
+ .map-sheet-handle-label {font-size:10px;font-weight:500;color:#52685b}
+ .map-first .adaptive-map-workspace .map-inspector-header {padding-top:0}
+ .map-first .adaptive-map-workspace .map-sheet-close {display:block;font-size:24px;line-height:1;padding:0;width:44px;flex:none}
+ .map-first .adaptive-map-workspace .mobile-workspace-controls {gap:0}
+ .map-first .adaptive-map-workspace .mobile-workspace-controls .operating-sheet-size {padding:0 6px;font-size:11px}
+ .map-first .adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-inspector-summary {display:none}
+ .map-first .adaptive-map-workspace.operations-list-mode .map-sheet-handle {display:none}
+ .map-first .adaptive-map-workspace .map-inspector-header .operating-sheet-title {min-width:0}
+}

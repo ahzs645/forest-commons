@@ -3,6 +3,21 @@ import {translate,french} from './i18n';
 import {debriefMarkdown,worksheetCSV} from './simulation/debrief';
 import {createGame} from './simulation/engine';
 import {quebec} from './scenarios/quebec';
+it('translates visible site-sheet volume and haul facts while retaining resource IDs',()=>{
+ expect(translate('Recoverable standing stock','fr')).toBe('Volume sur pied récoltable');
+ expect(translate('Roadside stock now','fr')).toBe('Stock actuel en bordure de route');
+ expect(translate('4,140 m³ available above the treatment retention floor.','fr')).toBe('4\u202f140 m³ disponibles au-delà du seuil de rétention du traitement.');
+ expect(translate('T1 → M1: 24.0 km, 1.9 h first cycle, at most 40.0 m³/load. This is not a dispatch guarantee.','fr')).toContain('T1 → M1 : 24,0 km, 1,9 h');
+});
+it('translates every default Québec event title and explanation without rewriting scenario data',()=>{
+ const before=JSON.stringify(quebec.disruptions);
+ for(const event of quebec.disruptions!){
+  expect(translate(event.title,'fr')).not.toBe(event.title);
+  expect(translate(event.description,'fr')).not.toBe(event.description);
+  expect(translate(event.title,'en')).toBe(event.title);
+ }
+ expect(JSON.stringify(quebec.disruptions)).toBe(before);
+});
 it('translates controls and known server errors with honest fallback for unknown scenario text',()=>{
  expect(translate('Map','fr')).toBe('Carte');expect(translate('Map','en')).toBe('Map');
  expect(translate('Error: Room changed. Refresh before submitting your decision.','fr')).toContain('Actualisez');

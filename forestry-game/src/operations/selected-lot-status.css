@@ -1,0 +1,15 @@
+.selected-lot-status { margin: 12px 0; padding: 14px; border: 1px solid #d6e2d8; border-radius: 10px; background: #f7faf6; }
+.selected-lot-status-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.selected-lot-status-heading button { min-height: 44px; padding: 8px 12px; white-space: normal; }
+.selected-lot-status dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; margin: 12px 0; }
+.selected-lot-status dl > div { min-width: 0; border-left: 3px solid #759779; padding-left: 9px; }
+.selected-lot-status dl > div[data-status="blocked"] { border-color: #b77926; }
+.selected-lot-status dl > div[data-status="context"] { border-color: #8c9990; }
+.selected-lot-status dt { font-size: .78rem; color: #52655a; }
+.selected-lot-status dd { margin: 4px 0 0; font-size: .88rem; font-weight: 650; overflow-wrap: anywhere; }
+.selected-lot-status > p { margin: 0; font-size: .78rem; color: #52655a; line-height: 1.5; }
+@media (max-width: 600px) {
+  .selected-lot-status { padding: 12px; }
+  .selected-lot-status-heading button { width: 100%; }
+  .selected-lot-status dl { grid-template-columns: 1fr; }
+}

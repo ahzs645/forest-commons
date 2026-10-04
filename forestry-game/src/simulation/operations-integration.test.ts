@@ -11,6 +11,15 @@ import { forecastOutcome } from './planning';
 import { beginLinkedSeason } from './season-calendar';
 
 describe('operating-profile application integration', () => {
+  it('keeps historical site evidence aligned with the selected settled turn', () => {
+    const first = advance(draftPlan(createGame(quebec)));
+    const firstEvidence = decisionEvidence(first);
+    const second = advance(draftPlan(first));
+    expect(decisionEvidence(second, 0)).toEqual(firstEvidence);
+    expect(decisionEvidence(second, 0)?.report.week).toBe(1);
+    expect(decisionEvidence(second)?.report.week).toBe(2);
+    expect(decisionEvidence(second, 99)).toBeNull();
+  });
   it('validates the new lesson and does not mutate either existing regional preset', () => {
     const before = JSON.stringify([princeGeorge, quebec]);
     const lesson = buildBCOperatingLesson();

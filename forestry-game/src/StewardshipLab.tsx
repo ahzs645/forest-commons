@@ -1,8 +1,12 @@
-import { useLanguage } from "./i18n";
+import { useAnnualLanguage } from "./annual-language";
+import AnnualAlternatives from "./AnnualAlternatives";
+import AnnualStandPreview from "./AnnualStandPreview";
+import { annualContext, rehearseAnnual } from "./simulation/annual-alternatives";
+import "./annual-stewardship.css";
 import StewardshipCharts from "./StewardshipCharts";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Game } from "./simulation/types";
-import { startStewardship, stewardshipYear, stewardshipHabitat } from "./simulation/stewardship";
+import { startStewardship, stewardshipHabitat } from "./simulation/stewardship";
 import type { StewardshipAction } from "./simulation/stewardship";
 export default function StewardshipLab({
   game,
@@ -11,7 +15,7 @@ export default function StewardshipLab({
   game: Game;
   onChange: (g: Game) => void;
 }) {
- const {t: tr,language}=useLanguage();
+ const {t: tr,language}=useAnnualLanguage();
  const f=(n:number)=>Math.round(n).toLocaleString(language==='fr'?'fr-CA':'en-CA');
   const [actions, setActions] = useState<Record<string, StewardshipAction>>({}),
     [error, setError] = useState(""),
@@ -19,6 +23,15 @@ export default function StewardshipLab({
     locked = !!game.linkedSeason && !game.linkedSeason.settled,
     p = region.stewardship,
     s = game.stewardship;
+  const context = annualContext(game);
+  const [draftContext, setDraftContext] = useState(context);
+  const [selectedId, setSelectedId] = useState(s?.stands.find(t=>t.managed)?.id ?? '');
+  const choices = draftContext === context ? actions : {};
+  const managed = s?.stands.filter(t=>t.managed) ?? [];
+  const selected = managed.find(t=>t.id===selectedId) ?? managed[0];
+  const updateActions = (next: Record<string, StewardshipAction>) => { setDraftContext(context); setActions(next); setError(''); };
+  const rehearsal = useMemo(()=>{ if(!s||locked||!p||s.year>p.years)return {result:null,problem:''};try{return {result:rehearseAnnual(game,choices),problem:''};}catch(e){return {result:null,problem:(e as Error).message};}},[game, choices, locked, p, s]);
+  const apply = () => { try { const result = rehearseAnnual(game,choices); onChange({...game,stewardship:result}); setActions({}); setError(''); } catch(e) { setError((e as Error).message); } };
   if (!p)
     return (
       <section className="panel">
@@ -30,10 +43,12 @@ export default function StewardshipLab({
     <section className="panel">
       <h2>{tr("Annual forest stewardship")}</h2>
       <p>{tr("This")}{" "}{p.years}{" "}{tr("-year exercise starts from current standing volumes. Use Connected annual operating seasons to carry this forest and budget into another operating window. Independent annual actions advance one full management year.")}{" "}</p>
-      <p className="notice">{tr(p.note)}</p>
-      {region.bcTenure && <p className="notice">{tr("BC annual harvest uses the authorization snapshot captured when this exercise starts. Approvals and expiry do not advance within the independent annual exercise. Published stumpage rates are also fixed at exercise opening; connected operating seasons model market changes. Resolve applications in the operating campaign first, or use connected operating seasons for renewed authorization checks. Harvest margins exclude the stumpage and operator provisions shown below. Monitoring provisions exclude planting; choosing Plant regeneration charges planting separately.")}</p>}
+      <p className="muted">{tr('Illustrative annual model; recorded values are model outputs.')}</p>
       <details>
         <summary>{tr("Model parameters and timing")}</summary>
+      <p className="notice">{tr(p.note)}</p>
+      {region.bcTenure && <p className="notice">{tr("BC annual harvest uses the authorization snapshot captured when this exercise starts. Approvals and expiry do not advance within the independent annual exercise. Published stumpage rates are also fixed at exercise opening; connected operating seasons model market changes. Resolve applications in the operating campaign first, or use connected operating seasons for renewed authorization checks. Harvest margins exclude the stumpage and operator provisions shown below. Monitoring provisions exclude planting; choosing Plant regeneration charges planting separately.")}</p>}
+
         <p>
           {tr("Growth")} {p.annualGrowthM3Ha}{" "}{tr("m³/ha/year, capacity")}{" "}
           {p.carryingCapacityM3Ha}{" "}{tr("m³/ha (at least opening scenario volume). Natural regeneration waits")}{" "}{p.naturalRegenerationYears}{" "}{tr("years; planting waits")}{" "}{p.plantedRegenerationYears}{" "}{tr(". Planting costs")}{" "}
@@ -58,7 +73,25 @@ export default function StewardshipLab({
             </strong>{" "}{" "}{tr("· budget")}{" "}{region.currency} {f(s.cash)}{" "}{tr("· standing")}{" "}
             {f(s.stands.reduce((n, t) => n + t.volume, 0))}{" "}{tr("m³")}{" "}</p>
           <p>{tr("Landscape habitat:")}{" "}{(stewardshipHabitat(region, s).landscape * 100).toFixed(1)}{" "}{tr("% · Managed-area habitat:")}{" "}{stewardshipHabitat(region, s).managed == null ? tr("No managed area") : `${(stewardshipHabitat(region, s).managed! * 100).toFixed(1)}%`}</p>
-          <StewardshipCharts state={s} region={region}/>
+          <section className="annual-planner" aria-label={tr('Plan this management year')}>
+            <h3>{tr('Plan this management year')}</h3>
+            {selected ? <div className="annual-editor">
+              <label>{tr('Selected stand')}<select value={selected.id} onChange={e=>setSelectedId(e.target.value)}>{managed.map(t=><option key={t.id} value={t.id}>{t.id} · {region.stands.find(d=>d.id===t.id)?.name}</option>)}</select></label>
+              <label>{tr('This year')}<select aria-label={`${selected.id} ${tr('annual treatment')}`} disabled={locked || s.year > p.years} value={choices[selected.id]??'rest'} onChange={e=>updateActions({...choices,[selected.id]:e.target.value as StewardshipAction})}>
+                <option value="rest">{tr('Rest / recover')}</option><option value="thin" disabled={!!selected.harvestAuthorizationProblem}>{tr('Commercial thinning')}</option><option value="final" disabled={!!selected.harvestAuthorizationProblem}>{tr('Final harvest')}</option><option value="plant">{tr('Plant regeneration')}</option>
+              </select></label>
+              <p>{selected.id}: {f(selected.volume)} m³ · {tr('Habitat index')} {selected.habitat.toFixed(2)} · {tr(selected.planted?'Planted':'Natural')} · {selected.regenerationAge} {tr('years')}</p>
+              {selected.harvestAuthorizationProblem && <p className="notice">{tr(selected.harvestAuthorizationProblem)}</p>}
+            </div>:<p>{tr('Choose a managed stand to plan a treatment.')}</p>}
+            <h4>{tr('Review this year')}</h4>
+            {Object.entries(choices).some(([,action])=>action!=='rest')?<ul className="stewardship-actions">{Object.entries(choices).filter(([,action])=>action!=='rest').map(([id,action])=><li key={id}>{id}: {tr(action)}</li>)}</ul>:<p>{tr('No annual work selected; all stands will rest.')}</p>}
+            {rehearsal.result && <><p className="muted">{tr('Rehearsal only — the saved forest and budget are unchanged.')}</p><dl className="annual-map-observations"><div><dt>{tr('Harvest')}</dt><dd>{f(rehearsal.result.history.at(-1)!.harvest)} m³</dd></div><div><dt>{tr('Closing budget')}</dt><dd>{region.currency} {f(rehearsal.result.cash)}</dd></div><div><dt>{tr('Landscape habitat')}</dt><dd>{(rehearsal.result.history.at(-1)!.habitat*100).toFixed(1)}%</dd></div></dl></>}
+            {(rehearsal.problem||error)&&<p role="alert">{tr(error||rehearsal.problem)}</p>}
+            <div className="annual-primary-actions"><button className="primary" disabled={locked || s.year > p.years || !!rehearsal.problem} onClick={apply}>{tr('Apply treatments and advance one year')}</button><button disabled={locked||s.year>p.years} onClick={()=>updateActions({})}>{tr('Clear annual choices')}</button></div>
+            <AnnualAlternatives game={game} actions={choices} onChoose={updateActions}/>
+            {selected && rehearsal.result && <AnnualStandPreview region={region} opening={s} result={rehearsal.result} id={selected.id}/>}
+          </section>
+          <details><summary>{tr('Full current forest')}</summary>
           <div className="table-wrap">
             <table>
               <thead>
@@ -84,45 +117,16 @@ export default function StewardshipLab({
                       {tr(t.planted ? "Planted" : "Natural")} · {t.regenerationAge}{" "}{" "}{tr("years")}{" "}</td>
                     {region.bcTenure && <td>{t.harvestAuthorizationProblem ? tr(t.harvestAuthorizationProblem) : tr("No authorization block in opening snapshot")}</td>}
                     <td>
-                      <select
-                        aria-label={`${t.id} ${tr("annual treatment")}`}
-                        disabled={locked || s.year > p.years || !t.managed}
-                        value={actions[t.id] ?? "rest"}
-                        onChange={(e) =>
-                          setActions({
-                            ...actions,
-                            [t.id]: e.target.value as StewardshipAction,
-                          })
-                        }
-                      >
-                        <option value="rest">{tr("Rest / recover")}</option>
-                        <option value="thin" disabled={!!t.harvestAuthorizationProblem}>{tr("Commercial thinning")}</option>
-                        <option value="final" disabled={!!t.harvestAuthorizationProblem}>{tr("Final harvest")}</option>
-                        <option value="plant">{tr("Plant regeneration")}</option>
-                      </select>
+                      {tr(choices[t.id] ?? "rest")}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <button
-            className="primary"
-            disabled={locked || s.year > p.years}
-            onClick={() => {
-              try {
-                onChange({
-                  ...game,
-                  stewardship: stewardshipYear(region, s, actions),
-                });
-                setActions({});
-                setError("");
-              } catch (e) {
-                setError(String(e));
-              }
-            }}
-          >{tr("Apply treatments and advance one year")}{" "}</button>
-          {error && <p role="alert">{tr(error)}</p>}
+          </details>
+          <StewardshipCharts state={s} region={region}/>
+          <details><summary>{tr('Annual record')}</summary>
           <h3>{tr("Annual record")}</h3>
           <div className="table-wrap">
             <table>
@@ -152,6 +156,7 @@ export default function StewardshipLab({
               </tbody>
             </table>
           </div>
+          </details>
         </>
       )}
     </section>

@@ -178,8 +178,8 @@ export function outstandingOperatorProvisions(game: Game): number {
       return v + Math.max(0, (balance?.accrued ?? 0) - (balance?.settled ?? 0));
     }, 0), 0);
 }
-export function decisionEvidence(game: Game) {
-  const report = game.history.at(-1);
+export function decisionEvidence(game: Game, index = game.history.length - 1) {
+  const report = game.history[index];
   if (!report) return null;
   const direct = report.ledger.filter(e => e.standId);
   const lots = game.region.stands.map(stand => ({

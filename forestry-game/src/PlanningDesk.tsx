@@ -57,20 +57,22 @@ export default function PlanningDesk({
   game,
   onNavigate,
   onChange,
+  view = 'all',
 }: {
   game: Game;
   onNavigate: (page: string) => void;
   onChange?: (game: Game) => void;
+  view?: 'all' | 'forecast' | 'deliverability' | 'supply' | 'season' | 'benchmark' | 'objectives' | 'strategy';
 }) {
  const {t: tr,language}=useLanguage(); const fmt=(n:number)=>Math.round(n).toLocaleString(language==='fr'?'fr-CA':'en-CA');
-  const preview = useMemo(() => forecastOutcome(game), [game]),
-    balance = useMemo(() => supplyBalance(game), [game]),
-    season = useMemo(() => seasonBalance(game), [game]),
-    report = preview.report,
+  const preview = useMemo(() => view === 'all' || view === 'forecast' ? forecastOutcome(game) : null, [game, view]),
+    balance = useMemo(() => view === 'all' || view === 'supply' ? supplyBalance(game) : [], [game, view]),
+    season = useMemo(() => view === 'all' || view === 'season' ? seasonBalance(game) : [], [game, view]),
+    report = preview?.report,
     r = game.region;
   return (
     <>
-      <section className="panel">
+      {(view === 'all' || view === 'forecast') && <section className="panel">
         <span className="eyebrow">{tr("BEFORE YOU COMMIT")}</span>
         <h2>{tr("What does your current plan imply?")}</h2>
         <p>
@@ -117,7 +119,7 @@ export default function PlanningDesk({
           </>
         ) : (
           <div className="notice">
-            {preview.problems.map((p) => (
+            {preview?.problems.map((p) => (
               <p key={p}>{tr(p)}</p>
             ))}
           </div>
@@ -133,9 +135,9 @@ export default function PlanningDesk({
             {tr("Review commitments")}
           </button>
         </div>
-      </section>
-      <DeliverabilityDesk game={game}/>
-      <section className="panel">
+      </section>}
+      {(view === 'all' || view === 'deliverability') && <DeliverabilityDesk game={game}/>}
+      {(view === 'all' || view === 'supply') && <section className="panel">
         <h2>{tr("Where is the supply gap?")}</h2>
         <p className="muted">
           {tr("Standing potential is secured volume above your retention floor on forecast-accessible terrain. It is not weekly production: crew capacity, thinning choices, road closures and haul capacity may reduce what can reach a mill.")}
@@ -174,8 +176,8 @@ export default function PlanningDesk({
         <button onClick={() => onNavigate("Forest & timber")}>
           {tr("Inspect procurement options →")}
         </button>
-      </section>
-      <section className="panel">
+      </section>}
+      {(view === 'all' || view === 'season') && <section className="panel">
         <h2>{tr("Season outlook by product")}</h2>
         <p className="muted">
           {tr("What buyers still want for the rest of the season, against the wood you already hold: roadside stock plus secured stands above your retention floor. Access, crew and truck capacity and spoilage are not counted.")}
@@ -211,10 +213,10 @@ export default function PlanningDesk({
         <p className="muted">
           {tr("A shortfall cannot be closed by planning alone: buy stands that grow that product, or expect to miss those targets. A surplus is wood buyers will not take this season; if harvested it stays at roadside, where sawlogs become pulp and pulp becomes waste.")}
         </p>
-      </section>
-      {onChange && <DispatchBenchmark game={game} onChange={onChange} />}
-      <LearningObjectives game={game} />
-      <section className="panel">
+      </section>}
+      {onChange && (view === 'all' || view === 'benchmark') && <DispatchBenchmark game={game} onChange={onChange} />}
+      {(view === 'all' || view === 'objectives') && <LearningObjectives game={game} />}
+      {(view === 'all' || view === 'strategy') && <section className="panel">
         <h2>{tr("Choose a harvest strategy")}</h2>
         <div className="resource-grid">
           {Object.entries(r.treatments ?? {}).map(([id, t]) => (
@@ -232,7 +234,7 @@ export default function PlanningDesk({
         <p className="muted">
           {tr("Select treatment on each crew stop. Thinning has a cumulative stand-level cap, so several crews or weeks cannot repeatedly remove the same thinning allowance. A later final-harvest order can use the remaining volume down to its own retention floor. There is no regrowth within this twelve-week teaching horizon.")}
         </p>
-      </section>
+      </section>}
     </>
   );
 }

@@ -3,9 +3,11 @@ import type { Game } from '../simulation/types';
 import { useLanguage } from '../i18n';
 import { siteReadiness, type ReadinessSelection } from '../simulation/operational-readiness';
 import { chainBottleneck, recordFieldEvidence } from '../simulation/operations-profile';
+import { dossierInventoryEvidence } from '../simulation/lot-evidence';
 
 export interface StandReadinessProps {
   game: Game;
+  compact?: boolean;
   standId: string;
   selection?: ReadinessSelection;
   onNavigate?: (page: string) => void;
@@ -13,12 +15,13 @@ export interface StandReadinessProps {
   onChange?: (game: Game) => void;
 }
 const destinations = { permits: 'Forest & timber', production: 'Production', transport: 'Transport', commitments: 'Commitments', evidence: 'Scenario studio' };
-export default function StandReadiness({ game, standId, selection = {}, onNavigate, onChange }: StandReadinessProps) {
+export default function StandReadiness({ game, standId, selection = {}, onNavigate, onChange, compact = false }: StandReadinessProps) {
   const { language, t } = useLanguage();
   const text = (en: string, fr: string) => language === 'fr' ? fr : en;
   const checks = useMemo(() => siteReadiness(game, standId, selection),
     [game, standId, selection.crew, selection.treatment, selection.truck, selection.mill, selection.product]);
   const dossier = game.region.operations?.stands[standId];
+  const inventoryEvidence = dossierInventoryEvidence(game.region, standId);
   const [note, setNote] = useState('');
   const [taskChoice, setTaskChoice] = useState('');
   const [notice, setNotice] = useState('');
@@ -28,22 +31,12 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
   const state = game.stands.find(s => s.id === standId);
   const bottleneck = selection.crew ? chainBottleneck(game.region, selection.crew, standId) : null;
   const number = (n: number) => n.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', { maximumFractionDigits: 1 });
-  return <section className="operating-readiness" aria-label={text('Site readiness', 'État de préparation du site')}>
-    <header><div><span className="eyebrow">{text('OPERATING READINESS', 'PRÉPARATION DES OPÉRATIONS')}</span><h3>{standId}</h3></div>
-      {game.region.operations && <span className="operating-badge">{text('Authored case', 'Cas pédagogique')}</span>}
-    </header>
-    <div className="operating-scope-status">
-      {(['harvest', 'haul'] as const).map(scope => {
-        const list = checks.filter(c => c.scope === scope);
-        const blocked = list.filter(c => c.level === 'blocked').length;
-        return <span key={scope} data-level={blocked ? 'blocked' : 'ready'}>
-          {scope === 'harvest' ? text('Harvest', 'Récolte') : text('Haul', 'Transport')}:
-          {' '}{!list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
-        </span>;
-      })}
-    </div>
+  // The sheet exposes decision facts and every concern without another tap.
+  // The exhaustive audit and longer evidence remain optional reading.
+  const visibleChecks = checks.filter(check => check.level !== 'ready' || ['volume', 'route'].includes(check.code));
+  const evidenceDetails = <>
     <details className="operating-checks">
-      <summary>{text('What can happen here now?', 'Que peut-on faire ici maintenant?')}</summary>
+      <summary>{compact ? text('All readiness checks', 'Toutes les vérifications') : text('What can happen here now?', 'Que peut-on faire ici maintenant?')}</summary>
       <p className="muted">{text('Forecast conditions, not authorization to operate. Route readiness does not reserve stock, truck time or mill capacity.',
         'Conditions prévues, et non autorisation réelle. Un itinéraire disponible ne réserve ni bois, ni heures de camion, ni capacité de réception.')}</p>
       <dl>{checks.map(check => <div key={`${check.scope}:${check.code}`} data-level={check.level}>
@@ -55,20 +48,27 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
     {dossier && <details className="stand-dossier">
       <summary>{text('Stand dossier · assumptions & exclusions', 'Fiche du peuplement · hypothèses et exclusions')}</summary>
       <p>{dossier.rationale}</p>
-      <p className="operating-source-note">{text('Inventory geometry is sourced; all attributes below are authored. No treatment or exclusion boundary is mapped.',
-        'La géométrie d’inventaire provient des sources; les attributs ci-dessous sont pédagogiques. Aucune limite de traitement ou d’exclusion n’est cartographiée.')}</p>
+      <p className="operating-source-note">{inventoryEvidence.sourced
+        ? text('Inventory outline, area, species, age and central live density are sourced inventory projections. Net treatment area, exclusions, density bounds and operating constraints are authored assumptions. No treatment or exclusion boundary is mapped.',
+          'Le contour, la superficie, les essences, l’âge et la densité vivante centrale sont des projections d’inventaire provenant des sources. La superficie de traitement, les exclusions, les bornes de densité et les contraintes opérationnelles sont des hypothèses pédagogiques. Aucune limite de traitement ou d’exclusion n’est cartographiée.')
+        : text('The saved dossier identifies these attributes as authored teaching inputs. Its inventory reference does not establish a surveyed treatment or exclusion boundary.',
+          'La fiche sauvegardée décrit ces attributs comme des données pédagogiques. Sa référence d’inventaire n’établit aucune limite de traitement ou d’exclusion arpentée.')}</p>
+      {inventoryEvidence.sourced && (inventoryEvidence.featureId || inventoryEvidence.snapshotDate) && <p className="operating-source-note">
+        {text('VRI feature', 'Entité VRI')} {inventoryEvidence.featureId ?? text('Not recorded', 'Non consignée')}
+        {' · '}{text('Snapshot', 'Instantané')} {inventoryEvidence.snapshotDate ?? text('Not recorded', 'Non consigné')}
+      </p>}
       <dl className="dossier-facts">
         <dt>{text('Inventory reference', 'Référence d’inventaire')}</dt><dd>{dossier.inventoryReference}</dd>
         <dt>{text('Inventory area', 'Superficie d’inventaire')}</dt><dd>{number(dossier.inventoryAreaHa)} ha</dd>
         <dt>{text('Modelled treatment area', 'Superficie de traitement simulée')}</dt><dd>{number(dossier.netTreatmentAreaHa)} ha</dd>
         <dt>{text('Numerical exclusions', 'Exclusions numériques')}</dt><dd>{number(dossier.excludedAreaHa)} ha</dd>
-        <dt>{text('Authored age', 'Âge pédagogique')}</dt><dd>{dossier.ageYears} {text('years', 'ans')}</dd>
-        <dt>{text('Volume input range', 'Plage de volume')}</dt><dd>{number(dossier.merchantableM3PerHa.low)}–{number(dossier.merchantableM3PerHa.high)} m³/ha; {text('central', 'valeur centrale')} {number(dossier.merchantableM3PerHa.central)}</dd>
+        <dt>{inventoryEvidence.sourced ? text('Projected inventory age', 'Âge projeté de l’inventaire') : text('Authored age', 'Âge pédagogique')}</dt><dd>{inventoryEvidence.ageUnknown ? text('Unknown in source', 'Inconnu dans la source') : <>{dossier.ageYears} {text('years', 'ans')}</>}</dd>
+        <dt>{text('Authored density range', 'Plage de densité pédagogique')}</dt><dd>{number(dossier.merchantableM3PerHa.low)}–{number(dossier.merchantableM3PerHa.high)} m³/ha; {inventoryEvidence.sourced ? text('source central density', 'densité centrale de la source') : text('central', 'valeur centrale')} {number(dossier.merchantableM3PerHa.central)}</dd>
         <dt>{text('Retention floor', 'Seuil de rétention')}</dt><dd>{number(dossier.minimumRetention * 100)}%</dd>
         <dt>{text('Systems', 'Systèmes')}</dt><dd>{dossier.systems.join(' / ')}</dd>
         <dt>{text('Eligible treatments', 'Traitements admissibles')}</dt><dd>{dossier.treatments.map(id => game.region.treatments?.[id]?.name ?? t('Final harvest')).join(' / ')}</dd>
       </dl>
-      <h4>{text('Authored species composition', 'Composition en essences pédagogique')}</h4>
+      <h4>{inventoryEvidence.sourced ? text('Inventory species composition', 'Composition en essences de l’inventaire') : text('Authored species composition', 'Composition en essences pédagogique')}</h4>
       <p>{Object.entries(dossier.species).map(([species, fraction]) => `${species}: ${number(fraction * 100)}%`).join(' · ')}</p>
       <p>{dossier.slopeDescription}</p>
       {bottleneck && <p><strong>{text('Selected chain bottleneck:', 'Goulot de la chaîne choisie :')}</strong> {bottleneck.stage} · {number(bottleneck.rateM3PerHour)} m³/h {text('before weather adjustment. No intermediate machine inventories are simulated.', 'avant ajustement météo. Les stocks intermédiaires des machines ne sont pas simulés.')}</p>}
@@ -95,5 +95,25 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
       {!onChange && <p>{text('Read-only here. Field evidence writes require an authorized campaign action.', 'Lecture seule ici. La consignation exige une action de campagne autorisée.')}</p>}
       {notice && <p role="status">{notice}</p>}
     </details>}
+  </>;
+  return <section className={`operating-readiness${compact ? ' compact-map-readiness' : ''}`} aria-label={text('Site readiness', 'État de préparation du site')}>
+    {!compact && <header><div><span className="eyebrow">{text('OPERATING READINESS', 'PRÉPARATION DES OPÉRATIONS')}</span><h3>{standId}</h3></div>
+      {game.region.operations && <span className="operating-badge">{text('Authored case', 'Cas pédagogique')}</span>}
+    </header>}
+    <div className="operating-scope-status">
+      {(['harvest', 'haul'] as const).map(scope => {
+        const list = checks.filter(c => c.scope === scope);
+        const blocked = list.filter(c => c.level === 'blocked').length;
+        const warning = list.some(c => c.level === 'warning');
+        return <span key={scope} data-level={blocked ? 'blocked' : compact && warning ? 'warning' : 'ready'}>
+          {scope === 'harvest' ? text('Harvest', 'Récolte') : text('Haul', 'Transport')}:
+          {' '}{compact ? (!list.length ? text('Season ended', 'Saison terminée') : blocked ? `${blocked} ${text('issues', 'points à vérifier')}` : warning ? text('Review', 'À vérifier') : text('Ready', 'Prêt')) : !list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
+        </span>;
+      })}
+    </div>
+    {compact && <dl className="map-readiness-facts">{visibleChecks.map(check => <div key={`${check.scope}:${check.code}`} data-level={check.level}>
+      <dt>{t(check.label)}</dt><dd>{t(check.message)}{check.level !== 'ready' && check.action && onNavigate && <button type="button" onClick={() => onNavigate(destinations[check.action!])}>{text('Review details', 'Voir les détails')}</button>}</dd>
+    </div>)}</dl>}
+    {evidenceDetails}
   </section>;
 }

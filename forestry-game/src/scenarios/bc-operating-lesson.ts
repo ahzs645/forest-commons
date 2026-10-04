@@ -4,6 +4,7 @@ import { bcTeachingTenure } from './bc-tenure';
 import { emptyCalibration } from '../simulation/regional-calibration';
 import type { RegionDefinition, Weather } from '../simulation/types';
 import type { StandDossier, OperationsProfile, HarvestSystem } from '../simulation/operations-profile';
+import { bcInventorySourceNote } from '../simulation/lot-evidence';
 
 /** Opt-in authored case. Never migrate an embedded campaign to this preset. */
 export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): RegionDefinition {
@@ -47,7 +48,7 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
       systems: ['full-tree', 'cut-to-length'], weather: ['normal', 'wet', 'frozen'], retention: .8, ready: 1,
       rationale: 'Source geometry remains visible, but the entire area is excluded from the modelled treatment area. No acquisition or harvesting is permitted.' },
   ];
-  const inventory = vri.stands as unknown as Record<string, { liveM3PerHa175: number; ageYears: number | null; species: [string, number][] }>;
+  const inventory = vri.stands as unknown as Record<string, { featureId: string; liveM3PerHa175: number; ageYears: number | null; species: [string, number][] }>;
   const speciesNames: Record<string, string> = { SX: 'hybrid spruce', SB: 'black spruce', BL: 'subalpine fir', FDI: 'Douglas-fir', PLI: 'lodgepole pine',
     EP: 'paper birch', AT: 'trembling aspen', AC: 'cottonwood' };
   const vriCase = (id: string) => {
@@ -55,10 +56,9 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
     return { density: inv.liveM3PerHa175, age: inv.ageYears ?? 0, mix: vriMix(inv.species),
       species: Object.fromEntries(inv.species.map(([code, pct]) => [speciesNames[code] ?? code, pct / 100])) };
   };
-  // This lesson was authored on the first pilot: every source stand in one zone,
-  // the original supply categories and three yards on these trunk nodes. The
-  // pilot has since taken VRI volumes, species and new yards; pin the lesson's
-  // inherited inputs so its cases keep their meaning.
+  // Keep the first pilot's teaching supply categories and three yard nodes.
+  // Inventory attributes come from the explicit cached VRI snapshot below;
+  // scenario operating coefficients remain authored case inputs.
   const pilotOrder = region.stands.map(s => s.id);
   if (pilotOrder.length !== 24) throw Error('BC lesson expects the 24-stand pilot source.');
   region.roads = { nodes: region.roads.nodes.filter(n => !n.id.startsWith('pg-')), edges: region.roads.edges.filter(e => !e.id.startsWith('pg-')) };
@@ -70,12 +70,12 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
   region.mills = region.mills.slice(0, 3).map((m, i) => ({ ...m, node: lessonYardNodes[i], position: region.roads.nodes.find(n => n.id === lessonYardNodes[i])!.position }));
   region.center = [-122.91, 54.095];
   region.zoom = 11.5;
-  region.sources = region.sources.map(src => src.title === 'BC VRI 2025 Rank 1' ? { ...src, note: 'Open Government Licence – British Columbia. Whole single-ring polygon geometry and area retained. Polygon selection does not establish tenure or timber availability. Lesson volumes, species and ages are authored teaching values (see the operating profile), not VRI values.' } : src);
+  region.sources = region.sources.map(src => src.title === 'BC VRI 2025 Rank 1' ? { ...src, note: `Open Government Licence – British Columbia. Cached snapshot ${vri.collected.slice(0, 10)}. Inventory outlines, area, species, age and projected live density at 17.5 cm come from VRI. Modelled volume applies that density to an authored net treatment area; exclusions and species-to-product mapping are teaching assumptions. These inventory projections are not a cruise or net merchantable yield. Polygon selection does not establish tenure or timber availability.` } : src);
   const byId = new Map(region.stands.map(s => [s.id, s]));
   for (const row of profileRows) if (!byId.has(row.id)) throw Error(`BC lesson source is missing ${row.id}.`);
   region.id = 'bc-prince-george-operating-lesson-v1';
   region.name = 'Prince George · access, recovery & commitments';
-  region.description = 'Ten-site authored BC teaching lesson using the pilot inventory outlines and roads. Net treatment areas, forest attributes, systems, recovery, load limits, costs and receiving businesses are fictional. This is not a surveyed block layout, heavy-vehicle routing service, appraisal or forestry prescription.';
+  region.description = 'Ten-site BC teaching lesson using pilot inventory outlines and roads, with species, age and projected live density from the cached VRI 2025 inventory. Net treatment areas, exclusions, product recovery, equipment suitability, load limits, costs, rights and receiving businesses are authored assumptions. Inventory projections do not establish surveyed block layout, net merchantable yield, tenure or operating permission. This is not a heavy-vehicle routing service, appraisal or forestry prescription.';
   region.stands = profileRows.map(row => {
     const source = byId.get(row.id)!, inv = vriCase(row.id);
     const netArea = source.hectares * row.area;
@@ -85,7 +85,7 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
       harvestCost: row.id === 'BC15' ? 19 : row.id === 'BC03' ? 17 : 15,
       askingPrice: volume * row.priceM3,
       auctionWeek: row.id === 'BC20' ? 1 : source.auctionWeek,
-      sourceNote: 'Inventory outline, area, species, age and projected live volume (17.5 cm) come from VRI 2025 via the pilot. Net treatment area, exclusions, the product split and the volume range below are authored teaching assumptions. No treatment/exclusion boundary has been surveyed or mapped.' };
+      sourceNote: bcInventorySourceNote(inventory[row.id], vri.collected) };
   });
   // The lesson's own fleet and road speeds predate the pilot's BC-sourced rates; keep them.
   for (const edge of region.roads.edges) edge.speed = edge.id.startsWith('access-') ? 15 : edge.id.startsWith('fsr-') ? 35 : edge.speed;
@@ -200,8 +200,8 @@ export function buildBCOperatingLesson(base: RegionDefinition = princeGeorge): R
         note: 'Authored gross-mass restriction, not bridge inspection data.' },
     },
     productDensityTonnesPerM3: { 'soft-saw': .85, 'soft-pulp': .9, 'hard-saw': .95, 'hard-pulp': 1, poplar: .9 },
-    sources: [{ title: 'Inherited pilot geography provenance', url: 'https://github.com/ahzs645/forest-commons/blob/main/research/prince-george-playable-pilot.md',
-      note: 'Source of inventory outlines and the pilot road network only. No new regional coefficient evidence was collected for this lesson.' },
+    sources: [{ title: 'Pilot inventory and road provenance', url: 'https://github.com/ahzs645/forest-commons/blob/main/research/prince-george-playable-pilot.md',
+      note: 'Inventory outlines, area, species, projected age and live density use the cached VRI snapshot; mapped trunk roads use the pilot source. Net treatment area, product mapping and operating coefficients remain authored. No field calibration evidence was collected for this lesson.' },
       { title: 'Existing BC teaching boundaries', url: 'https://github.com/ahzs645/forest-commons/blob/main/forestry-game/BC-TENURE.md',
         note: 'Existing authored tenure and financial rules are retained. The new profile is not an appraisal, permit or compliance system.' }],
   };

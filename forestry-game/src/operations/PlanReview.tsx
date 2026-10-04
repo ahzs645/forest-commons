@@ -1,18 +1,61 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { Game } from '../simulation/types';
+import type { Game, WeekResult } from '../simulation/types';
 import { forecastOutcome } from '../simulation/planning';
 import { sum } from '../simulation/engine';
 import { planExceptions, outstandingOperatorProvisions } from '../simulation/operational-readiness';
 import { useLanguage } from '../i18n';
+import { assessPlanIntent } from '../simulation/plan-intent';
+import './plan-intent.css';
 
-export function TurnReview({ game }: { game: Game }) {
+type PlanningDestination = 'Forest & timber' | 'Production' | 'Transport';
+
+export function PlanIntentNotice({ game, report, onNavigate }: {
+  game: Game; report: WeekResult | null; onNavigate?: (page: PlanningDestination) => void;
+}) {
+  const { language } = useLanguage();
+  const text = (en: string, fr: string) => language === 'fr' ? fr : en;
+  const intent = assessPlanIntent(game, report);
+  if (game.week > game.region.weeks) return null;
+  if (intent.status === 'productive' || intent.status === 'unavailable') return null;
+  const money = (amount: number) => `${game.region.currency} ${Math.round(amount).toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA')}`;
+  const idle = intent.status === 'idle' || intent.status === 'waiting';
+  return <aside className="plan-intent-notice" aria-label={text('Plan activity', 'Activité du plan')}>
+    <strong>{intent.status === 'waiting' ? text('Waiting turn: no work scheduled', 'Tour d’attente : aucun travail planifié')
+      : intent.status === 'idle' ? text('No work scheduled', 'Aucun travail planifié')
+      : intent.status === 'procurement' ? text('Bids scheduled; no operating output forecast', 'Offres planifiées; aucune production prévue')
+      : text('Work scheduled, but no output forecast', 'Travaux planifiés, mais aucune production prévue')}</strong>
+    <p>{idle ? text('This can be a deliberate choice. Running the turn still settles operating costs, inventory aging and any obligations due.',
+      'Il peut s’agir d’un choix délibéré. Le tour règle tout de même les coûts d’exploitation, le vieillissement des stocks et les obligations échues.')
+      : intent.status === 'procurement' ? text('Auction awards are excluded from this forecast. A successful award supplies a later turn; review your bid commitments before proceeding.',
+        'Les adjudications sont exclues de cette prévision. Un lot remporté approvisionne un tour ultérieur; vérifiez vos engagements avant de poursuivre.')
+      : text('The rehearsal predicts no harvest, delivery, processing, facility transfer or finished-product sale. Review access, inventory and available capacity before committing.',
+        'La simulation ne prévoit aucune récolte, livraison, transformation, aucun transfert entre installations ni aucune vente de produits finis. Vérifiez l’accès, les stocks et la capacité disponible avant de confirmer.')}</p>
+    {intent.cashChange !== null && <p>{intent.cashChange < 0
+      ? text(`Forecast cash decrease from now: ${money(-intent.cashChange)}.`, `Baisse de trésorerie prévue à partir de maintenant : ${money(-intent.cashChange)}.`)
+      : text(`Forecast cash change from now: +${money(intent.cashChange)}.`, `Variation de trésorerie prévue à partir de maintenant : +${money(intent.cashChange)}.`)}</p>}
+    {idle && !report && <p>{text('Forecast unavailable. The cost of this waiting turn has not been estimated.', 'Prévision indisponible. Le coût de ce tour d’attente n’a pas été estimé.')}</p>}
+    {onNavigate && <div className="button-row">
+      {idle && <button onClick={() => onNavigate('Forest & timber')}>{text('Review available timber', 'Examiner le bois disponible')}</button>}
+      <button onClick={() => onNavigate('Production')}>{text('Plan crew work', 'Planifier les équipes')}</button>
+      <button onClick={() => onNavigate('Transport')}>{text('Plan deliveries', 'Planifier les livraisons')}</button>
+    </div>}
+  </aside>;
+}
+
+export function TurnReview({ game, onNavigate }: { game: Game; onNavigate?: (page: PlanningDestination) => void }) {
   const { language, t } = useLanguage();
   const text = (en: string, fr: string) => language === 'fr' ? fr : en;
   const forecast = useMemo(() => forecastOutcome(game), [game]);
   const exceptions = useMemo(() => planExceptions(game), [game]);
   const number = (n: number) => Math.round(n).toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA');
+  if (game.week > game.region.weeks) return <section className="operating-turn-review">
+    <h3>{text('Season complete', 'Saison terminée')}</h3>
+    <p>{text('All operating turns have been settled. Review the recorded results and season scorecard before starting another campaign.',
+      'Tous les tours ont été réglés. Examiner les résultats enregistrés et le bilan de saison avant de commencer une autre campagne.')}</p>
+  </section>;
   return <section className="operating-turn-review" aria-label={text('Plan rehearsal', 'Simulation du plan')}>
     <h3>{text('What this plan is expected to do', 'Résultats attendus de ce plan')}</h3>
+    <PlanIntentNotice game={game} report={forecast.report} onNavigate={onNavigate} />
     {forecast.report ? <dl className="operating-preview-metrics">
       <div><dt>{text('Harvest', 'Récolte')}</dt><dd>{number(sum(forecast.report.harvested))} m³</dd></div>
       <div><dt>{text('Delivery', 'Livraison')}</dt><dd>{number(sum(forecast.report.delivered))} m³</dd></div>
@@ -32,7 +75,7 @@ export function TurnReview({ game }: { game: Game }) {
       </>}
     </details>
     <details open={exceptions.length > 0}><summary>{exceptions.length} {text('readiness findings', 'constats de préparation')}</summary>
-      {!exceptions.length && <p>{text('No readiness exceptions detected. Shared inventory, sequence, handling and available hours still determine fulfillment.', 'Aucune exception détectée. Le stock partagé, la séquence, la manutention et les heures disponibles déterminent les livraisons.')}</p>}
+      {!exceptions.length && <p>{text('No readiness exceptions detected. This checks constraints, not whether work is scheduled or output is expected. Shared inventory, sequence, handling and available hours still determine fulfillment.', 'Aucune exception détectée. Cette vérification porte sur les contraintes, pas sur les travaux planifiés ou la production prévue. Le stock partagé, la séquence, la manutention et les heures disponibles déterminent les livraisons.')}</p>}
       <div className="operating-exceptions">{exceptions.map((finding, i) => <article key={i} data-level={finding.level}>
         <strong>{finding.subject} · {finding.level === 'blocked' ? text('Blocked under forecast', 'Bloqué selon la prévision') : text('Review', 'À vérifier')}</strong><p>{t(finding.message)}</p>
       </article>)}</div>

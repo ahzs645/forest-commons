@@ -3,7 +3,7 @@ import { harvestAuthorizationProblem } from "./tenure";
 import type { AuthorizationDefinition, AuthorizationState } from "./tenure";
 import type {Game,RegionDefinition,Weather} from './types';
 import {createGame} from './engine';
-import {startStewardship,stewardshipYear,validateStewardship,stewardshipHabitat} from './stewardship';
+import {startStewardship,stewardshipYear,validateStewardship,stewardshipHabitat,captureStewardshipStands} from './stewardship';
 import type {StewardshipState} from './stewardship';
 export interface SeasonCalendar {
  provenance:string;
@@ -118,6 +118,7 @@ export function settleLinkedSeason(game:Game):Game {
  // Harvested areas do not receive a rest-year habitat recovery bonus.
  for(const stand of annual.stands)if(actions[stand.id])stand.habitat=state.stands.find(s=>s.id===stand.id)!.habitat;
  const habitat=stewardshipHabitat(link.baseRegion,annual);report.habitat=habitat.landscape;report.managedHabitat=habitat.managed;
+ report.standSnapshots=captureStewardshipStands(annual.stands);
  next.stewardship=annual;next.linkedSeason!.settled=true;
  validateStewardship(link.baseRegion,annual);return next;
 }

@@ -1,0 +1,21 @@
+.plan-intent-notice {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #a87228;
+  border-left: 4px solid #a87228;
+  border-radius: 8px;
+  background: #fff8e9;
+  color: #3e301b;
+}
+.plan-intent-notice p { margin: .55rem 0; }
+.plan-intent-notice .button-row { flex-wrap: wrap; }
+.turn-briefing { padding: 1rem; border: 1px solid var(--line, #d7dfd6); border-radius: 10px; background: var(--surface, #f7faf6); }
+.turn-briefing h3 { margin: 0 0 .6rem; }
+.turn-briefing ul { padding-left: 1.2rem; }
+.disruption-decisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 1rem; }
+.disruption-decision { padding: 1rem; border: 1px solid var(--line, #d7dfd6); border-radius: 10px; }
+.disruption-decision h3 { margin: .5rem 0; }
+.disruption-status { font-size: .85rem; font-weight: 700; }
+.disruption-choice { padding: .75rem 0; border-top: 1px solid var(--line, #d7dfd6); }
+.disruption-choice p { margin: .45rem 0; }
+.disruption-choice button { max-width: 100%; white-space: normal; }

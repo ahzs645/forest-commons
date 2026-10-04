@@ -1,0 +1,20 @@
+.negotiation-workspace, .negotiation-allocation-editor, .negotiation-operating-tools { min-width: 0; }
+.negotiation-workspace button, .negotiation-allocation-editor button, .negotiation-operating-tools button { min-height: 44px; white-space: normal; }
+.negotiation-draft { border: 1px solid #ccdacb; border-radius: 10px; padding: 14px; margin: 16px 0; min-width: 0; background: #f7faf5; }
+.negotiation-draft h3 { margin-top: 0; }
+.negotiation-draft p, .negotiation-draft li, .negotiation-workspace .notice { overflow-wrap: anywhere; }
+.negotiation-draft .table-wrap, .negotiation-allocation-editor .table-wrap { max-width: 100%; }
+.negotiation-revision { margin-top: 14px; padding-top: 12px; border-top: 1px solid #ccdacb; }
+.negotiation-allocation-editor > .table-wrap { margin: 16px 0; }
+.negotiation-allocation-editor input, .negotiation-allocation-editor select { min-height: 44px; }
+.negotiation-allocation-editor details > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+@media (max-width: 600px) {
+  .negotiation-draft { padding: 12px; }
+  .negotiation-allocation-editor .form-row { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .negotiation-allocation-editor .form-row > label { min-width: 0; }
+  .negotiation-allocation-editor .form-row select { width: 100%; }
+}
+.negotiation-draft > details > summary { min-height: 44px; cursor: pointer; display: flex; align-items: center; }
+.negotiation-savings-input { display: grid; gap: 4px; min-width: 0; }
+.negotiation-savings-input input { width: 100%; min-width: 0; }
+.negotiation-savings-input small { max-width: 180px; overflow-wrap: anywhere; }
