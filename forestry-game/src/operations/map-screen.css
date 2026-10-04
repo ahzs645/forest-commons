@@ -67,12 +67,7 @@
   .regional-app.map-first .workspace { padding-bottom:calc(64px + env(safe-area-inset-bottom)); }
   .regional-app.map-first .operating-plan-dock { display:none; }
   .map-overlay-top { left:108px;right:62px; }
-  .map-overlay-note { display:none; }
-  /* An open guide needs the full width; it covers the top of the map until hidden. */
-  .map-overlay-top:has(.map-guide-card) { left:8px;right:8px;z-index:8; }
-  .map-guide-card { width:100%;max-height:calc(100dvh - 260px); }
   .map-guide-toggle { min-height:var(--control-h);border-radius:22px;font-size:12px;padding:0 10px; }
-  .operating-lesson-dialog { width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0;margin:0; }
   .operating-lesson-dialog .operating-lesson-cards > article > p:not(:last-of-type) { display:none; }
 }
 
@@ -93,7 +88,6 @@
 .map-overlay-event { background:#fdeeea;border-color:#e9bfb2; }
 .map-overlay-event > summary { color:#7a2d1a; }
 .map-overlay-event ul { margin:6px 0 10px;padding-left:16px;line-height:1.45; }
-@media (max-width:600px) { .map-overlay-top .map-overlay-event { display:block;max-width:100%; } }
 
 /* Collapsed rail: icons carry a short label, since several are hard to tell apart. */
 @media (min-width:601px) {
@@ -145,3 +139,25 @@ select { font-weight:500; }
 /* A panel holding only a folded section needs no extra space around it. */
 .panel > details.results-definitions:only-child { margin:0; }
 .two-cols > details.results-definitions { margin-top:12px;align-self:start; }
+
+/* Phone: a page's main action stays above the bottom navigation while the
+   content scrolls, instead of waiting at the end of the page. */
+@media (max-width:600px) {
+  .regional-app .workspace .page-actions {
+    position:sticky; bottom:calc(var(--control-h) + 15px + env(safe-area-inset-bottom)); z-index:20;
+    margin:12px -15px -18px; padding:10px 15px; background:#fff;
+    border-top:1px solid #e1e8dd; border-radius:0 0 12px 12px; box-shadow:0 -6px 16px #173e3212;
+  }
+  .regional-app .workspace .page-actions > button { flex:1; }
+  .regional-app .workspace .queue-desk-footer.page-actions small { display:none; }
+}
+
+/* Notes and the guide open as sheets on phones (see MapNote and Sheet). */
+.map-note-pill { display:inline-flex;align-items:center;min-height:var(--control-h);padding:0 12px;font-size:12px;font-weight:650;color:#5c4511;text-align:left; }
+.map-note-pill.map-overlay-event { color:#7a2d1a; }
+dialog.sheet .map-guide-card { width:auto;max-height:none;overflow:visible;box-shadow:none;border:0;border-radius:0;background:#fff; }
+dialog.map-note-sheet .dialog-body h2 { font-size:18px;margin:0 0 8px; }
+dialog.map-note-sheet ul { padding-left:18px;line-height:1.5; }
+/* The closed phone sheet only names the selection; its tabs appear once opened. */
+.adaptive-map-workspace[data-sheet=peek]:not(.operations-list-mode) .map-panel-modes { display:none; }
+@media (min-width:951px) { .regional-app.map-first .adaptive-map-workspace[data-sheet=peek] .map-panel-modes { display:grid; } }

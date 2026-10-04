@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import Sheet from './Sheet';
 import type { RegionDefinition } from '../simulation/types';
 import { useLanguage } from '../i18n';
 
@@ -68,14 +69,7 @@ export function LessonLauncher({ regions, onChoose, welcome = false, onDismiss, 
 export function LessonDialog({ regions, onChoose, onDismiss }: {
   regions: RegionDefinition[]; onChoose: (region: RegionDefinition) => void; onDismiss: () => void;
 }) {
-  const dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const node = dialog.current;
-    if (node && !node.open) node.showModal?.();
-    return () => node?.close?.();
-  }, []);
-  return <dialog ref={dialog} className="operating-lesson-dialog" aria-labelledby="lesson-dialog-title"
-    onCancel={event => { event.preventDefault(); onDismiss(); }}>
+  return <Sheet className="operating-lesson-dialog" labelledBy="lesson-dialog-title" onClose={onDismiss}>
     <LessonLauncher regions={regions} onChoose={onChoose} onDismiss={onDismiss} welcome titleId="lesson-dialog-title" />
-  </dialog>;
+  </Sheet>;
 }

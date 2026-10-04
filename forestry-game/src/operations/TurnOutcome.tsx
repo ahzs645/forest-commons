@@ -1,4 +1,5 @@
-import { useEffect, useRef, type RefObject } from 'react';
+import { type RefObject } from 'react';
+import Sheet from './Sheet';
 import type { Game } from '../simulation/types';
 import { turnOutcome } from '../simulation/turn-outcome';
 import { diagnose } from '../simulation/debrief';
@@ -55,26 +56,15 @@ export default function TurnOutcomeDialog({ game, reportIndex, onClose, onNaviga
   returnFocus?: RefObject<HTMLButtonElement | null>;
 }) {
   const { language, t } = useLanguage();
-  const modal = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const element = modal.current;
-    element?.showModal();
-    return () => {
-      element?.close();
-      const target = returnFocus?.current ?? previous;
-      if (target?.isConnected && !target.hasAttribute('disabled')) target.focus();
-    };
-  }, []);
   const report = game.history[reportIndex];
   if (!report) return null;
-  return <dialog ref={modal} className="turn-outcome-dialog" aria-labelledby="turn-outcome-title" onCancel={onClose}>
+  return <Sheet className="turn-outcome-dialog" labelledBy="turn-outcome-title" onClose={onClose} returnFocus={returnFocus}>
     <div className="dialog-body"><div className="section-heading"><h2 id="turn-outcome-title">
       {t((game.region.turnDurationWeeks ?? 1) === 1 ? 'Week' : 'Turn')} {report.week} {language === 'fr'
         ? (game.region.turnDurationWeeks ?? 1) === 1 ? 'terminée' : 'terminé' : 'complete'}</h2>
       <button aria-label={language === 'fr' ? 'Fermer le bilan du tour' : 'Close turn summary'} onClick={onClose}>×</button></div>
       <TurnSummary game={game} reportIndex={reportIndex} onNavigate={page => { onClose(); onNavigate(page); }} onReplay={() => { onClose(); onReplay(); }}/>
-      <button onClick={() => { onClose(); onNavigate('Reports'); }}>{language === 'fr' ? 'Examiner les résultats détaillés' : 'Review detailed results'}</button>
+      <div className="button-row sheet-actions"><button onClick={() => { onClose(); onNavigate('Reports'); }}>{language === 'fr' ? 'Examiner les résultats détaillés' : 'Review detailed results'}</button></div>
     </div>
-  </dialog>;
+  </Sheet>;
 }

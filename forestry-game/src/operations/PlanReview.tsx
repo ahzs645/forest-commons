@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
+import Sheet from './Sheet';
 import type { Game, WeekResult } from '../simulation/types';
 import { forecastOutcome } from '../simulation/planning';
 import { sum } from '../simulation/engine';
@@ -93,17 +94,10 @@ export function DraftReview({ game, buildDraft, onApply, onClose }: {
     catch (error) { return { source: game, candidate: null, error: error instanceof Error ? error.message : String(error) }; }
   };
   const [review, setReview] = useState(capture);
-  const modal = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    const element = modal.current;
-    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    element?.showModal();
-    return () => { element?.close(); previous?.focus(); };
-  }, []);
   const stale = game !== review.source;
   const counts = (kind: 'crews' | 'trucks') => Object.keys(game.plan[kind]).filter(id =>
     JSON.stringify(review.source.plan[kind][id]) !== JSON.stringify(review.candidate?.plan[kind][id])).length;
-  return <dialog ref={modal} className="operating-draft-dialog" aria-labelledby="operating-draft-title" onCancel={onClose}>
+  return <Sheet className="operating-draft-dialog" labelledBy="operating-draft-title" onClose={onClose}>
     <div className="dialog-body">
       <h2 id="operating-draft-title">{text('Review the draft before applying it', 'Examiner le brouillon avant de l’appliquer')}</h2>
       <p>{text('Your saved plan has not changed. This is a forecast heuristic, not an optimal season strategy. Applying it replaces current crew and truck queues.',
@@ -113,7 +107,7 @@ export function DraftReview({ game, buildDraft, onApply, onClose }: {
       {review.candidate && <><p>{counts('crews')} {text('crew queues', 'files d’équipes')} · {counts('trucks')} {text('truck queues changed', 'files de camions modifiées')}</p>
         <div className="operating-draft-comparison"><details><summary>{text('Current plan forecast', 'Prévision du plan actuel')}</summary><TurnReview game={review.source} /></details>
           <TurnReview game={review.candidate} /></div></>}
-      <div className="button-row">
+      <div className="button-row sheet-actions">
         <button onClick={onClose}>{text('Keep current plan', 'Conserver le plan actuel')}</button>
         <button onClick={() => setReview(capture())}>{text('Rebuild proposal', 'Recréer la proposition')}</button>
         <button className="primary" disabled={stale || !review.candidate} onClick={() => {
@@ -122,5 +116,5 @@ export function DraftReview({ game, buildDraft, onApply, onClose }: {
         }}>{text('Apply reviewed draft', 'Appliquer le brouillon examiné')}</button>
       </div>
     </div>
-  </dialog>;
+  </Sheet>;
 }

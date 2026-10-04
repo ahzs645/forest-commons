@@ -56,6 +56,8 @@ import { CurrentTurnBriefing } from "./DisruptionDesk";
 import { respondToDisruption, activeDisruptions } from "./simulation/disruptions";
 import MapWorkspace from "./MapWorkspace";
 import useMapQueueUndo from "./operations/useMapQueueUndo";
+import Sheet from "./operations/Sheet";
+import MapNote from "./operations/MapNote";
 import ProcurementLab from "./ProcurementLab";
 import { serializeGame } from "./simulation/save-format";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -289,8 +291,7 @@ export default function RegionalApp() {
     return () => window.removeEventListener('storage', externalSave);
   }, []);
   const importSave = useRef<HTMLInputElement>(null),
-    importRegion = useRef<HTMLInputElement>(null),
-    dialog = useRef<HTMLDialogElement>(null);
+    importRegion = useRef<HTMLInputElement>(null);
   const runTurnButton = useRef<HTMLButtonElement>(null);
   const standaloneControls = page !== "Classroom" && page !== "Stewardship";
   const marketRegion = effectiveMarketRegion(game);
@@ -330,10 +331,6 @@ export default function RegionalApp() {
         : 'Browser storage is unavailable. Export your campaign to preserve progress.');
     }
   }, [game, savePaused]);
-  useEffect(() => {
-    if (confirm) dialog.current?.showModal();
-    else dialog.current?.close();
-  }, [confirm]);
   const change = (next: Game) => {
     setGame(next);
   };
@@ -675,7 +672,7 @@ export default function RegionalApp() {
             }} />
           </>}
           {page === "Planning desk" && activeView === 'review' && <section className="panel"><TurnReview game={game} onNavigate={navigateToTask} />
-            <div className="button-row">
+            <div className="button-row page-actions">
               {standaloneControls && <button className="operating-phone-only" disabled={done} onClick={() => setDraftReviewOpen(true)}>
                 <Sparkles size={16} /><span>{tr("Draft plan")}</span>
               </button>}
@@ -744,20 +741,20 @@ export default function RegionalApp() {
           {page === "Overview" && (
             <MapWorkspace
               overlay={<>
-                {!done && activeDisruptions(game).length > 0 && <details className="map-overlay-note map-overlay-event">
-                  <summary>{tr(activeDisruptions(game)[0].title)}{activeDisruptions(game).length > 1 ? ` +${activeDisruptions(game).length - 1}` : ""}</summary>
+                {!done && activeDisruptions(game).length > 0 && <MapNote className="map-overlay-event"
+                  summary={<>{tr(activeDisruptions(game)[0].title)}{activeDisruptions(game).length > 1 ? ` +${activeDisruptions(game).length - 1}` : ""}</>}>
                   <ul>{activeDisruptions(game).map(event => {
                     const subject = [...r.roads.edges, ...r.crews, ...r.trucks, ...r.mills].find(item => item.id === event.target);
                     return <li key={event.id}><strong>{tr(event.title)}</strong>{subject?.name ? ` · ${tr(subject.name)}` : ""} · {tr(event.description)}</li>;
                   })}</ul>
                   <button onClick={() => navigateToTask("Planning desk")}>{language === "fr" ? "Examiner les conditions" : "Review conditions"}</button>
-                </details>}
+                </MapNote>}
                 {!done && totalDelivered === 0 && <FirstDeliveryGuide overlay selectedStandId={chosen.id}
                   game={game} campaignKey={campaignKey} controller={guideController} onNavigate={navigateToTask} onSelect={select} onDraft={() => setDraftReviewOpen(true)} />}
-                {game.region.bcTenure && <details className="bc-tenure-callout map-overlay-note">
-                  <summary>{awaitingAuthorization.length > 0 ? `${awaitingAuthorization.length} ${language === "fr" ? "lots attendent une autorisation" : "lots await harvest authorization"}` : tr("BC tenure & permits")}</summary>
+                {game.region.bcTenure && <MapNote className="bc-tenure-callout"
+                  summary={awaitingAuthorization.length > 0 ? `${awaitingAuthorization.length} ${language === "fr" ? "lots attendent une autorisation" : "lots await harvest authorization"}` : tr("BC tenure & permits")}>
                   <p>{tr("BC secured timber still needs active harvesting and road authorizations. Check applications, renewals, stumpage and obligations before assigning crews or trucks.")}</p>{awaitingAuthorization.length > 0 && <p><strong>{tr("Secured timber waiting for a harvest authorization:")}</strong> {awaitingAuthorization.map(a => a.id).join(", ")}. {tr("The draft plan skips these lots until an application is approved.")}</p>}<button onClick={()=>{if(awaitingAuthorization[0])setSelected(awaitingAuthorization[0].id);setPage("Forest & timber");}}>{tr("Review selected lot tenure and permits")}</button>
-                </details>}
+                </MapNote>}
               </>}
               key={JSON.stringify([r.id,r.stands.map(s=>s.id),r.crews.map(c=>c.id),r.trucks.map(t=>t.id),r.mills.map(m=>m.id),r.products.map(p=>p.id),r.zones.map(z=>z.id)])}
               game={game}
@@ -1589,9 +1586,9 @@ export default function RegionalApp() {
         onClose={() => setDraftReviewOpen(false)} />}
       {outcomeIndex !== null && <TurnOutcomeDialog game={game} reportIndex={outcomeIndex}
         onClose={() => setOutcomeIndex(null)} onNavigate={navigateToTask} onReplay={openReplay} returnFocus={runTurnButton}/>}
-      <dialog ref={dialog} onCancel={() => setConfirm(null)}>
+      <Sheet open={!!confirm} onClose={() => setConfirm(null)} labelledBy="confirm-sheet-title" returnFocus={runTurnButton}>
         <div className="dialog-body">
-          <h2>
+          <h2 id="confirm-sheet-title">
             {confirm === "new"
               ? tr("Start a new campaign?")
               : `${tr("Run")} ${tr(periodLabel).toLowerCase()} ${game.week}?`}
@@ -1637,7 +1634,7 @@ export default function RegionalApp() {
               )}
             </>
           )}
-          <div className="button-row">
+          <div className="button-row sheet-actions">
             <button onClick={() => setConfirm(null)}>{tr("Keep planning")}</button>
             <button
               className="primary"
@@ -1663,7 +1660,7 @@ export default function RegionalApp() {
             </button>
           </div>
         </div>
-      </dialog>
+      </Sheet>
     </div>
   );
 }

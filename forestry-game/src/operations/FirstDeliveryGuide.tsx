@@ -8,6 +8,7 @@ import { firstDeliveryProgress, firstDeliveryRehearsalKey, firstDeliveryStorageK
 import { reconcileGuideSession, type FirstDeliveryGuideSession } from '../simulation/first-delivery-progress';
 import { useLanguage } from '../i18n';
 import './first-delivery.css';
+import Sheet, { useIsPhone } from './Sheet';
 
 export interface FirstDeliveryGuideProps {
   game: Game;
@@ -70,6 +71,7 @@ function CampaignGuide({ game, onNavigate, onSelect, onDraft, onReviewTurn, cont
   // Over the map the pill is the minimized form, so the stored flag does not apply.
   const minimized = !overlay && controller.minimized;
   const [expanded, setExpanded] = useState(false);
+  const phone = useIsPhone();
   const small = compact && !expanded;
   const fingerprint = useMemo(() => firstDeliveryRehearsalKey(game), [game]);
   const rehearsal = useMemo(() => rehearsalOpen ? forecastOutcome(game) : null, [game, rehearsalOpen]);
@@ -97,16 +99,17 @@ function CampaignGuide({ game, onNavigate, onSelect, onDraft, onReviewTurn, cont
     : <button className="primary" onClick={runReview}>{text('Review & run turn', 'Examiner et exécuter le tour')}</button>;
 
   const selectable = selectedStandId && game.region.stands.some(s => s.id === selectedStandId && s.supply !== 'protected') ? selectedStandId : '';
-  if (overlay && !expanded) return <section className="first-delivery-guide map-guide-pill" aria-label={text('First delivery guide', 'Guide de la première livraison')}>
-    <button className="map-guide-toggle" aria-expanded={false} onClick={() => setExpanded(true)}>
+  const pill = <section className="first-delivery-guide map-guide-pill" aria-label={text('First delivery guide', 'Guide de la première livraison')}>
+    <button className="map-guide-toggle" aria-expanded={expanded} onClick={() => setExpanded(true)}>
       <Compass size={16} aria-hidden="true" />
       <span>{finished ? text('First delivery recorded', 'Première livraison enregistrée')
         : `${text('Step', 'Étape')} ${current + 1}/6 · ${steps[current]}`}</span>
       <ChevronDown size={15} aria-hidden="true" />
     </button>
   </section>;
+  if (overlay && !expanded) return pill;
 
-  return <section className={`first-delivery-guide${overlay ? ' map-guide-card' : ''}${minimized ? ' is-minimized' : ''}${small ? ' is-compact' : ''}`} aria-label={text('First delivery guide', 'Guide de la première livraison')}>
+  const card = <section className={`first-delivery-guide${overlay ? ' map-guide-card' : ''}${minimized ? ' is-minimized' : ''}${small ? ' is-compact' : ''}`} aria-label={text('First delivery guide', 'Guide de la première livraison')}>
     <div className="first-delivery-heading">
       <Compass size={20} aria-hidden="true" />
       <div><strong>{finished ? text('First delivery recorded', 'Première livraison enregistrée') : text('Your first delivery', 'Votre première livraison')}</strong>
@@ -171,4 +174,7 @@ function CampaignGuide({ game, onNavigate, onSelect, onDraft, onReviewTurn, cont
       </div>
     </>}
   </section>;
+  // On a phone the open guide is a sheet, so the map stays visible above it.
+  if (overlay && phone) return <>{pill}<Sheet className="guide-sheet" label={text('First delivery guide', 'Guide de la première livraison')} onClose={() => setExpanded(false)}>{card}</Sheet></>;
+  return card;
 }

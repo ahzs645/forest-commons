@@ -189,7 +189,7 @@ export default function QueueEditor({ game, kind, resourceId, selected = '', onS
         </li>;
       })}
     </ol>
-    <div className="queue-desk-footer">
+    <div className="queue-desk-footer page-actions">
       <button disabled={done} onClick={() => onChange(appendQueueStop(game, kind, resourceId, addStand))}>{tr(kind === 'crew' ? '+ Add stop' : '+ Add haul order')}</button>
       {!!queue.length && <small className="muted">{amountHint}</small>}
     </div>
