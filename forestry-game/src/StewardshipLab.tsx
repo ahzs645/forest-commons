@@ -17,6 +17,7 @@ export default function StewardshipLab({
 }) {
  const {t: tr,language}=useAnnualLanguage();
  const f=(n:number)=>Math.round(n).toLocaleString(language==='fr'?'fr-CA':'en-CA');
+ const actionLabel=(action:StewardshipAction)=>tr(({rest:'Rest / recover',thin:'Commercial thinning',final:'Final harvest',plant:'Plant regeneration'} as Record<string,string>)[action]??action);
   const [actions, setActions] = useState<Record<string, StewardshipAction>>({}),
     [error, setError] = useState(""),
     region = game.linkedSeason?.baseRegion ?? game.region,
@@ -42,7 +43,9 @@ export default function StewardshipLab({
   return (
     <section className="panel">
       <h2>{tr("Annual forest stewardship")}</h2>
-      <p>{tr("This")}{" "}{p.years}{" "}{tr("-year exercise starts from current standing volumes. Use Connected annual operating seasons to carry this forest and budget into another operating window. Independent annual actions advance one full management year.")}{" "}</p>
+      <p>{language==='fr'
+        ? `Cet exercice de ${p.years} ans commence avec les volumes sur pied actuels. Utilisez l’onglet Saisons opérationnelles pour transférer cette forêt et ce budget vers une autre période opérationnelle. Les actions annuelles indépendantes avancent d’une année de gestion complète.`
+        : `This ${p.years}-year exercise starts from current standing volumes. Use the Operating seasons tab to carry this forest and budget into another operating window. Independent annual actions advance one full management year.`}</p>
       <p className="muted">{tr('Illustrative annual model; recorded values are model outputs.')}</p>
       <details>
         <summary>{tr("Model parameters and timing")}</summary>
@@ -84,7 +87,7 @@ export default function StewardshipLab({
               {selected.harvestAuthorizationProblem && <p className="notice">{tr(selected.harvestAuthorizationProblem)}</p>}
             </div>:<p>{tr('Choose a managed stand to plan a treatment.')}</p>}
             <h4>{tr('Review this year')}</h4>
-            {Object.entries(choices).some(([,action])=>action!=='rest')?<ul className="stewardship-actions">{Object.entries(choices).filter(([,action])=>action!=='rest').map(([id,action])=><li key={id}>{id}: {tr(action)}</li>)}</ul>:<p>{tr('No annual work selected; all stands will rest.')}</p>}
+            {Object.entries(choices).some(([,action])=>action!=='rest')?<ul className="stewardship-actions">{Object.entries(choices).filter(([,action])=>action!=='rest').map(([id,action])=><li key={id}>{id}: {actionLabel(action)}</li>)}</ul>:<p>{tr('No annual work selected; all stands will rest.')}</p>}
             {rehearsal.result && <><p className="muted">{tr('Rehearsal only — the saved forest and budget are unchanged.')}</p><dl className="annual-map-observations"><div><dt>{tr('Harvest')}</dt><dd>{f(rehearsal.result.history.at(-1)!.harvest)} m³</dd></div><div><dt>{tr('Closing budget')}</dt><dd>{region.currency} {f(rehearsal.result.cash)}</dd></div><div><dt>{tr('Landscape habitat')}</dt><dd>{(rehearsal.result.history.at(-1)!.habitat*100).toFixed(1)}%</dd></div></dl></>}
             {(rehearsal.problem||error)&&<p role="alert">{tr(error||rehearsal.problem)}</p>}
             <div className="annual-primary-actions"><button className="primary" disabled={locked || s.year > p.years || !!rehearsal.problem} onClick={apply}>{tr('Apply treatments and advance one year')}</button><button disabled={locked||s.year>p.years} onClick={()=>updateActions({})}>{tr('Clear annual choices')}</button></div>
@@ -117,7 +120,7 @@ export default function StewardshipLab({
                       {tr(t.planted ? "Planted" : "Natural")} · {t.regenerationAge}{" "}{" "}{tr("years")}{" "}</td>
                     {region.bcTenure && <td>{t.harvestAuthorizationProblem ? tr(t.harvestAuthorizationProblem) : tr("No authorization block in opening snapshot")}</td>}
                     <td>
-                      {tr(choices[t.id] ?? "rest")}
+                      {actionLabel(choices[t.id] ?? "rest")}
                     </td>
                   </tr>
                 ))}

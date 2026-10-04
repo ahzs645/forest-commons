@@ -37,7 +37,9 @@ export function TurnSummary({ game, reportIndex, onNavigate, onReplay }: {
       : text('What needs attention next?', 'Que faut-il examiner ensuite?')}</h3>
       {findings.slice(0, 3).map(finding => <article key={finding.id}><strong>{t(finding.title)}</strong><p>{t(finding.action)}</p></article>)}
     </div>}
-    {!!report.messages.length && <details><summary>{report.messages.length} {text('recorded operating messages', 'messages opérationnels enregistrés')}</summary>
+    {!!report.messages.length && <details><summary>{report.messages.length} {report.messages.length === 1
+      ? text('recorded operating message', 'message opérationnel enregistré')
+      : text('recorded operating messages', 'messages opérationnels enregistrés')}</summary>
       {report.messages.map((message, index) => <p key={index}>{t(message)}</p>)}
     </details>}
     <div className="button-row">

@@ -105,7 +105,7 @@ export default function PlanningDesk({
             </p>
             {report.messages.length > 0 && (
               <details open>
-                <summary>{" "}{tr("Dispatch constraints and consequences (")}{" "}{report.messages.length})
+                <summary>{tr("Dispatch constraints and consequences (")}{report.messages.length})
                 </summary>
                 {report.messages.slice(0, 30).map((m, i) => (
                   <p key={i}>{tr(m)}</p>

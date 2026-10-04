@@ -44,3 +44,46 @@ describe('map queue controls', () => {
     expect(html).not.toContain('Move ');
   });
 });
+
+describe('desk queue editor', () => {
+  const render = (game: ReturnType<typeof createGame>, kind: 'crew' | 'truck', id: string) =>
+    renderToStaticMarkup(<LanguageProvider><QueueEditor variant="desk" game={game} kind={kind} resourceId={id} onChange={() => {}} /></LanguageProvider>);
+
+  it('renders aligned rows with every order control, always including earlier/later/remove', () => {
+    const game = createGame(quebec);
+    game.plan.crews.C1 = [{ stand: 'Q01', hours: 8 }, { stand: 'Q02', hours: 4 }];
+    const html = render(game, 'crew', 'C1');
+    expect(html.match(/class="queue-desk-grid queue-desk-row"/g)).toHaveLength(2);
+    expect(html.match(/aria-label="Move [^"]* earlier"/g)).toHaveLength(2);
+    expect(html.match(/aria-label="Move [^"]* later"/g)).toHaveLength(2);
+    expect(html.match(/aria-label="Remove [^"]*"/g)).toHaveLength(2);
+    expect(html).toContain('Bucking recovery');
+    expect(html).toContain('Treatment');
+    expect(html).toContain('+ Add stop');
+  });
+
+  it('shows partner freight only when pooling is on (or a job is already attached)', () => {
+    const game = createGame(quebec), truck = game.region.trucks[0].id;
+    game.plan.trucks[truck] = [{ stand: 'Q01', mill: 'M1', product: 'soft-saw', loads: 1 }];
+    game.cooperation.pooling = false;
+    expect(render(game, 'truck', truck)).not.toContain('Partner freight en route');
+    game.cooperation.pooling = true;
+    const pooled = render(game, 'truck', truck);
+    expect(pooled).toContain('Partner freight en route');
+    expect(pooled).toContain('+ Add haul order');
+    expect(pooled).toContain('km loaded');
+  });
+
+  it('disables editing for a completed campaign and localizes in French', () => {
+    vi.stubGlobal('localStorage', { getItem: () => 'fr' });
+    const game = createGame(quebec), truck = game.region.trucks[0].id;
+    game.week = game.region.weeks + 1;
+    game.plan.trucks[truck] = [{ stand: 'Q01', mill: 'M1', product: 'soft-saw', loads: 1 }];
+    const html = render(game, 'truck', truck);
+    // site, mill, assortment, loads, three actions and add.
+    expect(html.match(/disabled=""/g)).toHaveLength(8);
+    expect(html).toContain('Avancer ');
+    expect(html).toContain('+ Ajouter un ordre de transport');
+    expect(html).not.toContain('Move ');
+  });
+});

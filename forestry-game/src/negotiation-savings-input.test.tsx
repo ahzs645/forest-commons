@@ -12,9 +12,11 @@ it.each([['123.45', 123.45], ['-123.45', -123.45], ['123.456', 123.456], ['.005'
 it.each(['', '-', '.', '1e', '1e999', 'Infinity', 'NaN', 'wrong', '0x123'])('keeps incomplete or nonfinite text out of the saved game (%s)', text => {
   expect(parseNegotiationSavings(text)).toBeNull();
 });
-it('renders exact saved precision with decimal keyboard and company label', () => {
+it('renders saved values rounded for display with decimal keyboard and company label', () => {
   const html = renderToStaticMarkup(<NegotiationSavingsInput value={123.456} label="Savings for company 1" onCommit={() => {}}/>);
-  expect(html).toContain('value="123.456"');
+  expect(html).toContain('value="123.46"');
+  expect(renderToStaticMarkup(<NegotiationSavingsInput value={439.83333333333337} label="Savings" onCommit={() => {}}/>)).toContain('value="439.83"');
+  expect(renderToStaticMarkup(<NegotiationSavingsInput value={100} label="Savings" onCommit={() => {}}/>)).toContain('value="100"');
   expect(html).toContain('inputMode="decimal"');
   expect(html).toContain('aria-label="Savings for company 1"');
 });
@@ -34,8 +36,8 @@ it('accepts French decimal commas without permitting ambiguous English punctuati
   expect(parseNegotiationSavings('123,456', 'en')).toBeNull();
   expect(parseNegotiationSavings('1,2,3', 'fr')).toBeNull();
 });
-it('shows exact saved precision with a French decimal separator', () => {
+it('shows rounded saved values with a French decimal separator', () => {
   vi.stubGlobal('localStorage', { getItem: () => 'fr' });
   const html = renderToStaticMarkup(<LanguageProvider><NegotiationSavingsInput value={123.456} label="Économies" onCommit={() => {}}/></LanguageProvider>);
-  expect(html).toContain('value="123,456"');
+  expect(html).toContain('value="123,46"');
 });

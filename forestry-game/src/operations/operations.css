@@ -3,14 +3,14 @@
 .operating-status-strip { display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;flex:0 0 auto;padding:6px 2px; }
 .operating-status-strip>div { flex:1;min-width:160px; }
 .operating-status-strip>div>span { display:block;font-size:12px;margin-top:3px; }
-.operating-status-strip button { min-height:44px; }
+.operating-status-strip button { min-height:var(--control-h); }
 .operating-connectivity { padding:12px 16px;border:1px solid #b79865;border-radius:8px;background:#faf4e5;line-height:1.5;flex:none; }
 .operating-readiness { min-width:0;border:1px solid #dce5da;border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px; }
 .operating-readiness>header { display:flex;align-items:center;justify-content:space-between;gap:8px; }
 .operating-readiness h3 { margin:5px 0; }
 .operating-readiness p { margin:8px 0;overflow-wrap:anywhere; }
 .operating-readiness details { border-top:1px solid #e1e7dc;margin-top:10px;padding:7px 0; }
-.operating-readiness summary { min-height:44px;cursor:pointer;font-weight:650;align-content:center; }
+.operating-readiness summary { min-height:var(--control-h);cursor:pointer;font-weight:650;align-content:center; }
 .operating-scope-status { display:flex;flex-wrap:wrap;gap:6px;margin:8px 0; }
 .operating-scope-status>span { display:inline-block;border-left:4px solid #728c70;padding:6px 8px;background:#f1f5ee;font-size:12px; }
 .operating-scope-status>[data-level=blocked] { border-left-color:#9d4937;background:#fcf1ec; }
@@ -20,7 +20,7 @@
 .operating-checks dl>[data-level=warning],.operating-exceptions [data-level=warning] { border-left-color:#947238; }
 .operating-checks dt { font-weight:650; }
 .operating-checks dd { margin:6px 0 0;line-height:1.55; }
-.operating-checks dd button { display:block;margin-top:8px;min-height:44px; }
+.operating-checks dd button { display:block;margin-top:8px;min-height:var(--control-h); }
 .operating-status-word { font-size:11px;text-transform:uppercase;letter-spacing:.04em; }
 .dossier-facts { display:grid;grid-template-columns:minmax(0,1fr) minmax(90px,1fr);gap:8px; }
 .dossier-facts dt { color:#566c5d; }
@@ -35,29 +35,29 @@
 .operating-preview-metrics>div { padding:12px;border:1px solid #dce5d9;border-radius:9px; }
 .operating-preview-metrics dt { font-size:12px; }
 .operating-preview-metrics dd { font-size:18px;font-weight:700;margin:6px 0 0;overflow-wrap:anywhere; }
-.operating-turn-review>details>summary { min-height:44px;cursor:pointer;align-content:center; }
+.operating-turn-review>details>summary { min-height:var(--control-h);cursor:pointer;align-content:center; }
 .operating-exceptions { max-height:320px;overflow:auto;overscroll-behavior:contain; }
 .operating-exceptions article { margin:8px 0;padding:10px 12px;border-left:3px solid #77916f;background:#f6f8f1; }
 .operating-exceptions p { margin:5px 0; }
 .operating-draft-dialog { width:min(880px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 24px);padding:0;overflow:auto; }
 .operating-draft-dialog .button-row { position:sticky;bottom:0;background:#fbfcf9;border-top:1px solid #dce5d9;padding:14px 0; }
 .operating-draft-comparison>details { margin-bottom:14px; }
-.operating-draft-comparison>details>summary { min-height:44px;cursor:pointer;align-content:center; }
+.operating-draft-comparison>details>summary { min-height:var(--control-h);cursor:pointer;align-content:center; }
 .operating-lesson-cards,.operating-result-cards { display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px; }
 .operating-lesson-cards article,.operating-result-cards article { border:1px solid #d9e3d7;border-radius:10px;padding:14px;min-width:0; }
 .operating-lesson-cards article { display:flex;flex-direction:column;align-items:flex-start; }
-.operating-lesson-cards article>button { margin-top:auto;min-height:44px; }
+.operating-lesson-cards article>button { margin-top:auto;min-height:var(--control-h); }
 .operating-result-cards p { overflow-wrap:anywhere; }
 .operating-result-cards h4 { margin:0 0 8px; }
-.operating-debrief>details>summary { min-height:44px;cursor:pointer;align-content:center; }
+.operating-debrief>details>summary { min-height:var(--control-h);cursor:pointer;align-content:center; }
 .mobile-operations-nav,.mobile-workspace-controls,.operating-sheet-controls { display:none; }
 .operating-role-tabs { position:sticky;top:-12px;display:flex;gap:5px;background:white;z-index:6;padding:12px 0; }
-.operating-role-tabs button { flex:1;min-height:44px;padding:8px 6px; }
+.operating-role-tabs button { flex:1;min-height:var(--control-h);padding:8px 6px; }
 .operating-role-tabs button[aria-pressed=true] { background:#173e32;color:#fff; }
 .adaptive-map-workspace .map-role-panel .role-tabs { display:none; }
 .adaptive-map-workspace .selected-feature>summary { position:relative; }
 .operating-plan-dock { min-width:0;margin-top:12px;border:1px solid #dce5da;border-radius:9px;padding:8px 12px;background:white; }
-.operating-plan-dock>summary { min-height:44px;cursor:pointer;font-weight:650;align-content:center; }
+.operating-plan-dock>summary { min-height:var(--control-h);cursor:pointer;font-weight:650;align-content:center; }
 .operating-plan-link { display:none; }
 .map-panel-close { display:none; }
 .rail-language,.rail-campaign,.operating-phone-only { display:none; }
@@ -65,7 +65,7 @@
 .operating-dock-resources article { border:1px solid #e0e6dc;border-radius:7px;padding:10px;min-width:0; }
 .operating-dock-resources ol { padding-left:18px; }
 .operating-dock-resources li { margin:6px 0; }
-.operating-dock-resources button { text-align:left;white-space:normal;min-height:44px; }
+.operating-dock-resources button { text-align:left;white-space:normal;min-height:var(--control-h); }
 .operating-dock-resources button[aria-pressed=true] { background:#eaf1e4;border-color:#6d8b6f; }
 /* Override earlier breakpoint layers with a single explicit workbench layout. */
 .map-first .adaptive-map-workspace { grid-template-columns:minmax(0,1fr) minmax(340px,390px);align-items:start; }
@@ -75,10 +75,10 @@
 .map-first .adaptive-map-workspace .map-legend[open]>div { max-height:calc(100dvh - 290px);overflow-y:auto;overscroll-behavior:contain; }
 @container game-main (max-width:950px) {
   .operating-plan-dock { display:none; }
-  .operating-plan-link { display:block;width:100%;margin-top:12px;min-height:48px;text-align:left;font-weight:650; }
+  .operating-plan-link { display:block;width:100%;margin-top:12px;min-height:var(--control-h);text-align:left;font-weight:650; }
   .map-first .adaptive-map-workspace { display:grid;grid-template-columns:1fr;position:relative;height:650px;min-height:0;gap:0; }
   .adaptive-map-workspace .mobile-workspace-controls { display:flex;gap:6px; }
-  .mobile-workspace-controls button { min-height:44px; }
+  .mobile-workspace-controls button { min-height:var(--control-h); }
   /* z-index:1 from the sticky layer would make this a stacking context and trap
      the map panels below the inspector sheet. The canvas still paints under the
      sheet because it stays at the base level. */
@@ -97,7 +97,7 @@
   .adaptive-map-workspace .operating-sheet-title small { font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#5b6d62;font-weight:650; }
   .adaptive-map-workspace .operating-sheet-title strong { max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
   .adaptive-map-workspace .operating-sheet-controls { display:flex;align-items:center;justify-content:space-between;gap:6px;position:sticky;top:-12px;background:white;z-index:8;padding:3px 0; }
-  .operating-sheet-controls button { min-height:44px;border:0;background:transparent;padding:0 10px;font-weight:650;color:#173e32; }
+  .operating-sheet-controls button { min-height:var(--control-h);border:0;background:transparent;padding:0 10px;font-weight:650;color:#173e32; }
   .adaptive-map-workspace .operating-role-tabs { gap:0;border:1px solid #cddacb;border-radius:9px;padding:3px;margin:0 0 8px; }
   .adaptive-map-workspace .operating-role-tabs button { min-height:38px;border:0;border-radius:7px;background:transparent;color:#173e32;font-size:12px; }
   .adaptive-map-workspace .operating-role-tabs button[aria-pressed=true] { background:#e4eddf;color:#173e32;font-weight:700; }
@@ -124,11 +124,6 @@
   /* One menu holds fit, style and layers; the standalone buttons would repeat it. */
   .adaptive-map-workspace .map-fit-control { display:none; }
   .adaptive-map-workspace .selected-feature>label:first-of-type { margin-top:0; }
-  /* A half sheet is barely taller than its own chrome, so the search field
-     waits for the expanded sheet and the tapped site's dossier comes first.
-     The list view already shows the sheet full height. */
-  .map-first .adaptive-map-workspace[data-sheet=half]:not(.operations-list-mode)
-    .selected-feature>label:first-of-type { display:none; }
   .adaptive-map-workspace .map-inspector-jump { display:none; }
   /* Inline layer checkboxes wrap into several rows in this map column and
      collide with the overlays, so use the collapsed menu here as well. */
@@ -145,11 +140,11 @@
   .operations-list-mode .selected-feature { order:2; }
   .adaptive-map-workspace .workbench-resource li { display:flex;flex-wrap:wrap;padding:10px;margin:8px 0;border:1px solid #dce4d9;border-radius:8px; }
   .adaptive-map-workspace .workbench-resource li>button:first-child { width:100%;justify-content:flex-start;text-align:left; }
-  .adaptive-map-workspace .workbench-resource li>button { min-height:44px; }
+  .adaptive-map-workspace .workbench-resource li>button { min-height:var(--control-h); }
 }
 @media (max-width:600px) {
   .mobile-operations-nav { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));position:fixed;bottom:0;left:0;right:0;z-index:40;padding:7px 8px calc(7px + env(safe-area-inset-bottom));background:#fbfcf9;border-top:1px solid #cdd9ca;gap:4px; }
-  .mobile-operations-nav button { min-height:48px;border:0;background:transparent;font-size:13px; }
+  .mobile-operations-nav button { min-height:var(--control-h);border:0;background:transparent;font-size:13px; }
   .mobile-operations-nav button[aria-current=page] { background:#e4eddf;color:#173e32; }
   .regional-app .workspace { padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
   /* The map screen is an app shell: header, workbench, bottom navigation, and
@@ -166,13 +161,13 @@
   .topbar.unified-toolbar { grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"context actions";align-items:center;gap:10px;padding:8px 12px; }
   .unified-toolbar .language-picker,.unified-toolbar .sidebar-toggle,.unified-toolbar .toolbar-draft,.unified-toolbar .save-actions { display:none; }
   .unified-toolbar .toolbar-actions { width:auto; }
-  .unified-toolbar .toolbar-actions>button.primary { flex:none;min-height:40px;padding:0 14px;font-size:12px; }
+  .unified-toolbar .toolbar-actions>button.primary { flex:none;min-height:var(--control-h);padding:0 14px;font-size:12px; }
   .operating-phone-only { display:inline-flex;align-items:center;gap:6px; }
   .rail-campaign { display:grid;gap:8px;margin:0 0 22px;color:#b7c8b6;font-size:11px;letter-spacing:.06em;text-transform:uppercase; }
-  .rail-campaign button { display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:8px;border:1px solid #2f5747;background:#1f4a3d;color:#fff;font-size:13px;letter-spacing:0;text-transform:none; }
+  .rail-campaign button { display:flex;align-items:center;gap:8px;min-height:var(--control-h);padding:0 12px;border-radius:8px;border:1px solid #2f5747;background:#1f4a3d;color:#fff;font-size:13px;letter-spacing:0;text-transform:none; }
   .rail-language { display:block; }
   .rail-language .language-picker { display:grid;gap:6px;margin:22px 0 18px;color:#b7c8b6;font-size:11px;letter-spacing:.06em;text-transform:uppercase; }
-  .rail-language select { width:100%;min-height:44px;font-size:16px;padding:8px 10px;border-radius:8px;border:1px solid #2f5747;background:#1f4a3d;color:#fff; }
+  .rail-language select { width:100%;min-height:var(--control-h);font-size:16px;padding:8px 10px;border-radius:8px;border:1px solid #2f5747;background:#1f4a3d;color:#fff; }
   /* The compass is rarely wanted on a phone and pinch zoom already works. */
   .map-first .maplibregl-ctrl-compass { display:none; }
   .map-first .adaptive-map-workspace { flex:1;height:auto;min-height:300px; }
@@ -187,13 +182,13 @@
   /* The sheet covers its own summary, so it carries its own dismiss control. */
   .map-first .adaptive-map-workspace .map-legend[open] .map-panel-close,
   .map-first .adaptive-map-workspace .map-layer-menu[open] .map-panel-close {
-    display:block;width:100%;min-height:44px;margin-bottom:8px;position:sticky;top:0;z-index:1;background:#f1f5ee; }
+    display:block;width:100%;min-height:var(--control-h);margin-bottom:8px;position:sticky;top:0;z-index:1;background:#f1f5ee; }
   .operating-status-strip { gap:6px;font-size:12px;padding:8px; }
   .operating-status-strip>.operating-badge { display:none; }
   .operating-preview-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .operating-preview-metrics dd { font-size:17px; }
   .operating-readiness { padding:10px; }
-  .operating-readiness textarea,.operating-readiness input,.operating-readiness select { font-size:16px;min-height:44px; }
+  .operating-readiness textarea,.operating-readiness input,.operating-readiness select { font-size:16px;min-height:var(--control-h); }
   .operating-draft-dialog .dialog-body { padding:18px; }
   .operating-lesson-cards { grid-template-columns:1fr; }
   .operating-plan-dock { display:none; }
@@ -205,6 +200,6 @@
 /* Several features under one tap: list them instead of guessing the top one. */
 .map-nearby { display:grid;gap:6px;margin:0 0 10px;padding:8px;border:1px solid #e0c46b;border-radius:10px;background:#fffaf0; }
 .map-nearby p { margin:0;font-size:13px;font-weight:650;color:#173e32; }
-.map-nearby button { min-height:44px;text-align:left;justify-content:flex-start;background:white; }
+.map-nearby button { min-height:var(--control-h);text-align:left;justify-content:flex-start;background:white; }
 .map-nearby button small { display:inline-block;min-width:52px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#5b6d62; }
 .operating-sheet-title { background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer; }

@@ -2,11 +2,13 @@ import { useLanguage } from '../i18n';
 import './workspace-sections.css';
 
 const sections: Record<string, readonly (readonly [string, string, string])[]> = {
-  'Planning desk': [['review', 'This turn', 'Ce tour'], ['alternatives', 'Plan A / B', 'Plan A / B'], ['analysis', 'Analysis & tools', 'Analyse et outils']],
+  'Planning desk': [['review', 'This turn', 'Ce tour'], ['commitments', 'Mill commitments', 'Engagements des usines'], ['alternatives', 'Compare plans', 'Comparer les plans'], ['analysis', 'Analysis & tools', 'Analyse et outils']],
   Production: [['queues', 'Crew queues', 'Files des équipes'], ['calendar', 'Season calendar', 'Calendrier de saison'], ['tools', 'Site finder & tools', 'Sites et outils']],
-  Transport: [['dispatch', 'Truck dispatch', 'Transport par camion'], ['map', 'Route map', 'Carte des trajets'], ['tools', 'Contracts & tools', 'Contrats et outils']],
-  Reports: [['summary', 'Turn summary', 'Bilan du tour'], ['replay', 'Routes & record', 'Trajets et registre'], ['compare', 'Forest changes', 'Évolution de la forêt'], ['charts', 'Charts', 'Graphiques'], ['reflection', 'Lessons & comparison', 'Leçons et comparaison']],
+  Transport: [['dispatch', 'Truck dispatch', 'Transport par camion'], ['tools', 'Contracts & tools', 'Contrats et outils']],
+  Reports: [['summary', 'Outcome', 'Bilan'], ['replay', 'Routes & record', 'Trajets et registre'], ['charts', 'Charts', 'Graphiques'], ['compare', 'Forest changes', 'Évolution de la forêt'], ['reflection', 'Lessons', 'Leçons']],
   Stewardship: [['annual', 'Annual forest', 'Forêt annuelle'], ['seasons', 'Operating seasons', 'Saisons opérationnelles']],
+  'Forest & timber': [['lot', 'Selected lot', 'Lot choisi'], ['inventory', 'Supply inventory', 'Inventaire'], ['appraisal', 'Appraisal & bids', 'Évaluation et offres'], ['experiments', 'Bidding experiment', 'Expérience d’enchères']],
+  'Scenario studio': [['cases', 'Teaching cases', 'Cas pédagogiques'], ['custom', 'Custom scenario', 'Scénario personnalisé'], ['guide', 'Field guide & sources', 'Guide et sources']],
   Collaboration: [['negotiation', 'Negotiation board', 'Tableau de négociation'], ['allocation', 'Allocation lab', 'Laboratoire de répartition'], ['dispatch', 'Operating agreements', 'Accords opérationnels'], ['exercises', 'More exercises', 'Autres exercices']],
 };
 

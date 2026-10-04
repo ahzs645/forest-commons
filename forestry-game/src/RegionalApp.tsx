@@ -1,5 +1,5 @@
 import { bcOperatingLesson } from "./scenarios/bc-operating-lesson";
-import { ConnectivityNotice, OperationsStatus, MobileOperationsNav, LessonLauncher, anchorWorkbench } from "./operations/OperationsShell";
+import { ConnectivityNotice, MobileOperationsNav, LessonDialog, LessonLauncher, anchorWorkbench } from "./operations/OperationsShell";
 import { DraftReview, TurnReview } from "./operations/PlanReview";
 import { FirstDeliveryGuide, useFirstDeliveryGuideController } from './operations/FirstDeliveryGuide';
 import { ModelTermHelp, ModelGlossary, ResourceLocation } from './operations/ModelGlossary';
@@ -7,7 +7,7 @@ import SelectedLotStatus from './operations/SelectedLotStatus';
 import AnalysisTools from './operations/AnalysisTools';
 import RecordedStateComparison from './maps/RecordedStateComparison';
 import OperatingAgreementTools from './OperatingAgreementTools';
-import { QueueAmountInput } from './operations/QueueEditor';
+import QueueEditor from './operations/QueueEditor';
 import PlanComparison from './operations/PlanComparison';
 import RouteReplay from './operations/RouteReplay';
 import TurnOutcomeDialog, { TurnSummary } from './operations/TurnOutcome';
@@ -31,7 +31,7 @@ import CommonValueExperiment from './CommonValueExperiment';
 import TurnDurationMode from './TurnDurationMode';
 import EightCompanyExercise from './EightCompanyExercise';
 import PreSeasonDesk from './PreSeasonDesk';
-import BuckingDesk,{BuckingSelect} from './BuckingDesk';
+import BuckingDesk from './BuckingDesk';
 import LotProfitability from './LotProfitability';
 import BidCompositionDesk from './BidCompositionDesk';
 import {FacilityTransferDesk} from "./FacilityTransferDesk";
@@ -53,7 +53,7 @@ import StewardshipLab from "./StewardshipLab";
 import Debrief from "./Debrief";
 import TeamComparison from "./TeamComparison";
 import { CurrentTurnBriefing } from "./DisruptionDesk";
-import { respondToDisruption, operatingRegion } from "./simulation/disruptions";
+import { respondToDisruption, activeDisruptions } from "./simulation/disruptions";
 import MapWorkspace from "./MapWorkspace";
 import ProcurementLab from "./ProcurementLab";
 import { serializeGame } from "./simulation/save-format";
@@ -61,13 +61,15 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { securedAwaitingAuthorization } from "./simulation/tenure";
 import {
   Trees,
-  LayoutDashboard,
   Map as MapIcon,
   Axe,
   Truck,
   Handshake,
-  BarChart3,
-  BookOpen,
+  ClipboardList,
+  ChartLine,
+  TreePine,
+  GraduationCap,
+  Sprout,
   Settings,
   Play,
   Download,
@@ -92,17 +94,17 @@ import {
   sum,
 } from "./simulation/engine";
 import { parseGame, validateRegion } from "./simulation/validation";
-import { canAccess, route, weatherAt } from "./simulation/routing";
+import { canAccess, weatherAt } from "./simulation/routing";
 import { quebec } from "./scenarios/quebec";
 import { princeGeorge } from "./scenarios/prince-george";
 const builtInRegions = [quebec, princeGeorge, bcOperatingLesson];
-import OperationsMap from "./maps/LazyMap";
 import CollaborationLab from "./CollaborationLab";
 import NegotiationOffers from './NegotiationOffers';
 import { LearningObjectives } from "./PlanningDesk";
 import "./regional.css";
 import "./operations/operations.css";
 import "./operations/mobile-play.css";
+import "./operations/map-screen.css";
 const key = "forest-commons-regional-v2";
 const interfaceSessionKey = 'forest-commons-interface-session-v1';
 function newInterfaceSession() {
@@ -116,19 +118,36 @@ function initialInterfaceSession(hasCampaign: boolean) {
   return newInterfaceSession();
 }
 const fmt = (n: number) => Math.round(n).toLocaleString("en-CA");
+/** Short header figures for phones, e.g. 1.8M or 24k. */
+const compact = (n: number, language: string) =>
+  new Intl.NumberFormat(language === "fr" ? "fr-CA" : "en-CA", { notation: "compact", maximumFractionDigits: 1 }).format(n);
+// Play happens on the map, the plan and the results. The desks hold the full
+// editors and advanced tools; learning modes and setup stay outside the turn loop.
 const pages = [
-  ["Overview", LayoutDashboard],
-  ["Planning desk", BookOpen],
-  ["Forest & timber", MapIcon],
-  ["Production", Axe],
-  ["Transport", Truck],
-  ["Commitments", BarChart3],
-  ["Collaboration", Handshake],
-  ["Reports", BookOpen],
-  ["Classroom", Handshake],
-  ["Stewardship", Trees],
-  ["Scenario studio", Settings],
+  ["Overview", MapIcon, "play"],
+  ["Planning desk", ClipboardList, "play"],
+  ["Reports", ChartLine, "play"],
+  ["Forest & timber", TreePine, "desks"],
+  ["Production", Axe, "desks"],
+  ["Transport", Truck, "desks"],
+  ["Collaboration", Handshake, "learn"],
+  ["Classroom", GraduationCap, "learn"],
+  ["Stewardship", Sprout, "learn"],
+  ["Scenario studio", Settings, "setup"],
 ] as const;
+const navGroups: Record<string, [string, string]> = {
+  play: ["Play", "Jouer"], desks: ["Desks", "Bureaux"], learn: ["Learn", "Apprendre"], setup: ["Setup", "Configuration"],
+};
+/** Screens folded into another screen's tab, so links to them still land somewhere. */
+const pageAliases: Record<string, [string, string]> = {
+  Commitments: ["Planning desk", "commitments"],
+};
+function pageLabel(name: string, language: string, tr: (s: string) => string) {
+  const short: Record<string, [string, string]> = {
+    Overview: ["Map", "Carte"], "Planning desk": ["Plan", "Plan"], Reports: ["Results", "Résultats"],
+  };
+  return short[name] ? short[name][language === "fr" ? 1 : 0] : tr(name);
+}
 function download(name: string, value: unknown) {
   const url = URL.createObjectURL(
     new Blob(
@@ -160,18 +179,20 @@ function initial() {
 }
 export default function RegionalApp() {
  const {t: tr,language}=useLanguage();
+  // The map is the main screen, so the rail starts as icons. On a phone the
+  // rail is a drawer and always starts closed; a desktop preference to keep it
+  // open must not cover the map on the next phone visit.
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     try {
-      const saved = localStorage.getItem("forest-sidebar-collapsed");
-      return saved === null
-        ? window.matchMedia("(max-width: 1100px)").matches
-        : saved === "true";
+      if (window.matchMedia("(max-width: 600px)").matches) return true;
+      return localStorage.getItem("forest-sidebar-collapsed") !== "false";
     } catch {
-      return false;
+      return true;
     }
   });
   useEffect(() => {
     try {
+      if (window.matchMedia("(max-width: 600px)").matches) return;
       localStorage.setItem(
         "forest-sidebar-collapsed",
         String(sidebarCollapsed),
@@ -223,7 +244,10 @@ export default function RegionalApp() {
   }, [campaignKey]);
   const [draftReviewOpen, setDraftReviewOpen] = useState(false);
   const [showLessonWelcome, setShowLessonWelcome] = useState(!boot.raw && !boot.error);
-  const navigate = (target: string) => {
+  const navigate = (requested: string) => {
+    const alias = pageAliases[requested];
+    const target = alias ? alias[0] : requested;
+    if (alias) setWorkspaceViews(views => ({ ...views, [target]: alias[1] }));
     if (page === "Classroom" && target !== "Classroom" && classroomPendingChanges) {
       setNotice("Submit or discard your classroom draft, and wait for any submission to finish, before leaving this screen.");
       return;
@@ -237,7 +261,7 @@ export default function RegionalApp() {
     requestAnimationFrame(() => { if (!anchorWorkbench()) window.scrollTo({ top: 0 }); });
   };
   const navigateToTask = (target: string) => {
-    setWorkspaceViews(views => ({ ...views, [target]: defaultWorkspaceSection(target) }));
+    if (!pageAliases[target]) setWorkspaceViews(views => ({ ...views, [target]: defaultWorkspaceSection(target) }));
     navigate(target);
     if (target === 'Reports' && game.week > game.region.weeks) requestAnimationFrame(() => {
       const results = document.getElementById('season-results');
@@ -281,6 +305,12 @@ export default function RegionalApp() {
     problems = done ? [] : planProblems(game),
     report =
       game.history[reportIndex < 0 ? game.history.length - 1 : reportIndex];
+  const reportPicker = <label className="workspace-report-picker">
+    {tr('Report turn')}<select aria-label={tr('Report turn')} value={reportIndex} onChange={event => setReportIndex(Number(event.target.value))}>
+      <option value={-1}>{tr('Latest completed turn')}</option>
+      {game.history.map((history, index) => <option key={history.week} value={index}>{tr(periodLabel)} {history.week}</option>)}
+    </select>
+  </label>;
   useEffect(() => {
     if (savePaused) return;
     try {
@@ -476,12 +506,12 @@ export default function RegionalApp() {
           </button>
         </div>}
         <nav id="main-navigation" aria-label={tr("Main navigation")}>
-          {pages.map(([name, Icon], index) => (
-            <div className="rail-nav-group" key={name}>
-              {[0, 7, 8, 10].includes(index) && <span>{language === "fr" ? ({0:"Opérations",7:"Résultats",8:"Apprentissage",10:"Configuration"} as Record<number,string>)[index] : ({0:"Operations",7:"Review",8:"Learn",10:"Setup"} as Record<number,string>)[index]}</span>}
+          {pages.map(([name, Icon, group], index) => (
+            <div className="rail-nav-group" data-group={group} key={name}>
+              {pages[index - 1]?.[2] !== group && <span>{navGroups[group][language === "fr" ? 1 : 0]}</span>}
             <button
-              aria-label={tr(name === "Overview" ? "Map" : name)}
-              title={tr(name === "Overview" ? "Map" : name)}
+              aria-label={pageLabel(name, language, tr)}
+              title={pageLabel(name, language, tr)}
               className={page === name ? "active" : ""}
               onClick={() => {
                 if(page === "Classroom" && name !== "Classroom" && classroomPendingChanges){
@@ -494,7 +524,7 @@ export default function RegionalApp() {
             >
               <Icon size={19} />
               <span className="nav-label">
-                {tr(name === "Overview" ? "Map" : name)}
+                {pageLabel(name, language, tr)}
               </span>
               {page === name && <ChevronRight size={16} />}
             </button>
@@ -546,9 +576,10 @@ export default function RegionalApp() {
                       : `${tr(periodLabel)} ${game.week} / ${r.weeks}${(r.turnDurationWeeks??1)!==1?` · ${turnIntervalLabel(r.turnDurationWeeks!,language)}`:""}`}
                   </span>
                   <span className="toolbar-month">{tr("Month")} {month(game) + 1}</span>
-                  <span className="toolbar-stat">{money(game.cash)}</span>
+                  <span className="toolbar-stat"><span className="stat-full">{money(game.cash)}</span><span className="stat-short" aria-hidden="true">{r.currency} {compact(game.cash, language)}</span></span>
                   <span className="toolbar-stat">
-                    {fmt(totalDelivered)} {tr("m³ delivered")}
+                    <span className="stat-full">{fmt(totalDelivered)} {tr("m³ delivered")}</span>
+                    <span className="stat-short" aria-hidden="true">{compact(totalDelivered, language)} m³</span>
                   </span>
                 </>
               ) : (
@@ -562,22 +593,21 @@ export default function RegionalApp() {
           </div>
           {standaloneControls && (
             <div className="toolbar-actions">
-              <button
+              {!done && <button
                 className="toolbar-draft"
-                disabled={done}
                 onClick={() => setDraftReviewOpen(true)}
               >
                 <Sparkles size={16} />
                 <span>{tr("Draft plan")}</span>
-              </button>
+              </button>}
+              {/* After the last turn the main action leads to the season results. */}
               <button
                 className="primary"
                 ref={runTurnButton}
-                disabled={done}
-                onClick={() => setConfirm("advance")}
+                onClick={() => done ? navigateToTask("Reports") : setConfirm("advance")}
               >
-                <Play size={16} />
-                <span>{done ? tr("Season complete") : <>{tr("Run")} {tr(periodLabel).toLowerCase()} {Math.min(game.week, r.weeks)}</>}</span>
+                {done ? <ChartLine size={16} /> : <Play size={16} />}
+                <span>{done ? (language === "fr" ? "Résultats de la saison" : "Season results") : <>{tr("Run")} {tr(periodLabel).toLowerCase()} {Math.min(game.week, r.weeks)}</>}</span>
               </button>
               <div className="save-actions">
                 <button
@@ -611,32 +641,25 @@ export default function RegionalApp() {
         </header>
         <div className="workspace">
           <ConnectivityNotice />
-          {showLessonWelcome && page === "Overview" && <LessonLauncher
-            regions={[bcOperatingLesson, princeGeorge, quebec]} welcome
+          {showLessonWelcome && page === "Overview" && <LessonDialog
+            regions={[bcOperatingLesson, princeGeorge, quebec]}
             onChoose={chooseLesson}
             onDismiss={() => { setShowLessonWelcome(false); requestAnimationFrame(anchorWorkbench); }} />}
-          {page === "Overview" && !showLessonWelcome && !done && totalDelivered === 0 && <FirstDeliveryGuide
-            game={game} campaignKey={campaignKey} controller={guideController} onNavigate={navigateToTask} onSelect={select} onDraft={() => setDraftReviewOpen(true)} />}
-          {page === "Overview" && <OperationsStatus game={game} onNavigate={navigateToTask} onSelect={select} />}
           {page !== "Overview" && (
             <div className="page-heading">
-              <h1>{tr(page)}</h1>
+              <h1>{pageLabel(page, language, tr)}</h1>
             </div>
           )}
           <WorkspaceSections page={page} value={activeView} onChange={setWorkspaceView} />
-          {(page === 'Production' || page === 'Transport') && <FirstDeliveryGuide compact
-            game={game} campaignKey={campaignKey} controller={guideController} onNavigate={navigateToTask} onSelect={select}
-            onReviewTurn={() => { navigateToTask('Planning desk'); setConfirm('advance'); }} />}
-          {(page === 'Production' || page === 'Transport') && <ModelGlossary/>}
-          {page === 'Reports' && ['summary', 'replay', 'compare'].includes(activeView) && <label className="workspace-report-picker">
-            {tr('Report turn')}<select aria-label={tr('Report turn')} value={reportIndex} onChange={event => setReportIndex(Number(event.target.value))}>
-              <option value={-1}>{tr('Latest completed turn')}</option>
-              {game.history.map((history, index) => <option key={history.week} value={index}>{tr(periodLabel)} {history.week}</option>)}
-            </select>
-          </label>}
+          {(page === 'Production' || page === 'Transport') && activeView === 'tools' && <ModelGlossary/>}
+          {page === 'Reports' && !game.history.length && <section className="panel results-empty">
+            <h2>{language === 'fr' ? 'Aucun résultat pour l’instant' : 'No results yet'}</h2>
+            <p>{language === 'fr' ? 'Exécutez votre premier tour pour voir les livraisons, les trajets réels et les coûts.' : 'Run your first turn to see deliveries, actual routes and costs here.'}</p>
+            <button className="primary" onClick={() => navigate('Overview')}>{language === 'fr' ? 'Retour à la carte' : 'Back to the map'}</button>
+          </section>}
+          {/* At season end the scorecard leads; the turn picker belongs with the turn summary below it. */}
+          {page === 'Reports' && game.history.length > 1 && (activeView === 'replay' || (activeView === 'summary' && !done)) && reportPicker}
           {page === 'Planning desk' && activeView === 'review' && <>
-            <FirstDeliveryGuide game={game} campaignKey={campaignKey} controller={guideController} onNavigate={navigateToTask} onSelect={select}
-              onDraft={() => setDraftReviewOpen(true)} onReviewTurn={() => setConfirm('advance')} />
             <CurrentTurnBriefing game={game} onReviewConditions={() => {
               setAnalysisTask('conditions');
               setWorkspaceView('analysis'); requestAnimationFrame(() => {
@@ -654,13 +677,14 @@ export default function RegionalApp() {
                 {language === "fr" ? "Examiner et exécuter le tour" : "Review and run turn"}
               </button>
             </div></section>}
-          {page === "Reports" && activeView === 'summary' && <>
+          {page === "Reports" && activeView === 'summary' && !!game.history.length && <>
+            {done && <div id="season-results" tabIndex={-1}><Scorecard game={game} comparison={game.previousCampaign ?? null} />
+              <LearningObjectives game={game} /></div>}
+            {done && game.history.length > 1 && reportPicker}
             <TurnSummary game={game} reportIndex={reportIndex < 0 ? undefined : reportIndex} onNavigate={navigateToTask} onReplay={openReplay} />
             <details className="workspace-metrics"><summary>{language === 'fr' ? 'Résultats par site' : 'Results by site'}</summary>
               <DecisionDebrief game={game} reportIndex={reportIndex < 0 ? undefined : reportIndex} onSelect={id => { select(id); navigate("Overview"); }} />
             </details>
-            {done && <div id="season-results" tabIndex={-1}><LearningObjectives game={game} />
-              <Scorecard game={game} comparison={game.previousCampaign ?? null} /></div>}
           </>}
           {savePaused && savePauseReason && <div className="notice" role="alert">{tr(savePauseReason)}</div>}
           {notice && (
@@ -679,7 +703,7 @@ export default function RegionalApp() {
               {language === "fr" ? "La trésorerie est négative. Les opérations existantes peuvent continuer avec un découvert pédagogique; les frais et intérêts configurés restent applicables." : "Operating cash is negative. Existing operations can continue on an educational overdraft; configured costs and interest still apply."} <ProcurementBudget game={game}/>
             </div>
           )}
-          {!["Overview", "Classroom", "Stewardship", "Reports"].includes(page) && <details className="workspace-metrics">
+          {page === "Planning desk" && activeView === "review" && <details className="workspace-metrics">
           <summary>{language === 'fr' ? 'Trésorerie, stock et conditions actuelles' : 'Current cash, inventory & conditions'}</summary>
           <div className="metric-grid">
             <article>
@@ -711,9 +735,24 @@ export default function RegionalApp() {
             </article>
           </div>
           </details>}
-          {page === "Overview" && game.region.bcTenure && <section className="panel bc-tenure-callout"><p>{tr("BC secured timber still needs active harvesting and road authorizations. Check applications, renewals, stumpage and obligations before assigning crews or trucks.")}</p>{awaitingAuthorization.length > 0 && <p><strong>{tr("Secured timber waiting for a harvest authorization:")}</strong> {awaitingAuthorization.map(a => a.id).join(", ")}. {tr("The draft plan skips these lots until an application is approved.")}</p>}<button onClick={()=>{if(awaitingAuthorization[0])setSelected(awaitingAuthorization[0].id);setPage("Forest & timber");}}>{tr("Review selected lot tenure and permits")}</button></section>}
           {page === "Overview" && (
             <MapWorkspace
+              overlay={<>
+                {!done && activeDisruptions(game).length > 0 && <details className="map-overlay-note map-overlay-event">
+                  <summary>{tr(activeDisruptions(game)[0].title)}{activeDisruptions(game).length > 1 ? ` +${activeDisruptions(game).length - 1}` : ""}</summary>
+                  <ul>{activeDisruptions(game).map(event => {
+                    const subject = [...r.roads.edges, ...r.crews, ...r.trucks, ...r.mills].find(item => item.id === event.target);
+                    return <li key={event.id}><strong>{tr(event.title)}</strong>{subject?.name ? ` · ${tr(subject.name)}` : ""} · {tr(event.description)}</li>;
+                  })}</ul>
+                  <button onClick={() => navigateToTask("Planning desk")}>{language === "fr" ? "Examiner les conditions" : "Review conditions"}</button>
+                </details>}
+                {!done && totalDelivered === 0 && <FirstDeliveryGuide overlay selectedStandId={chosen.id}
+                  game={game} campaignKey={campaignKey} controller={guideController} onNavigate={navigateToTask} onSelect={select} onDraft={() => setDraftReviewOpen(true)} />}
+                {game.region.bcTenure && <details className="bc-tenure-callout map-overlay-note">
+                  <summary>{awaitingAuthorization.length > 0 ? `${awaitingAuthorization.length} ${language === "fr" ? "lots attendent une autorisation" : "lots await harvest authorization"}` : tr("BC tenure & permits")}</summary>
+                  <p>{tr("BC secured timber still needs active harvesting and road authorizations. Check applications, renewals, stumpage and obligations before assigning crews or trucks.")}</p>{awaitingAuthorization.length > 0 && <p><strong>{tr("Secured timber waiting for a harvest authorization:")}</strong> {awaitingAuthorization.map(a => a.id).join(", ")}. {tr("The draft plan skips these lots until an application is approved.")}</p>}<button onClick={()=>{if(awaitingAuthorization[0])setSelected(awaitingAuthorization[0].id);setPage("Forest & timber");}}>{tr("Review selected lot tenure and permits")}</button>
+                </details>}
+              </>}
               key={JSON.stringify([r.id,r.stands.map(s=>s.id),r.crews.map(c=>c.id),r.trucks.map(t=>t.id),r.mills.map(m=>m.id),r.products.map(p=>p.id),r.zones.map(z=>z.id)])}
               game={game}
               selected={chosen.id}
@@ -726,19 +765,13 @@ export default function RegionalApp() {
               }}
             />
           )}
-          {page === "Forest & timber" && (
+          {page === "Forest & timber" && activeView === 'lot' && (
             <>
-              <div className="split">
-                <section className="panel map-panel">
-                  <OperationsMap
-                    game={game}
-                    selected={chosen.id}
-                    onSelect={select}
-                  />
-                </section>
+              <div className="lot-detail">
                 <section className="panel">
-                  <span className="eyebrow">{tr("SUPPLY AREA")} {chosen.id}</span>
-                  <h2>{chosen.name}</h2>
+                  <div className="section-heading"><div><span className="eyebrow">{tr("SUPPLY AREA")} {chosen.id}</span>
+                  <h2>{chosen.name}</h2></div>
+                  <button onClick={() => navigate("Overview")}>{language === "fr" ? "Voir sur la carte" : "Show on map"}</button></div>
                   <SelectedLotStatus game={game} standId={chosen.id} onReviewPermits={() => {
                     const controls = document.getElementById('selected-lot-permits');
                     controls?.scrollIntoView({ block: 'start' }); controls?.focus({ preventScroll: true });
@@ -875,6 +908,10 @@ export default function RegionalApp() {
                     ))}
                 </section>
               </div>
+            </>
+          )}
+          {page === "Forest & timber" && activeView === 'inventory' && (
+            <>
               <section className="panel">
                 <div className="section-heading">
                   <h2>{tr("Supply inventory")}</h2>
@@ -890,9 +927,9 @@ export default function RegionalApp() {
                       value={filter}
                       onChange={(e) => setFilter(e.target.value)}
                     >
-                      {["all", "owned", "private", "auction", "protected"].map(
-                        (v) => (
-                          <option key={v}>{v}</option>
+                      {([["all", "All supply", "Tout l’approvisionnement"], ["owned", "Secured", "Acquis"], ["private", "Private", "Privé"], ["auction", "Auction", "Enchères"], ["protected", "Protected", "Protégé"]] as const).map(
+                        ([v, en, fr]) => (
+                          <option key={v} value={v}>{language === "fr" ? fr : en}</option>
                         ),
                       )}
                     </select>
@@ -935,7 +972,7 @@ export default function RegionalApp() {
                               <td>
                                 <button
                                   className="text-button"
-                                  onClick={() => setSelected(s.id)}
+                                  onClick={() => { setSelected(s.id); setWorkspaceView('lot'); }}
                                 >
                                   {s.id} · {s.name}
                                 </button>
@@ -964,7 +1001,7 @@ export default function RegionalApp() {
               </section>
             </>
           )}
-          {page === "Forest & timber" && (
+          {page === "Forest & timber" && activeView === 'appraisal' && (
             <ProcurementLab
               key={chosen.id}
               game={game}
@@ -976,16 +1013,15 @@ export default function RegionalApp() {
               }
             />
           )}
-          {(page === 'Forest & timber' || (page === 'Reports' && activeView === 'charts')) && <BCMarketDesk game={game}/>}
-          {(page === 'Forest & timber' || (['Production','Transport'].includes(page) && activeView === 'tools')) && <div id="selected-lot-permits" tabIndex={-1}><TenureDesk key={`tenure-${game.region.id}`} game={game} standId={page === "Forest & timber" ? chosen.id : undefined} onChange={change} /></div>}
-          {page === "Forest & timber" && <><CommonValueExperiment/><BidCompositionDesk game={game} standId={chosen.id} onChange={change}/><BuckingDesk game={game} standId={chosen.id}/></>}
-          {(['Production','Transport'].includes(page) && activeView === 'tools') && <PreSeasonDesk game={game} onChange={change}/>}
-          {page === "Reports" && activeView === 'charts' && <LotProfitability game={game}/>}
+          {((page === 'Forest & timber' && activeView === 'appraisal') || (page === 'Reports' && activeView === 'charts' && !!game.history.length)) && <BCMarketDesk game={game}/>}
+          {page === "Reports" && activeView === 'charts' && !!game.history.length && <details className="workspace-metrics"><summary>{language === 'fr' ? 'Contribution par lot (registre)' : 'Contribution by lot (ledger)'}</summary><LotProfitability game={game}/></details>}
+          {page === 'Forest & timber' && activeView === 'lot' && <div id="selected-lot-permits" tabIndex={-1}><TenureDesk key={`tenure-${game.region.id}`} game={game} standId={page === "Forest & timber" ? chosen.id : undefined} onChange={change} /></div>}
+          {page === "Forest & timber" && activeView === 'appraisal' && <><BidCompositionDesk game={game} standId={chosen.id} onChange={change}/><BuckingDesk game={game} standId={chosen.id}/></>}
+          {page === "Forest & timber" && activeView === 'experiments' && <CommonValueExperiment/>}
+
           {page === "Classroom" && <Classroom region={r} onPendingChanges={setClassroomPendingChanges} />}
           {page === "Transport" && activeView === 'tools' && !!game.region.facilityTransfers?.length && <FacilityTransferDesk game={game} onChange={change}/>}
-          {page === "Production" && activeView === 'tools' && <ReservationDesk game={game} onChange={change}/>}
-          {(page === "Production" || page === "Transport") && activeView === 'tools' && <MillProcessingDesk key={`processing-${game.region.id}`} game={game} onChange={change}/>}
-          {((page === "Transport" && activeView === 'tools') || page === "Commitments") && <OfftakeDesk key={`offtake-${game.region.id}`} game={game} onChange={change}/>}
+          {((page === "Transport" && activeView === 'tools') || (page === 'Planning desk' && activeView === 'commitments')) && <OfftakeDesk key={`offtake-${game.region.id}`} game={game} onChange={change}/>}
           {page === 'Stewardship' && activeView === 'annual' && <StewardshipLab key={campaignKey} game={game} onChange={change}/>}
           {page === 'Stewardship' && activeView === 'seasons' && <SeasonBuilder game={game} onChange={change}/>}
           {page === 'Planning desk' && activeView === 'alternatives' && <PlanComparison
@@ -996,8 +1032,14 @@ export default function RegionalApp() {
           )}
           {page === 'Production' && activeView === 'calendar' && <CrewTimeline game={game} onChange={change}/>}
           {page === 'Production' && activeView === 'tools' && <>
-            <DraftOptions key={game.region.id} game={game} onDraft={options=>act(()=>draftPlan(game,options))}/>
             <HarvestPlanning game={game} onChange={change} onInspect={id=>{select(id);navigate('Overview');}}/>
+            <DraftOptions key={game.region.id} game={game} onDraft={options=>act(()=>draftPlan(game,options))}/>
+            <details className="workspace-metrics"><summary>{language === 'fr' ? 'Permis, positionnement, réservations et transformation' : 'Permits, pre-season, reservations & processing'}</summary>
+              <TenureDesk key={`tenure-${game.region.id}`} game={game} onChange={change}/>
+              <PreSeasonDesk game={game} onChange={change}/>
+              <ReservationDesk game={game} onChange={change}/>
+              <MillProcessingDesk key={`processing-${game.region.id}`} game={game} onChange={change}/>
+            </details>
           </>}
           {page === "Production" && activeView === 'queues' && (
             <>
@@ -1011,6 +1053,9 @@ export default function RegionalApp() {
                   </div>
                   {game.roleMode && roleReady("production")}
                 </div>
+                {/* A plan-wide setting, not part of editing one crew, so it stays folded. */}
+                <details className="workspace-metrics">
+                <summary>{tr("Standing retention:")} {fmt(game.plan.retention * 100)}%</summary>
                 <label>
                   {tr("Standing retention:")} {fmt(game.plan.retention * 100)}%
                   <input
@@ -1028,152 +1073,20 @@ export default function RegionalApp() {
                   />
                 </label>
                 <div className="queue-model-help"><ModelTermHelp term="retention"/><ModelTermHelp term="bucking"/></div>
+                </details>
                 <ResourcePicker resources={r.crews} selected={editingCrew?.id ?? ''} onSelect={setActiveCrewId} kind="crew"
                   counts={Object.fromEntries(Object.entries(game.plan.crews).map(([id,orders])=>[id,orders.length]))}/>
-                <div className="resource-grid workspace-single-resource">
-                  {r.crews.filter(c => c.id === editingCrew?.id).map((c) => (
-                    <article className="resource-card" key={c.id}>
-                      <div className="section-heading">
-                        <h3>{c.name}</h3>
-                        <span>{c.hours} h/{tr(periodLabel).toLowerCase()}</span>
-                      </div>
-                      <p className="muted">
-                        {tr("At")} <ResourceLocation game={game} nodeId={game.crewPositions[c.id]}/> ·{" "}
-                        {fmt(
-                          game.plan.crews[c.id].reduce(
-                            (n, o) => n + o.hours,
-                            0,
-                          ),
-                        )}{" "}
-                        {tr("h scheduled")}
-                      </p>
-                      {game.plan.crews[c.id].map((o, i) => (
-                        <div className="queue-order" key={i}>
-                          <span>{i + 1}</span>
-                          <label>
-                            {tr("Area")}
-                            <select
-                              disabled={done}
-                              value={o.stand}
-                              onChange={(e) =>
-                                updatePlan((p) => {
-                                  p.crews[c.id][i].stand = e.target.value;
-                                })
-                              }
-                            >
-                              {r.stands
-                                .filter(
-                                  (s) =>
-                                    game.stands.find((t) => t.id === s.id)
-                                      ?.owned,
-                                )
-                                .map((s) => (
-                                  <option key={s.id} value={s.id}>
-                                    {s.id} · {s.name}
-                                  </option>
-                                ))}
-                            </select>
-                          </label>
-                          <BuckingSelect game={game} crew={c.id} index={i} onChange={change}/>
-                          <label>
-                            {tr("Treatment")}
-                            <select
-                              aria-label={`${c.name} ${tr("stop")} ${i + 1} ${tr("treatment")}`}
-                              disabled={done}
-                              value={o.treatment ?? "final"}
-                              onChange={(e) =>
-                                updatePlan((p) => {
-                                  p.crews[c.id][i].treatment = e.target.value;
-                                })
-                              }
-                            >
-                              {Object.entries(
-                                r.treatments ?? {
-                                  final: { name: "Final harvest" },
-                                },
-                              ).map(([id, t]) => (
-                                <option key={id} value={id}>
-                                  {t.name}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                          <label>
-                            {tr("Hours")}
-                            <QueueAmountInput disabled={done} kind="crew" value={o.hours}
-                              label={`${c.name} ${tr('stop')} ${i + 1} ${tr('Hours')}`}
-                              maximum={c.hours - game.plan.crews[c.id].reduce((total, order, index) => total + (index === i ? 0 : order.hours), 0)}
-                              onCommit={hours => updatePlan(plan => { plan.crews[c.id][i].hours = hours; })}/>
-                          </label>
-                          <button
-                            disabled={done}
-                            aria-label={`${tr("Remove")} ${c.id} ${tr("order")} ${i + 1}`}
-                            onClick={() =>
-                              updatePlan((p) => {
-                                p.crews[c.id].splice(i, 1);
-                              })
-                            }
-                          >
-                            ×
-                          </button>
-                          {i > 0 && (
-                            <button
-                              disabled={done}
-                              aria-label={`${tr("Move")} ${c.id} ${tr("order")} ${i + 1} ${tr("up")}`}
-                              onClick={() =>
-                                updatePlan((p) => {
-                                  [p.crews[c.id][i - 1], p.crews[c.id][i]] = [
-                                    p.crews[c.id][i],
-                                    p.crews[c.id][i - 1],
-                                  ];
-                                })
-                              }
-                            >
-                              ↑
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                      <button
-                        disabled={done}
-                        onClick={() =>
-                          updatePlan((p) => {
-                            const s = game.stands.find(s => s.id === chosen.id && s.owned && s.remaining > 0) ?? game.stands.find(
-                              (s) => s.owned && s.remaining > 0,
-                            );
-                            if (s)
-                              p.crews[c.id].push({
-                                stand: s.id,
-                                hours: Math.max(
-                                  1,
-                                  c.hours -
-                                    p.crews[c.id].reduce(
-                                      (n, o) => n + o.hours,
-                                      0,
-                                    ),
-                                ),
-                              });
-                          })
-                        }
-                      >
-                        {tr("+ Add stop")}
-                      </button>
-                    </article>
-                  ))}
-                </div>
-              </section>
-              <section className="panel map-panel">
-                <OperationsMap
-                  game={game}
-                  selected={chosen.id}
-                  onSelect={select}
-                />
+                {editingCrew && <>
+                  <p className="queue-desk-summary">
+                    <strong>{editingCrew.name}</strong>
+                    <span>{editingCrew.hours} h/{tr(periodLabel).toLowerCase()}</span>
+                    <span>{tr("At")} <ResourceLocation game={game} nodeId={game.crewPositions[editingCrew.id]}/> · {fmt((game.plan.crews[editingCrew.id] ?? []).reduce((n, o) => n + o.hours, 0))} {tr("h scheduled")}</span>
+                  </p>
+                  <QueueEditor variant="desk" game={game} kind="crew" resourceId={editingCrew.id} selected={selected} onSelect={select} onChange={change} addStand={chosen.id}/>
+                </>}
               </section>
             </>
           )}
-          {page === 'Transport' && activeView === 'map' && <section className="panel map-panel">
-            <OperationsMap game={game} selected={chosen.id} onSelect={select}/>
-          </section>}
           {page === "Transport" && activeView === 'dispatch' && (
             <>
               <section className="panel">
@@ -1189,213 +1102,23 @@ export default function RegionalApp() {
                 <ResourcePicker resources={r.trucks} selected={editingTruck?.id ?? ''} onSelect={setActiveTruckId} kind="truck"
                   counts={Object.fromEntries(Object.entries(game.plan.trucks).map(([id,orders])=>[id,orders.length]))}/>
                 <div className="queue-model-help"><ModelTermHelp term="loads"/><ModelTermHelp term="roadside"/></div>
-                <div className="resource-grid workspace-single-resource">
-                  {r.trucks.filter(t => t.id === editingTruck?.id).map((t) => (
-                    <article className="resource-card" key={t.id}>
-                      <div className="section-heading">
-                        <h3>{t.name}</h3>
-                        <span>
-                          {t.payload} m³ · {t.hours} h/{tr(periodLabel).toLowerCase()}
-                        </span>
-                      </div>
-                      <p className="muted">
-                        {tr("At")} <ResourceLocation game={game} nodeId={game.truckPositions[t.id]}/> ·{" "}
-                        {t.loadingHours + t.unloadingHours} {tr("h handling/load")}
-                      </p>
-                      {game.plan.trucks[t.id].map((o, i) => {
-                        const d = r.stands.find((s) => s.id === o.stand)!,
-                          m = r.mills.find((m) => m.id === o.mill)!,
-                          path = route(
-                            operatingRegion(game),
-                            d.node,
-                            m.node,
-                            forecast,
-                            game.improvedRoads,
-                          );
-                        return (
-                          <div className="haul-order" key={i}>
-                            {o.offtake && <strong>{tr("Partner contract ·")} {o.offtake}</strong>}
-                            {o.spot && <strong>{tr("Spot sale · no monthly commitment credit")}</strong>}
-                            {o.process && <strong>{tr("Mill inventory intake · no log sales revenue")}</strong>}
-                            <div className="form-row">
-                              <label>
-                                {tr("Source")}
-                                <select
-                                  disabled={done}
-                                  value={o.stand}
-                                  onChange={(e) =>
-                                    updatePlan((p) => {
-                                      p.trucks[t.id][i].stand = e.target.value;
-                                    })
-                                  }
-                                >
-                                  {r.stands
-                                    .filter(
-                                      (s) =>
-                                        game.stands.find((t) => t.id === s.id)
-                                          ?.owned,
-                                    )
-                                    .map((s) => (
-                                      <option key={s.id} value={s.id}>
-                                        {s.id} · {s.name}
-                                      </option>
-                                    ))}
-                                </select>
-                              </label>
-                              <label>
-                                {tr("Mill")}
-                                <select
-                                  disabled={done || !!o.offtake || !!o.spot || !!o.process}
-                                  value={o.mill}
-                                  onChange={(e) =>
-                                    updatePlan((p) => {
-                                      const order = p.trucks[t.id][i];
-                                      order.mill = e.target.value;
-                                      const mill = r.mills.find(
-                                        (m) => m.id === order.mill,
-                                      )!;
-                                      if (!(order.product in mill.prices))
-                                        order.product = Object.keys(
-                                          mill.prices,
-                                        )[0];
-                                    })
-                                  }
-                                >
-                                  {r.mills.map((m) => (
-                                    <option key={m.id} value={m.id}>
-                                      {m.name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                            </div>
-                            <div className="form-row">
-                              <label>
-                                {tr("Assortment")}
-                                <select
-                                  disabled={done || !!o.offtake || !!o.spot || !!o.process}
-                                  value={o.product}
-                                  onChange={(e) =>
-                                    updatePlan((p) => {
-                                      p.trucks[t.id][i].product =
-                                        e.target.value;
-                                    })
-                                  }
-                                >
-                                  {r.products
-                                    .filter((p) => p.id in m.prices)
-                                    .map((p) => (
-                                      <option key={p.id} value={p.id}>
-                                        {tr(p.name)}
-                                      </option>
-                                    ))}
-                                </select>
-                              </label>
-                              <label>
-                                {tr("Loads")}
-                                <QueueAmountInput disabled={done} kind="truck" value={o.loads} maximum={1000}
-                                  label={`${t.name} ${tr('haul')} ${i + 1} ${tr('Loads')}`}
-                                  onCommit={loads => updatePlan(plan => { plan.trucks[t.id][i].loads = loads; })}/>
-                              </label>
-                              <button
-                                disabled={done}
-                                aria-label={`${tr("Remove")} ${t.id} ${tr("haul")} ${i + 1}`}
-                                onClick={() =>
-                                  updatePlan((p) => {
-                                    p.trucks[t.id].splice(i, 1);
-                                  })
-                                }
-                              >
-                                ×
-                              </button>
-                              {i > 0 && (
-                                <button
-                                  disabled={done}
-                                  aria-label={`${tr("Move")} ${t.id} ${tr("haul")} ${i + 1} ${tr("up")}`}
-                                  onClick={() =>
-                                    updatePlan((p) => {
-                                      [
-                                        p.trucks[t.id][i - 1],
-                                        p.trucks[t.id][i],
-                                      ] = [
-                                        p.trucks[t.id][i],
-                                        p.trucks[t.id][i - 1],
-                                      ];
-                                    })
-                                  }
-                                >
-                                  ↑
-                                </button>
-                              )}
-                            </div>
-                            <label>
-                              {tr("Partner freight en route")}
-                              <select
-                                aria-label={`${t.name} ${tr("haul")} ${i + 1} ${tr("partner job")}`}
-                                disabled={done || !game.cooperation.pooling}
-                                value={o.partnerJob ?? ""}
-                                onChange={(e) =>
-                                  updatePlan((p) => {
-                                    p.trucks[t.id][i].partnerJob =
-                                      e.target.value || undefined;
-                                  })
-                                }
-                              >
-                                <option value="">{tr("Own timber only")}</option>
-                                {(r.partnerJobs ?? []).map((j) => (
-                                  <option key={j.id} value={j.id}>
-                                    {j.id} · {j.company} ·{" "}
-                                    {fmt(
-                                      j.volume -
-                                        (game.partnerDelivered?.[j.id] ?? 0),
-                                    )}{" "}
-                                    {tr("m³ remaining")}
-                                  </option>
-                                ))}
-                              </select>
-                            </label>
-                            <small>
-                              {path
-                                ? `${fmt(path.km)} ${tr("km loaded")} · ${path.hours.toFixed(1)} ${tr("h one way")}`
-                                : tr("No open forecast route")}{" "}
-                              {tr("· current stock")}{" "}
-                              {fmt(stockAt(game, o.stand)[o.product] ?? 0)} m³
-                            </small>
-                          </div>
-                        );
-                      })}
-                      <button
-                        disabled={done}
-                        onClick={() =>
-                          updatePlan((p) => {
-                            const s = game.stands.find(s => s.id === chosen.id && s.owned) ?? game.stands.find((s) => s.owned);
-                            if (!s) return;
-                            const m = r.mills[0];
-                            p.trucks[t.id].push({
-                              stand: s.id,
-                              mill: m.id,
-                              product: Object.keys(m.prices)[0],
-                              loads: 5,
-                            });
-                          })
-                        }
-                      >
-                        {tr("+ Add haul order")}
-                      </button>
-                    </article>
-                  ))}
-                </div>
-              </section>
-              <section className="panel map-panel">
-                <OperationsMap
-                  game={game}
-                  selected={chosen.id}
-                  onSelect={select}
-                />
+                {editingTruck && <>
+                  <p className="queue-desk-summary">
+                    <strong>{editingTruck.name}</strong>
+                    <span>{editingTruck.payload} m³ · {editingTruck.hours} h/{tr(periodLabel).toLowerCase()}</span>
+                    <span>{tr("At")} <ResourceLocation game={game} nodeId={game.truckPositions[editingTruck.id]}/> · {editingTruck.loadingHours + editingTruck.unloadingHours} {tr("h handling/load")}</span>
+                  </p>
+                  <QueueEditor variant="desk" game={game} kind="truck" resourceId={editingTruck.id} selected={selected} onSelect={select} onChange={change} addStand={chosen.id}/>
+                </>}
               </section>
             </>
           )}
-          {page === "Commitments" && (
+          {page === 'Planning desk' && activeView === 'commitments' && done && <section className="panel results-empty">
+            <h2>{language === 'fr' ? 'Saison terminée' : 'Season complete'}</h2>
+            <p>{language === 'fr' ? 'Les engagements mensuels sont réglés. Les livraisons par usine figurent dans les résultats de la saison.' : 'Monthly commitments are settled. Deliveries by mill are in the season results.'}</p>
+            <button className="primary" onClick={() => navigateToTask('Reports')}>{language === 'fr' ? 'Résultats de la saison' : 'Season results'}</button>
+          </section>}
+          {(page === 'Planning desk' && activeView === 'commitments') && !done && (
             <section className="panel">
               <div className="section-heading">
                 <div>
@@ -1410,10 +1133,10 @@ export default function RegionalApp() {
                   <thead>
                     <tr>
                       <th>{tr("Mill / assortment")}</th>
-                      <th>{tr("Demand m³")}</th>
                       <th>{tr("Commitment m³")}</th>
                       <th>{tr("Delivered this month")}</th>
                       <th>{tr("Remaining to target")}</th>
+                      <th>{tr("Demand m³")}</th>
                       <th>{tr("Sale price / m³")}</th>
                     </tr>
                   </thead>
@@ -1427,7 +1150,6 @@ export default function RegionalApp() {
                               {r.products.find((x) => x.id === p)?.name}
                             </small>
                           </td>
-                          <td>{fmt(n)}</td>
                           <td>
                             <MillCommitmentInput game={game} millId={m.id} product={p} value={game.plan.targets[m.id]?.[p]??0} onChange={value=>updatePlan(plan=>{plan.targets[m.id][p]=value;})}/>
                           </td>
@@ -1441,6 +1163,7 @@ export default function RegionalApp() {
                               ),
                             )}
                           </td>
+                          <td>{fmt(n)}</td>
                           <td>{money(m.prices[p])}</td>
                         </tr>
                       )),
@@ -1458,22 +1181,23 @@ export default function RegionalApp() {
           {/* The handout-based four/five-company laboratory leads; the generated
               eight-company round is an extension, so it follows the campaign desks. */}
           {page === 'Collaboration' && activeView === 'negotiation' && <>
-            <section className="panel"><h2>{language === 'fr' ? 'Préparer l’accord' : 'Prepare the agreement'}</h2>
-              <p>{language === 'fr' ? 'Définir les groupes et la répartition dans le laboratoire, puis publier un accord pour recueillir les réponses de chaque entreprise.' : 'Set the groups and savings allocation in the lab, then publish an offer to collect each company’s response.'}</p>
-              <button onClick={() => setWorkspaceView('allocation')}>{language === 'fr' ? 'Modifier la répartition proposée' : 'Edit proposed allocation'}</button>
-            </section>
+            <div className="button-row workspace-link-row">
+              <button onClick={() => setWorkspaceView('allocation')}>{language === 'fr' ? 'Modifier la répartition proposée →' : 'Edit proposed allocation →'}</button>
+            </div>
             <NegotiationOffers game={game} onChange={change}/>
           </>}
           {page === 'Collaboration' && activeView === 'allocation' && <CollaborationLab game={game} onChange={change} onOpenBoard={() => setWorkspaceView('negotiation')}/>}
-          {page === 'Collaboration' && activeView === 'dispatch' && <><OperatingAgreementTools game={game} onChange={change}/><ReciprocalDesk key={`reciprocal-${game.region.id}`} game={game} onChange={change}/><NetworkDispatchLab key={`network-${game.region.id}`} game={game}/></>}
+          {page === 'Collaboration' && activeView === 'dispatch' && <><OperatingAgreementTools game={game} onChange={change}/>
+            <details className="workspace-metrics"><summary>{language === 'fr' ? 'Services réciproques' : 'Reciprocal services'}</summary><ReciprocalDesk key={`reciprocal-${game.region.id}`} game={game} onChange={change}/></details>
+            <details className="workspace-metrics"><summary>{language === 'fr' ? 'Laboratoire du réseau coopératif' : 'Cooperative network lab'}</summary><NetworkDispatchLab key={`network-${game.region.id}`} game={game}/></details></>}
           {page === 'Collaboration' && activeView === 'exercises' && <EightCompanyExercise/>}
-          {page === "Reports" && activeView === 'reflection' && <><Debrief game={game} onNavigate={navigateToTask}/><TeamComparison game={game}/></>}
-          {page === 'Reports' && activeView === 'charts' && <>
-              <Suspense fallback={<p>{tr("Loading operating charts…")}</p>}><OperationsCharts key={game.region.id} game={game}/></Suspense>
+          {page === "Reports" && activeView === 'reflection' && !!game.history.length && <><Debrief game={game} onNavigate={navigateToTask}/><TeamComparison game={game}/></>}
+          {page === 'Reports' && activeView === 'charts' && !!game.history.length && <>
               <InventoryCharts game={game}/>
+              <Suspense fallback={<p>{tr("Loading operating charts…")}</p>}><OperationsCharts key={game.region.id} game={game}/></Suspense>
           </>}
-          {page === 'Reports' && activeView === 'compare' && <RecordedStateComparison key={campaignKey} game={game} reportIndex={reportIndex}/>}
-          {page === "Reports" && activeView === 'replay' && (<>
+          {page === 'Reports' && activeView === 'compare' && !!game.history.length && <RecordedStateComparison key={campaignKey} game={game} reportIndex={reportIndex}/>}
+          {page === "Reports" && activeView === 'replay' && !!game.history.length && (<>
               <section className="panel">
                 <div className="section-heading">
                   <h2>{tr("Operating record")}</h2>
@@ -1627,10 +1351,8 @@ export default function RegionalApp() {
           )}
           {page === "Scenario studio" && (
             <>
-              <LessonLauncher regions={[bcOperatingLesson, princeGeorge, quebec]} onChoose={chooseLesson} />
-              <TurnDurationMode region={region} onChange={setRegion}/>
-              <RegionalCalibration key={region.id} region={region} onChange={setRegion} />
-              <section className="panel">
+              {activeView === 'cases' && <LessonLauncher regions={[bcOperatingLesson, princeGeorge, quebec]} onChoose={chooseLesson} />}
+              {activeView === 'custom' && <section className="panel">
                 <h2>{tr("Regional scenario studio")}</h2>
                 <p><strong>{tr("Active campaign:")}</strong> {game.region.name}. <strong>{tr("Studio selection:")}</strong> {region.name}{tr(". Changes here apply only when you start a new campaign.")}</p>
                 <p>
@@ -1763,10 +1485,16 @@ export default function RegionalApp() {
                 <p className="muted">
                   {tr("Standalone and pass-the-device play use this campaign. Open Classroom\n                  for server-owned rooms with private role credentials.")}
                 </p>
-              </section>
-              <section className="panel">
+              </section>}
+              {activeView === 'custom' && <>
+                <details className="workspace-metrics"><summary>{language === 'fr' ? 'Avancé : intervalle de décision et données d’étalonnage' : 'Advanced: decision interval & calibration evidence'}</summary>
+                  <TurnDurationMode region={region} onChange={setRegion}/>
+                  <RegionalCalibration key={region.id} region={region} onChange={setRegion} />
+                </details>
+              </>}
+              {activeView === 'guide' && <section className="panel">
                 <h2>{tr("Field guide")}</h2>
-                {region.bcTenure && <p>{tr("BC rights and operating authorizations are separate. BC09 and BC10 require an illustrative one-week cutting-permit application; BC08 needs renewal after six operating weeks. A BCTS auction award secures timber rights, but harvesting and hauling also require the Timber Sale Licence and access authorizations in the tenure desk. Simulation approvals issue no real permits.")}</p>}
+                {game.region.bcTenure && <p>{tr("BC rights and operating authorizations are separate. BC09 and BC10 require an illustrative one-week cutting-permit application; BC08 needs renewal after six operating weeks. A BCTS auction award secures timber rights, but harvesting and hauling also require the Timber Sale Licence and access authorizations in the tenure desk. Simulation approvals issue no real permits.")}</p>}
                 <ol className="guide">
                   <li>
                     <strong>{tr("Secure supply.")}</strong> {tr("Guaranteed areas are owned\n                    at the start. Private purchases are immediate. Sealed\n                    auctions settle after operations; a winning lot is available\n                    next week, with a one-week refusal window.")}
@@ -1793,10 +1521,10 @@ export default function RegionalApp() {
                     <strong>{tr("Finish the season.")}</strong> {tr("The final week settles\n                    targets and terminal inventory charges. Compare results\n                    against a replay with the same seed and scenario.")}
                   </li>
                 </ol>
-              </section>
-              <section className="panel">
+              </section>}
+              {activeView === 'guide' && <section className="panel">
                 <h2>{tr("Scenario provenance & assumptions")}</h2>
-                {region.sources.map((s) => (
+                {game.region.sources.map((s) => (
                   <p key={tr(s.title)}>
                     <strong>
                       <a href={s.url} target="_blank" rel="noreferrer">
@@ -1807,27 +1535,27 @@ export default function RegionalApp() {
                     {s.note}
                   </p>
                 ))}
-                <p>{region.description}</p>
+                <p>{game.region.description}</p>
                 <details>
-                  <summary>{tr("Instructor weather schedule")}</summary>
+                  <summary>{language === "fr" ? "Instructeur · météo réelle (révèle les conditions futures)" : "Instructor · actual weather (reveals future conditions)"}</summary>
                   <div className="table-wrap">
                     <table>
                       <thead>
                         <tr>
                           <th>{tr(periodLabel)}</th>
-                          {region.zones.map((z) => (
+                          {game.region.zones.map((z) => (
                             <th key={z.id}>{tr(z.name)}{tr(": forecast / actual")}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
-                        {Array.from({ length: region.weeks }, (_, i) => (
+                        {Array.from({ length: game.region.weeks }, (_, i) => (
                           <tr key={i}>
                             <td>{i + 1}</td>
-                            {region.zones.map((z) => (
+                            {game.region.zones.map((z) => (
                               <td key={z.id}>
-                                {tr(region.weather[weatherId].forecast[z.id][i])} /{" "}
-                                {tr(region.weather[weatherId].actual[z.id][i])}
+                                {tr(game.region.weather[game.weatherId].forecast[z.id][i])} /{" "}
+                                {tr(game.region.weather[game.weatherId].actual[z.id][i])}
                               </td>
                             ))}
                           </tr>
@@ -1836,7 +1564,7 @@ export default function RegionalApp() {
                     </table>
                   </div>
                 </details>
-              </section>
+              </section>}
             </>
           )}
         </div>

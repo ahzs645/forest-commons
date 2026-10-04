@@ -3,15 +3,61 @@
 .map-queue-editor > ol > li { display: block; border: 1px solid #d7e2da; border-radius: 8px; padding: 8px; margin-bottom: 8px; background: #f8fbf7; }
 .map-queue-stop { display: flex; gap: 8px; align-items: center; }
 .map-queue-number { flex: none; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #dfece3; color: #173e32; font-variant-numeric: tabular-nums; }
-.map-queue-stop button { min-height: 44px; text-align: left; flex: 1; overflow-wrap: anywhere; }
+.map-queue-stop button { min-height: var(--control-h); text-align: left; flex: 1; overflow-wrap: anywhere; }
 .map-queue-editor label { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0; }
-.map-queue-editor label input, .map-queue-editor label select { width: 55%; min-width: 0; min-height: 44px; }
+.map-queue-editor label input, .map-queue-editor label select { width: 55%; min-width: 0; min-height: var(--control-h); }
 .map-queue-actions { display: flex; flex-wrap: wrap; gap: 4px; }
-.map-queue-actions button { flex: 1; min-height: 44px; font-size: 12px; padding: 6px; }
+.map-queue-actions button { flex: 1; min-height: var(--control-h); font-size: 12px; padding: 6px; }
 .map-queue-undo { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border: 1px solid #d7e2da; border-radius: 8px; padding: 8px; margin: 8px 0; }
-.map-queue-undo button { min-height: 44px; }
+.map-queue-undo button { min-height: var(--control-h); }
 .map-queue-undo small { flex: 1; min-width: 130px; }
 .map-resource-guide { padding: 8px; border-radius: 8px; background: #eef5ed; font-size: 13px; }
 .map-queue-amount { display:grid; gap:4px; width:55%; min-width:0; }
 .map-queue-editor label .map-queue-amount input { width:100%; }
 .map-queue-amount small { color:#9b4d1b; line-height:1.4; }
+
+/* Desk variant (Production crew queues, Transport truck dispatch). Narrow:
+ * a short card per stop. Wide (container >= 640px): one aligned row per
+ * stop under a shared column header. Actions are always three fixed buttons. */
+.queue-desk { container-type: inline-size; min-width: 0; --qd-actions: calc(var(--control-h) * 3 + 12px); }
+.queue-desk > ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.queue-desk-summary { margin: 4px 0 8px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; color: #52615a; font-size: 13px; }
+.queue-desk-summary strong { color: #173e32; font-size: 15px; }
+.queue-desk-grid { display: grid; gap: 6px 8px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; }
+.queue-desk-row { grid-template-areas: "site site" "a b" "amount actions";
+  border: 1px solid #d7e2da; border-radius: 8px; padding: 8px; background: #f8fbf7; margin: 0; }
+.queue-desk-truck .queue-desk-row { grid-template-areas: "site site" "a b" "amount actions" "meta meta"; }
+.queue-desk-truck .queue-desk-row.has-partner { grid-template-areas: "site site" "a b" "amount actions" "partner partner" "meta meta"; }
+.queue-desk-head { display: none; }
+.queue-desk-row > .map-queue-number { grid-area: site; align-self: end; justify-self: start; margin-bottom: 9px; position: relative; z-index: 1; }
+.queue-field { display: grid; gap: 2px; min-width: 0; margin: 0; }
+.queue-field-site { grid-area: site; padding-left: 34px; }
+.queue-field-a { grid-area: a; } .queue-field-b { grid-area: b; }
+.queue-field-amount { grid-area: amount; } .queue-field-partner { grid-area: partner; }
+.queue-field-label { font-size: 12px; line-height: 1.25; color: #52615a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.queue-field select, .queue-field input { width: 100%; min-width: 0; max-width: none; box-sizing: border-box; margin: 0; }
+.queue-desk .map-queue-amount { width: 100%; }
+.queue-desk-actions { grid-area: actions; display: flex; gap: 6px; justify-content: flex-end; align-self: end; }
+.queue-desk-actions button { flex: none; width: var(--control-h); min-width: var(--control-h); height: var(--control-h); min-height: var(--control-h); padding: 0; margin: 0; display: grid; place-items: center; font-size: 16px; line-height: 1; }
+.queue-desk-meta { grid-area: meta; display: flex; flex-wrap: wrap; gap: 2px 10px; color: #52615a; font-size: 12px; line-height: 1.3; }
+.queue-desk-meta strong { color: #6b4a12; font-weight: 600; }
+.queue-desk-footer { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin-top: 8px; }
+.queue-desk-footer small { flex: 1; min-width: 200px; font-size: 12px; }
+
+
+@container (min-width: 640px) {
+  .queue-desk-crew .queue-desk-grid { grid-template-columns: 28px minmax(0, 2fr) minmax(0, 1.4fr) minmax(0, 1.2fr) minmax(84px, .6fr) var(--qd-actions); }
+  .queue-desk-truck .queue-desk-grid { grid-template-columns: 28px minmax(0, 1.7fr) minmax(0, 1.6fr) minmax(0, 1.3fr) minmax(76px, .5fr) var(--qd-actions); }
+  .queue-desk-grid { align-items: center; }
+  .queue-desk-row { grid-template-areas: "num site a b amount actions"; padding: 6px 8px; row-gap: 4px; }
+  .queue-desk-truck .queue-desk-row { grid-template-areas: "num site a b amount actions" ". meta meta meta meta meta"; }
+  .queue-desk-truck .queue-desk-row.has-partner { grid-template-areas: "num site a b amount actions" ". partner partner partner partner partner" ". meta meta meta meta meta"; }
+  .queue-desk-row > .map-queue-number { grid-area: num; align-self: center; margin: 0; }
+  .queue-field-site { padding-left: 0; }
+  .queue-field-partner { grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 8px; max-width: 640px; }
+  .queue-desk-row .queue-field-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .queue-desk-row .queue-field-partner .queue-field-label { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; }
+  .queue-desk-head { display: grid; padding: 0 9px; margin-bottom: 4px; font-size: 12px; color: #52615a; font-weight: 600; }
+  .queue-desk-head > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .queue-desk-head-actions { text-align: right; }
+}

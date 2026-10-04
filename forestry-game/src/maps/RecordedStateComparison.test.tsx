@@ -18,7 +18,7 @@ it.each(['en','fr'])('explains end-state-only scope and exposes recorded values 
 it('does not offer a fabricated opening comparison with just one captured state', () => {
   const game = advance(createGame(quebec));
   const html = renderToStaticMarkup(<RecordedStateComparison game={game}/>);
-  expect(html).toContain('Two turns with recorded snapshots');expect(html).not.toContain('Show A');
+  expect(html).toContain('Run at least two turns to compare');expect(html).not.toContain('Show A');
 });
 it('accessible historical fallback labels missing values explicitly and numeric legend keeps selection separate', () => {
   const game = advance(createGame(quebec)); delete game.history[0].snapshot;

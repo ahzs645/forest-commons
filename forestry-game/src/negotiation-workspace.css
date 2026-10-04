@@ -1,20 +1,72 @@
 .negotiation-workspace, .negotiation-allocation-editor, .negotiation-operating-tools { min-width: 0; }
-.negotiation-workspace button, .negotiation-allocation-editor button, .negotiation-operating-tools button { min-height: 44px; white-space: normal; }
+.negotiation-workspace button, .negotiation-allocation-editor button, .negotiation-operating-tools button { min-height:var(--control-h); white-space: normal; }
 .negotiation-draft { border: 1px solid #ccdacb; border-radius: 10px; padding: 14px; margin: 16px 0; min-width: 0; background: #f7faf5; }
 .negotiation-draft h3 { margin-top: 0; }
 .negotiation-draft p, .negotiation-draft li, .negotiation-workspace .notice { overflow-wrap: anywhere; }
 .negotiation-draft .table-wrap, .negotiation-allocation-editor .table-wrap { max-width: 100%; }
 .negotiation-revision { margin-top: 14px; padding-top: 12px; border-top: 1px solid #ccdacb; }
 .negotiation-allocation-editor > .table-wrap { margin: 16px 0; }
-.negotiation-allocation-editor input, .negotiation-allocation-editor select { min-height: 44px; }
-.negotiation-allocation-editor details > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+.negotiation-allocation-editor input, .negotiation-allocation-editor select { min-height:var(--control-h); }
+.negotiation-allocation-editor details > summary { min-height:var(--control-h); display: list-item; align-content: center; cursor: pointer; }
 @media (max-width: 600px) {
   .negotiation-draft { padding: 12px; }
   .negotiation-allocation-editor .form-row { display: grid; grid-template-columns: minmax(0, 1fr); }
   .negotiation-allocation-editor .form-row > label { min-width: 0; }
   .negotiation-allocation-editor .form-row select { width: 100%; }
 }
-.negotiation-draft > details > summary { min-height: 44px; cursor: pointer; display: flex; align-items: center; }
+.negotiation-draft > details > summary { min-height:var(--control-h); cursor: pointer; display: list-item; align-content: center; }
 .negotiation-savings-input { display: grid; gap: 4px; min-width: 0; }
 .negotiation-savings-input input { width: 100%; min-width: 0; }
 .negotiation-savings-input small { max-width: 180px; overflow-wrap: anywhere; }
+/* Phone: stack each company's allocation so the savings input stays reachable without sideways scrolling. */
+@media (max-width: 600px) {
+  .allocation-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .allocation-table, .allocation-table tbody { display: block; }
+  .allocation-table tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; padding: 12px 0; border-bottom: 1px solid #edf0e8; }
+  .allocation-table td { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 0; border: 0; }
+  .allocation-table td::before { content: attr(data-label); font-size: 11px; color: #6e7f70; }
+  .allocation-table td:first-child { grid-column: 1 / -1; font-weight: 650; }
+  .allocation-table td:first-child::before { content: none; }
+  .allocation-table select, .allocation-table input { width: 100%; font-size: 16px; }
+}
+/* Compact step indicator and response controls: the board opens on the publish/respond decision. */
+.negotiation-workspace .negotiation-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 10px 0; }
+.negotiation-workspace .negotiation-flow li { padding: 6px 8px; font-size: 12px; line-height: 1.3; }
+.negotiation-draft > details { margin-top: 8px; }
+.negotiation-draft > details > summary small { font-size: 11px; color: #5f7363; }
+.negotiation-response-grid { display: grid; gap: 6px; }
+.negotiation-response-grid > .button-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.negotiation-responses { border: 1px solid #dbe5da; border-radius: 10px; padding: 10px 12px; margin: 10px 0; }
+@media (max-width: 600px) {
+  .negotiation-workspace .negotiation-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .negotiation-draft { margin: 10px 0; }
+  .negotiation-draft h3 { font-size: 15px; margin-bottom: 4px; }
+  .negotiation-draft > p { font-size: 13px; margin: 4px 0; }
+}
+/* Allocation lab: on phones each company is one compact row (name | group | savings) with costs underneath. */
+@media (max-width: 600px) {
+  .negotiation-allocation-editor .allocation-table thead { position: static; width: auto; height: auto; overflow: visible; clip: auto; display: block; }
+  .negotiation-allocation-editor .allocation-table thead tr { display: grid; grid-template-columns: minmax(72px, .8fr) minmax(0, 1fr) minmax(0, 1.1fr); gap: 8px; padding: 0 0 4px; border-bottom: 1px solid #edf0e8; }
+  .negotiation-allocation-editor .allocation-table thead th { padding: 0; background: none; white-space: normal; font-size: 11px; }
+  .negotiation-allocation-editor .allocation-table thead th:nth-child(3), .negotiation-allocation-editor .allocation-table thead th:nth-child(5) { display: none; }
+  .negotiation-allocation-editor .allocation-table thead th:nth-child(2) { grid-column: 2; }
+  .negotiation-allocation-editor .allocation-table thead th:nth-child(4) { grid-column: 3; }
+  .negotiation-allocation-editor .allocation-table tr { grid-template-columns: minmax(72px, .8fr) minmax(0, 1fr) minmax(0, 1.1fr); grid-template-areas: "name group savings" "costs costs costs"; gap: 4px 8px; padding: 8px 0; align-items: center; }
+  .negotiation-allocation-editor .allocation-table td:first-child { grid-column: auto; grid-area: name; font-size: 13px; }
+  .negotiation-allocation-editor .allocation-table td:nth-child(2) { grid-area: group; }
+  .negotiation-allocation-editor .allocation-table td:nth-child(4) { grid-area: savings; }
+  .negotiation-allocation-editor .allocation-table td:nth-child(2)::before, .negotiation-allocation-editor .allocation-table td:nth-child(4)::before { content: none; }
+  .negotiation-allocation-editor .allocation-table td:nth-child(3), .negotiation-allocation-editor .allocation-table td:nth-child(5) { flex-direction: row; flex-wrap: wrap; gap: 0 4px; font-size: 11px; color: #5f7363; }
+  .negotiation-allocation-editor .allocation-table td:nth-child(3) { grid-row: 2; grid-column: 1 / 3; }
+  .negotiation-allocation-editor .allocation-table td:nth-child(5) { grid-row: 2; grid-column: 3; }
+  .negotiation-allocation-editor .allocation-table td:nth-child(3)::before, .negotiation-allocation-editor .allocation-table td:nth-child(5)::before { content: attr(data-short) ":"; font-size: 11px; }
+  .negotiation-allocation-editor .allocation-table select { min-width: 0; }
+}
+.negotiation-workspace .negotiation-board:not([data-history]) { grid-template-columns: minmax(0, 1fr); }
+.negotiation-response-row { display: grid; grid-template-columns: minmax(80px, 1fr) minmax(0, 1fr) minmax(0, 1fr); gap: 6px; align-items: center; }
+.negotiation-response-row > span { font-weight: 600; font-size: 13px; }
+@media (max-width: 600px) {
+  .negotiation-offer-table th, .negotiation-offer-table td { padding: 8px 6px; white-space: normal; vertical-align: top; }
+  .negotiation-offer-table td:first-child { white-space: nowrap; }
+  .negotiation-evidence > p { font-size: 13px; margin: 4px 0; }
+}

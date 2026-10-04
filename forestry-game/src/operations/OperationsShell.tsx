@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { Game, RegionDefinition } from '../simulation/types';
+import { useEffect, useRef, useState } from 'react';
+import type { RegionDefinition } from '../simulation/types';
 import { useLanguage } from '../i18n';
-import { planExceptions } from '../simulation/operational-readiness';
 
 export function ConnectivityNotice() {
   const { language } = useLanguage();
@@ -27,35 +26,15 @@ export function anchorWorkbench() {
   const workbench = document.querySelector('.adaptive-map-workspace');
   const controls = workbench?.querySelector('.mobile-workspace-controls');
   if (!workbench || !controls || getComputedStyle(controls).display === 'none') return false;
-  // The first-visit case chooser sits above the map; anchoring would scroll a
-  // new player past its heading before they have picked a case.
-  const launcher = document.querySelector('.operating-lesson-launcher');
-  if (launcher) { launcher.scrollIntoView({ block: 'start' }); return true; }
   workbench.scrollIntoView({ block: 'start' });
   return true;
-}
-
-export function OperationsStatus({ game, onNavigate, onSelect }: {
-  game: Game; onNavigate: (page: string) => void; onSelect: (id: string) => void;
-}) {
-  const { language } = useLanguage();
-  const text = (en: string, fr: string) => language === 'fr' ? fr : en;
-  const findings = useMemo(() => planExceptions(game), [game]);
-  return <section className="operating-status-strip" aria-label={text('Turn decisions', 'Décisions du tour')}>
-    <div><strong>{game.region.operations ? text('BC operating lesson', 'Leçon d’opérations en C.-B.') : text('This turn', 'Ce tour')}</strong>
-      <span>{findings.length ? `${findings.length} ${text('findings to review', 'constats à examiner')}` : text('Build a plan, then rehearse it', 'Créer un plan, puis le simuler')}</span></div>
-    <button onClick={() => onNavigate('Planning desk')}>{text('Review plan', 'Examiner le plan')}</button>
-    {findings[0] && game.region.stands.some(s => s.id === findings[0].subject) &&
-      <button onClick={() => onSelect(findings[0].subject)}>{text('Inspect', 'Inspecter')} {findings[0].subject}</button>}
-    {game.region.operations && <span className="operating-badge">{text('Illustrative · not calibrated', 'Pédagogique · non étalonné')}</span>}
-  </section>;
 }
 
 export function MobileOperationsNav({ page, onNavigate, onMenu, menuOpen = false }: {
   page: string; onNavigate: (page: string) => void; onMenu: () => void; menuOpen?: boolean;
 }) {
   const { language } = useLanguage();
-  const active = page === 'Overview' ? 'map' : ['Planning desk', 'Production', 'Transport', 'Commitments', 'Forest & timber'].includes(page) ? 'plan' : page === 'Reports' ? 'results' : 'more';
+  const active = page === 'Overview' ? 'map' : ['Planning desk', 'Production', 'Transport', 'Forest & timber'].includes(page) ? 'plan' : page === 'Reports' ? 'results' : 'more';
   return <nav className="mobile-operations-nav" aria-label={language === 'fr' ? 'Navigation des opérations' : 'Operations navigation'}>
     <button aria-current={active === 'map' ? 'page' : undefined} onClick={() => onNavigate('Overview')}>{language === 'fr' ? 'Carte' : 'Map'}</button>
     <button aria-current={active === 'plan' ? 'page' : undefined} onClick={() => onNavigate('Planning desk')}>Plan</button>
@@ -64,13 +43,13 @@ export function MobileOperationsNav({ page, onNavigate, onMenu, menuOpen = false
   </nav>;
 }
 
-export function LessonLauncher({ regions, onChoose, welcome = false, onDismiss }: {
-  regions: RegionDefinition[]; onChoose: (region: RegionDefinition) => void; welcome?: boolean; onDismiss?: () => void;
+export function LessonLauncher({ regions, onChoose, welcome = false, onDismiss, titleId }: {
+  regions: RegionDefinition[]; onChoose: (region: RegionDefinition) => void; welcome?: boolean; onDismiss?: () => void; titleId?: string;
 }) {
   const { language } = useLanguage();
   const text = (en: string, fr: string) => language === 'fr' ? fr : en;
   return <section className="panel operating-lesson-launcher">
-    <div className="section-heading"><h2>{welcome ? text('Choose your starting case', 'Choisir un cas de départ') : text('Teaching cases', 'Cas pédagogiques')}</h2>
+    <div className="section-heading"><h2 id={titleId}>{welcome ? text('Choose your starting case', 'Choisir un cas de départ') : text('Teaching cases', 'Cas pédagogiques')}</h2>
       {onDismiss && <button onClick={onDismiss}>{text('Continue current case', 'Continuer le cas actuel')}</button>}</div>
     <p>{text('Select a lesson or full regional scenario. You will review and confirm before the current campaign is replaced.',
       'Choisir une leçon ou un scénario régional complet. Un examen et une confirmation précèdent le remplacement de la campagne.')}</p>
@@ -83,4 +62,20 @@ export function LessonLauncher({ regions, onChoose, welcome = false, onDismiss }
       <button onClick={() => onChoose(region)}>{text('Review this case', 'Examiner ce cas')}</button>
     </article>)}</div>
   </section>;
+}
+
+/** First-visit case chooser, shown over the map instead of pushing it down. */
+export function LessonDialog({ regions, onChoose, onDismiss }: {
+  regions: RegionDefinition[]; onChoose: (region: RegionDefinition) => void; onDismiss: () => void;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const node = dialog.current;
+    if (node && !node.open) node.showModal?.();
+    return () => node?.close?.();
+  }, []);
+  return <dialog ref={dialog} className="operating-lesson-dialog" aria-labelledby="lesson-dialog-title"
+    onCancel={event => { event.preventDefault(); onDismiss(); }}>
+    <LessonLauncher regions={regions} onChoose={onChoose} onDismiss={onDismiss} welcome titleId="lesson-dialog-title" />
+  </dialog>;
 }

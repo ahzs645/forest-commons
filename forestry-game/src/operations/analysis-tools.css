@@ -4,11 +4,11 @@
 .analysis-task-panel[hidden] { display:none !important; }
 .analysis-task-picker { display:flex; align-items:center; gap:20px; }
 .analysis-task-picker label { display:grid; gap:8px; flex:1 0 240px; font-weight:650; }
-.analysis-task-picker select { width:100%; min-height:44px; }
+.analysis-task-picker select { width:100%; min-height:var(--control-h); }
 .analysis-task-picker p { flex:2; margin:0; font-size:13px; line-height:1.6; color:#536a5c; }
 .landscape-lesson { min-width:0; }
 .landscape-lesson .landscape-actions { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
-.landscape-actions button,.landscape-actions a { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:10px 14px; border-radius:8px; }
+.landscape-actions button,.landscape-actions a { display:inline-flex; align-items:center; justify-content:center; min-height:var(--control-h); padding:10px 14px; border-radius:8px; }
 .landscape-lesson textarea { width:100%; min-height:110px; resize:vertical; font:inherit; border:1px solid #bacabd; border-radius:8px; padding:10px; }
 .landscape-lesson label { display:grid; gap:8px; margin:16px 0; }
 .landscape-lesson li { line-height:1.6; margin:8px 0; }

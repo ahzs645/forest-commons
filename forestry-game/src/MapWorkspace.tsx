@@ -15,7 +15,7 @@ import MapRolePanel, {type MapRole} from './MapRolePanel';
 import {EquipmentStatus,ProductSymbol} from './OperationalSymbols';
 import './map-workbench.css';
 import ReservationDesk from "./ReservationDesk";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import MapSheetHandle, {type MapSheetSize} from './maps/MapSheetHandle';
 import {createPortal} from 'react-dom';
 import {List, Map as MapIcon, ChevronUp, ChevronDown, X} from 'lucide-react';
@@ -25,6 +25,7 @@ import type { MapPick } from "./maps/OperationsMap";
 import { purchase, stockAt, sum } from "./simulation/engine";
 import { activeDisruptions } from "./simulation/disruptions";
 import { weatherAt, canAccess } from "./simulation/routing";
+import ResourceList, { panelModes, modeTitle, type PanelMode } from "./operations/ResourceList";
 export default function MapWorkspace({
   game,
   selected,
@@ -32,6 +33,7 @@ export default function MapWorkspace({
   onChange,
   onNavigate,
   onResourceNavigate,
+  overlay,
 }: {
   game: Game;
   selected: string;
@@ -39,6 +41,8 @@ export default function MapWorkspace({
   onChange: (g: Game) => void;
   onNavigate: (s: string) => void;
   onResourceNavigate?: (kind: 'crew' | 'truck', id: string) => void;
+  /** Guide and notices that float over the top of the map. */
+  overlay?: ReactNode;
 }) {
  const {t: tr,language}=useLanguage();
  const openResource = (kind: 'crew' | 'truck', id: string) => onResourceNavigate ? onResourceNavigate(kind, id) : onNavigate(kind === 'crew' ? 'Production' : 'Transport');
@@ -56,6 +60,8 @@ export default function MapWorkspace({
     [error, setError] = useState("");
   useEffect(()=>setError(''),[game.week]);
   const [role,setRole]=useState<MapRole>('purchase');
+  // The panel either shows the selected map feature or lists one resource type.
+  const [panelMode, setPanelMode] = useState<PanelMode>('selected');
   const [workspaceView, setWorkspaceView] = useState<'map' | 'list'>('map');
   // Phone sheet: 'peek' leaves the map clear with only the header showing.
   const [sheetSize, setSheetSize] = useState<MapSheetSize>('peek');
@@ -131,6 +137,7 @@ export default function MapWorkspace({
     done = game.week > r.weeks;
   const inspectFeature = (kind: MapPick["kind"], id: string) => {
     setNearby(null);
+    setPanelMode('selected');
     setInspect({ kind, id });
     setInspectRequest(value => value + 1);
     if (kind === 'crew') { setCrew(id); setRole('production'); }
@@ -142,6 +149,7 @@ export default function MapWorkspace({
   };
   const select = (id: string) => {
     setNearby(null);
+    setPanelMode('selected');
     openSheet();
     onSelect(id);
     setInspect({ kind: "stand", id });
@@ -184,10 +192,15 @@ export default function MapWorkspace({
         }}>
         <header className="map-inspector-header">
         <MapSheetHandle size={sheetSize} onChange={setSheetSize} controls={detailsId}/>
+        <div className="map-panel-modes" role="group" aria-label={language === 'fr' ? 'Contenu du panneau' : 'Panel contents'}>
+          {panelModes.map(([mode, en, fr]) => <button key={mode} aria-pressed={panelMode === mode} onClick={() => {
+            setPanelMode(mode); setNearby(null); openSheet(); inspectorScrollRef.current?.scrollTo({ top: 0 });
+          }}>{language === 'fr' ? fr : en}</button>)}
+        </div>
         <div className="operating-sheet-controls">
           <button className="operating-sheet-title" aria-controls={detailsId} aria-expanded={workspaceView === 'list' || inspectorHeightPx === 0 || sheetSize !== 'peek'} onClick={() => setSheetSize(sheetSize === 'peek' ? 'half' : 'peek')}>
-            <small>{nearby ? (language === 'fr' ? 'Choisir un élément' : 'Choose a map item') : kindLabel(inspect.kind)}</small>
-            <strong>{nearby ? `${nearby.length} ${language === 'fr' ? 'éléments ici' : 'items here'}` : inspect.kind === 'stand' ? standTitle(inspect.id, stand?.name) : inspectName}</strong>
+            <small>{nearby ? (language === 'fr' ? 'Choisir un élément' : 'Choose a map item') : panelMode !== 'selected' ? (language === 'fr' ? 'Liste' : 'List') : kindLabel(inspect.kind)}</small>
+            <strong>{nearby ? `${nearby.length} ${language === 'fr' ? 'éléments ici' : 'items here'}` : panelMode !== 'selected' ? modeTitle(panelMode, r, language) : inspect.kind === 'stand' ? standTitle(inspect.id, stand?.name) : inspectName}</strong>
           </button>
           <div className="mobile-workspace-controls" aria-label={language === 'fr' ? 'Affichage' : 'Workspace view'}>
             <button aria-label={workspaceView === 'list' ? (language === 'fr' ? 'Afficher la carte' : 'Show map') : (language === 'fr' ? 'Rechercher dans la liste' : 'Search map list')} aria-pressed={workspaceView === 'list'} onClick={() => {setWorkspaceView(workspaceView === 'list' ? 'map' : 'list'); inspectorScrollRef.current?.scrollTo({top: 0});}}>
@@ -199,7 +212,7 @@ export default function MapWorkspace({
             {sheetSize !== 'peek' && workspaceView === 'map' && <button className="map-sheet-close" aria-label={language === 'fr' ? 'Fermer les détails de la carte' : 'Close map details'} onClick={closeSheet}><X size={20} aria-hidden="true"/></button>}
           </div>
         </div>
-        <p className="map-inspector-summary" hidden={!!nearby}>{stand && state ? `${language === 'fr' ? 'Sur pied' : 'Standing'} ${f(state.remaining)} m³ · ${language === 'fr' ? 'bord de route' : 'roadside'} ${f(sum(stockAt(game, stand.id)))} m³` : resource ? `${resource.hours} h · ${inspect.kind === 'crew' ? (game.plan.crews[resource.id]?.length ?? 0) : (game.plan.trucks[resource.id]?.length ?? 0)} ${tr('queued orders')}` : road ? `${road.km.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', {maximumFractionDigits: 2})} km` : mill ? tr(done ? 'Recorded campaign receipts / total campaign demand' : 'Current period receipts / period demand') : ''}</p>
+        <p className="map-inspector-summary" hidden={!!nearby || panelMode !== 'selected'}>{stand && state ? `${language === 'fr' ? 'Sur pied' : 'Standing'} ${f(state.remaining)} m³ · ${language === 'fr' ? 'bord de route' : 'roadside'} ${f(sum(stockAt(game, stand.id)))} m³` : resource ? `${resource.hours} h · ${inspect.kind === 'crew' ? (game.plan.crews[resource.id]?.length ?? 0) : (game.plan.trucks[resource.id]?.length ?? 0)} ${tr('queued orders')}` : road ? `${road.km.toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA', {maximumFractionDigits: 2})} km` : mill ? tr(done ? 'Recorded campaign receipts / total campaign demand' : 'Current period receipts / period demand') : ''}</p>
 
         </header>
         <div id={detailsId} className="map-inspector-scroll" ref={inspectorScrollRef} tabIndex={0} role="region" aria-label={language === 'fr' ? 'Détails et commandes de la carte' : 'Map details and controls'}>
@@ -210,24 +223,15 @@ export default function MapWorkspace({
             <small>{kindLabel(item.kind)}</small> {item.kind === 'stand' ? standTitle(item.id, item.name) : `${item.id} · ${item.name}`}
           </button></li>)}</ul>
           {!nearby.some(item => `${item.name} ${item.id} ${kindLabel(item.kind)}`.toLocaleLowerCase().includes(nearbySearch.toLocaleLowerCase())) && <p role="status">{tr("No map features match your search.")}</p>}
-        </div> : <>
+        </div> : panelMode !== 'selected' ? <ResourceList game={game} mode={panelMode} onInspect={inspectFeature} /> : <>
         <details ref={featureRef} className="selected-feature" open><summary>{tr("Selected feature ·")} {inspect.id}</summary>
         
         {inspect.kind === "stand" && stand && state && (
           <>
             {state.owned && !done && <div className="map-feature-actions" aria-label={language === 'fr' ? 'Planifier au chantier' : 'Plan at this site'}>
-              <button aria-pressed={role === 'production'} onClick={() => setRole('production')}>{language === 'fr' ? 'Planifier la récolte' : 'Plan harvest'}</button>
-              <button aria-pressed={role === 'transport'} onClick={() => setRole('transport')}>{language === 'fr' ? 'Planifier le transport' : 'Plan haul'}</button>
+              <button aria-pressed={role === 'production'} onClick={() => setRole(role === 'production' ? 'purchase' : 'production')}>{language === 'fr' ? 'Planifier la récolte' : 'Plan harvest'}</button>
+              <button aria-pressed={role === 'transport'} onClick={() => setRole(role === 'transport' ? 'purchase' : 'transport')}>{language === 'fr' ? 'Planifier le transport' : 'Plan haul'}</button>
             </div>}
-            <section className="map-site-information" aria-label={language === 'fr' ? 'Informations du chantier' : 'Site information'}>
-              <p>{tr(r.zones.find(zone => zone.id === stand.zone)?.name ?? stand.zone)} · {state.owned ? tr('Secured timber') : tr(stand.supply)}</p>
-              <dl className="map-site-facts">
-                <div><dt>{tr('Base productivity')}</dt><dd>{stand.productivity} m³/h</dd></div>
-                <div><dt>{language === 'fr' ? 'Accès au terrain prévu' : 'Forecast terrain access'}</dt><dd>{done ? tr('Season complete') : canAccess(stand.terrain, weatherAt(game, true)[stand.zone]) ? tr('Open terrain') : tr('Terrain closed')}</dd></div>
-              </dl>
-            </section>
-            <StandReadiness compact key={stand.id} game={game} standId={stand.id}
-              selection={{ crew, treatment: selectedTreatment }} onChange={onChange} onNavigate={onNavigate} />
             {state.owned && !done && role === 'production' && (
               <>
                 <label>
@@ -279,6 +283,15 @@ export default function MapWorkspace({
             )}
             {!state.owned&&stand.supply==='auction'&&stand.auctionWeek===game.week&&<BidCompositionDesk game={game} standId={stand.id} onChange={onChange}/>}
             {!state.owned&&!done&&stand.supply==='auction'&&stand.auctionWeek===game.week&&<label>{tr("Sealed lot bid (")}{r.currency})<input type="number" min="0" value={game.plan.bids[stand.id]??0} onChange={e=>{const value=Number(e.target.value);if(!Number.isFinite(value)||value<0)return;const next=structuredClone(game);if(value)next.plan.bids[stand.id]=value;else delete next.plan.bids[stand.id];next.plan.ready={purchase:false,production:false,transport:false};onChange(next);}}/><small>{tr("Awards settle after this week’s operations.")}</small></label>}
+            <section className="map-site-information" aria-label={language === 'fr' ? 'Informations du chantier' : 'Site information'}>
+              <p>{tr(r.zones.find(zone => zone.id === stand.zone)?.name ?? stand.zone)} · {state.owned ? tr('Secured timber') : tr(stand.supply)}</p>
+              <dl className="map-site-facts">
+                <div><dt>{tr('Base productivity')}</dt><dd>{stand.productivity} m³/h</dd></div>
+                <div><dt>{language === 'fr' ? 'Accès au terrain prévu' : 'Forecast terrain access'}</dt><dd>{done ? tr('Season complete') : canAccess(stand.terrain, weatherAt(game, true)[stand.zone]) ? tr('Open terrain') : tr('Terrain closed')}</dd></div>
+              </dl>
+            </section>
+            <StandReadiness compact key={stand.id} game={game} standId={stand.id}
+              selection={{ crew, treatment: selectedTreatment }} onChange={onChange} onNavigate={onNavigate} />
             {state.owned && !done && role !== 'purchase' && <button className="wide" onClick={() => onNavigate('Planning desk')}>{tr('Rehearse plan')}</button>}
             <details className="map-site-sources"><summary>{language === 'fr' ? 'Sources et détails du lot' : 'Sources & lot details'}</summary>
               {stand.sourceNote && <p className="muted">{stand.sourceNote}</p>}
@@ -400,7 +413,6 @@ export default function MapWorkspace({
       </aside>
   );
   return (
-    <>
     <div className={`map-workspace adaptive-map-workspace ${workspaceView === 'list' ? 'operations-list-mode' : ''}`} data-sheet={sheetSize}>
       <span role="status" className="map-selection-announcement">{nearby ? `${nearby.length} ${tr('features here · choose one')}` : `${kindLabel(inspect.kind)} · ${inspect.kind === 'stand' ? standTitle(inspect.id, stand?.name) : inspectName}`}</span>
       <div className="map-stage" ref={mapStageRef} tabIndex={-1}>
@@ -416,11 +428,11 @@ export default function MapWorkspace({
           onPick={(items) => { setNearby(items); setNearbySearch(''); openSheet(); inspectorScrollRef.current?.scrollTo({ top: 0, behavior: 'auto' }); }}
           onBackgroundTap={() => { setNearby(null); setSheetSize('peek'); inspectorScrollRef.current?.scrollTo({ top: 0, behavior: 'auto' }); }}
         />
+        {overlay && <div className="map-overlay-top">{overlay}</div>}
+        <PlanDock game={game} selected={selected} onSelect={select} onNavigate={onNavigate} />
         <button className="map-inspector-jump" onClick={()=>{if(featureRef.current)featureRef.current.open=true;inspectorRef.current?.focus({preventScroll:true});inspectorRef.current?.scrollIntoView({behavior:'smooth',block:'start'});}}>{tr("View selected feature ↓")}</button>
       </div>
       {portalOpen ? createPortal(<div className="map-sheet-portal map-first"><div className="adaptive-map-workspace" data-sheet={sheetSize}>{inspector}</div></div>, document.body) : inspector}
     </div>
-    <PlanDock game={game} selected={selected} onSelect={select} onNavigate={onNavigate} />
-    </>
   );
 }

@@ -7,7 +7,7 @@ import { useLanguage } from '../i18n';
 import { assessPlanIntent } from '../simulation/plan-intent';
 import './plan-intent.css';
 
-type PlanningDestination = 'Forest & timber' | 'Production' | 'Transport';
+type PlanningDestination = 'Forest & timber' | 'Production' | 'Transport' | 'Overview';
 
 export function PlanIntentNotice({ game, report, onNavigate }: {
   game: Game; report: WeekResult | null; onNavigate?: (page: PlanningDestination) => void;
@@ -35,9 +35,7 @@ export function PlanIntentNotice({ game, report, onNavigate }: {
       : text(`Forecast cash change from now: +${money(intent.cashChange)}.`, `Variation de trésorerie prévue à partir de maintenant : +${money(intent.cashChange)}.`)}</p>}
     {idle && !report && <p>{text('Forecast unavailable. The cost of this waiting turn has not been estimated.', 'Prévision indisponible. Le coût de ce tour d’attente n’a pas été estimé.')}</p>}
     {onNavigate && <div className="button-row">
-      {idle && <button onClick={() => onNavigate('Forest & timber')}>{text('Review available timber', 'Examiner le bois disponible')}</button>}
-      <button onClick={() => onNavigate('Production')}>{text('Plan crew work', 'Planifier les équipes')}</button>
-      <button onClick={() => onNavigate('Transport')}>{text('Plan deliveries', 'Planifier les livraisons')}</button>
+      <button onClick={() => onNavigate('Overview')}>{text('Plan crew work and deliveries on the map', 'Planifier les équipes et les livraisons sur la carte')}</button>
     </div>}
   </aside>;
 }
@@ -62,7 +60,7 @@ export function TurnReview({ game, onNavigate }: { game: Game; onNavigate?: (pag
       <div><dt>{text('Closing cash', 'Trésorerie finale')}</dt><dd>{game.region.currency} {number(forecast.report.cash)}</dd></div>
       <div><dt>{text('Waste', 'Rebuts')}</dt><dd>{number(forecast.report.waste)} m³</dd></div>
     </dl> : <p role="status">{text('Forecast unavailable:', 'Prévision indisponible :')} {forecast.problems.map(t).join(' ')}</p>}
-    <p>{text('Unfunded operator provisions:', 'Provisions non financées de l’exploitant :')} <strong>{game.region.currency} {number(outstandingOperatorProvisions(game))}</strong></p>
+    {outstandingOperatorProvisions(game) > 0 && <p>{text('Unfunded operator provisions:', 'Provisions non financées de l’exploitant :')} <strong>{game.region.currency} {number(outstandingOperatorProvisions(game))}</strong></p>}
     <details><summary>{text('About this forecast', 'À propos de cette prévision')}</summary>
       <p className="muted">{text('Uses the published forecast and revealed events. Excludes uncertain auction awards. Blocked work may be skipped by the engine; only invalid plans prevent settlement.',
         'Utilise les prévisions publiées et les événements révélés. Exclut les adjudications incertaines. Le moteur peut ignorer des travaux bloqués; seuls les plans invalides empêchent le règlement.')}</p>
@@ -74,12 +72,11 @@ export function TurnReview({ game, onNavigate }: { game: Game; onNavigate?: (pag
         {game.region.operations.planningContext.map((item, i) => <p key={i}>{item}</p>)}
       </>}
     </details>
-    <details open={exceptions.length > 0}><summary>{exceptions.length} {text('readiness findings', 'constats de préparation')}</summary>
-      {!exceptions.length && <p>{text('No readiness exceptions detected. This checks constraints, not whether work is scheduled or output is expected. Shared inventory, sequence, handling and available hours still determine fulfillment.', 'Aucune exception détectée. Cette vérification porte sur les contraintes, pas sur les travaux planifiés ou la production prévue. Le stock partagé, la séquence, la manutention et les heures disponibles déterminent les livraisons.')}</p>}
+    {!exceptions.length ? <p className="muted">{text('No readiness exceptions detected. This checks constraints, not whether work is scheduled or output is expected. Shared inventory, sequence, handling and available hours still determine fulfillment.', 'Aucune exception détectée. Cette vérification porte sur les contraintes, pas sur les travaux planifiés ou la production prévue. Le stock partagé, la séquence, la manutention et les heures disponibles déterminent les livraisons.')}</p> : <details open><summary>{exceptions.length === 1 ? text('1 readiness finding', '1 constat de préparation') : `${exceptions.length} ${text('readiness findings', 'constats de préparation')}`}</summary>
       <div className="operating-exceptions">{exceptions.map((finding, i) => <article key={i} data-level={finding.level}>
         <strong>{finding.subject} · {finding.level === 'blocked' ? text('Blocked under forecast', 'Bloqué selon la prévision') : text('Review', 'À vérifier')}</strong><p>{t(finding.message)}</p>
       </article>)}</div>
-    </details>
+    </details>}
     {!!forecast.report?.messages.length && <details><summary>{text('Engine rehearsal messages', 'Messages de la simulation')}</summary>
       {forecast.report.messages.map((message, i) => <p key={i}>{t(message)}</p>)}
     </details>}

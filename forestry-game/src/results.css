@@ -4,5 +4,14 @@
 .results-metrics dd { margin:6px 0 0; font-weight:650; overflow-wrap:anywhere; }
 .results-definitions, .results-week { margin:20px 0; }
 .results-definitions summary, .results-week summary { cursor:pointer; padding:10px 0; }
-.results-week select { min-height:44px; margin-left:8px; }
+.results-week select { min-height:var(--control-h); margin-left:8px; }
 .results-week li { margin:8px 0; overflow-wrap:anywhere; }
+/* Team comparison: keep the team name visible while the measures scroll sideways. */
+.team-comparison-table tr > :first-child { position:sticky; left:0; z-index:1; background:#fff; box-shadow:1px 0 0 #dfe5da; }
+.team-comparison-table thead tr > :first-child { background:#f7f9f3; }
+.team-comparison-table tbody th { white-space:normal; min-width:120px; max-width:180px; overflow-wrap:anywhere; }
+.team-comparison-table td, .team-comparison-table tbody th { vertical-align:top; }
+.team-comparison-table td ul { margin:0; padding-left:16px; min-width:240px; }
+.team-comparison-table td p { margin:0 0 6px; min-width:220px; }
+.team-comparison-table caption { text-align:left; padding-bottom:6px; }
+.team-comparison-table tbody th { border-bottom:1px solid #edf0e8; }

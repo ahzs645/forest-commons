@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Check, ChevronDown, ChevronUp, Compass, ArrowRight } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Compass, ArrowRight, X } from 'lucide-react';
 import type { Game } from '../simulation/types';
 import { sum } from '../simulation/engine';
 import { forecastOutcome } from '../simulation/planning';
@@ -20,6 +20,10 @@ export interface FirstDeliveryGuideProps {
   /** Create once above page navigation to retain the reviewed plan and chosen site. */
   controller?: FirstDeliveryGuideController;
   compact?: boolean;
+  /** Float over the map as a one-line step pill that opens into a card. */
+  overlay?: boolean;
+  /** Map selection, offered as the learning site while none is chosen. */
+  selectedStandId?: string;
 }
 
 export interface FirstDeliveryGuideController extends FirstDeliveryGuideSession {
@@ -58,11 +62,13 @@ export function FirstDeliveryGuide(props: FirstDeliveryGuideProps) {
   return <CampaignGuide key={scope} {...props} controller={controller} />;
 }
 
-function CampaignGuide({ game, onNavigate, onSelect, onDraft, onReviewTurn, controller, compact }: FirstDeliveryGuideProps & { controller: FirstDeliveryGuideController }) {
+function CampaignGuide({ game, onNavigate, onSelect, onDraft, onReviewTurn, controller, compact, overlay, selectedStandId }: FirstDeliveryGuideProps & { controller: FirstDeliveryGuideController }) {
   const { language, t } = useLanguage();
   const text = (en: string, fr: string) => language === 'fr' ? fr : en;
   const number = (n: number) => Math.round(n).toLocaleString(language === 'fr' ? 'fr-CA' : 'en-CA');
-  const { minimized, standId, reviewedKey, rehearsalOpen } = controller;
+  const { standId, reviewedKey, rehearsalOpen } = controller;
+  // Over the map the pill is the minimized form, so the stored flag does not apply.
+  const minimized = !overlay && controller.minimized;
   const [expanded, setExpanded] = useState(false);
   const small = compact && !expanded;
   const fingerprint = useMemo(() => firstDeliveryRehearsalKey(game), [game]);
@@ -90,24 +96,36 @@ function CampaignGuide({ game, onNavigate, onSelect, onDraft, onReviewTurn, cont
     : current === 4 ? <button onClick={controller.rehearse}>{text('Rehearse this plan', 'Simuler ce plan')}</button>
     : <button className="primary" onClick={runReview}>{text('Review & run turn', 'Examiner et exécuter le tour')}</button>;
 
-  return <section className={`first-delivery-guide${minimized ? ' is-minimized' : ''}${small ? ' is-compact' : ''}`} aria-label={text('First delivery guide', 'Guide de la première livraison')}>
+  const selectable = selectedStandId && game.region.stands.some(s => s.id === selectedStandId && s.supply !== 'protected') ? selectedStandId : '';
+  if (overlay && !expanded) return <section className="first-delivery-guide map-guide-pill" aria-label={text('First delivery guide', 'Guide de la première livraison')}>
+    <button className="map-guide-toggle" aria-expanded={false} onClick={() => setExpanded(true)}>
+      <Compass size={16} aria-hidden="true" />
+      <span>{finished ? text('First delivery recorded', 'Première livraison enregistrée')
+        : `${text('Step', 'Étape')} ${current + 1}/6 · ${steps[current]}`}</span>
+      <ChevronDown size={15} aria-hidden="true" />
+    </button>
+  </section>;
+
+  return <section className={`first-delivery-guide${overlay ? ' map-guide-card' : ''}${minimized ? ' is-minimized' : ''}${small ? ' is-compact' : ''}`} aria-label={text('First delivery guide', 'Guide de la première livraison')}>
     <div className="first-delivery-heading">
       <Compass size={20} aria-hidden="true" />
       <div><strong>{finished ? text('First delivery recorded', 'Première livraison enregistrée') : text('Your first delivery', 'Votre première livraison')}</strong>
         <span>{finished ? `${number(progress.deliveredM3)} m³ ${text('delivered across this campaign', 'livrés dans cette campagne')}` : small && standId
           ? `${standId} · ${text('Step', 'Étape')} ${current + 1}/6 · ${steps[current]}`
           : text('One site. One operating cycle. Learn by doing.', 'Un site. Un cycle opérationnel. Apprendre en pratiquant.')}</span></div>
-      <button className="first-delivery-toggle" onClick={toggle} aria-expanded={!minimized}>
+      {overlay ? <button className="first-delivery-toggle" onClick={() => setExpanded(false)} aria-expanded aria-label={text('Hide guide', 'Masquer le guide')}>
+        <X size={18} aria-hidden="true" />
+      </button> : <button className="first-delivery-toggle" onClick={toggle} aria-expanded={!minimized}>
         {minimized ? <ChevronDown size={16} aria-hidden="true" /> : <ChevronUp size={16} aria-hidden="true" />}
         {minimized ? text('Open guide', 'Ouvrir le guide') : text('Minimize', 'Réduire')}
-      </button>
+      </button>}
     </div>
     {!minimized && small ? <div className="first-delivery-compact-content">
       <div>{finished && siteEvidence}{!finished && current === 3 && <p>{text('Production creates roadside stock. Transport records delivery.', 'La production crée du stock en bord de route. Le transport consigne la livraison.')}</p>}
         {rehearsal?.report && !finished && <p role="status">{text('Forecast only:', 'Prévision seulement :')} {number(sum(rehearsal.report.delivered))} m³ · {game.region.currency} {number(rehearsal.report.cash)}</p>}</div>
       <div className="button-row">{compactAction}<button onClick={() => setExpanded(true)}>{text('Expand guide', 'Développer le guide')}</button></div>
     </div> : !minimized && <>
-      {compact && <button className="first-delivery-collapse" onClick={() => setExpanded(false)}>{text('Compact guide', 'Guide compact')}</button>}
+      {compact && !overlay && <button className="first-delivery-collapse" onClick={() => setExpanded(false)}>{text('Compact guide', 'Guide compact')}</button>}
       {!finished && <ol className="first-delivery-steps">{steps.map((label, i) => <li key={label} data-complete={progress.steps[i]} aria-current={i === current ? 'step' : undefined}>
         <span>{progress.steps[i] ? <Check size={13} aria-label={text('Complete', 'Terminé')} /> : i + 1}</span>{label}
       </li>)}</ol>}
@@ -123,6 +141,7 @@ function CampaignGuide({ game, onNavigate, onSelect, onDraft, onReviewTurn, cont
               {game.region.stands.filter(s => s.supply !== 'protected').map(s => <option key={s.id} value={s.id}>{s.id} · {t(s.name)}</option>)}
             </select>
           </label>
+          {overlay && !standId && selectable && <button className="primary" onClick={() => choose(selectable)}>{text('Follow', 'Suivre')} {selectable}</button>}
           {current === 0 && <p>{text('Start on the map: inspect the inventory, terrain and product mix. Follow one site through the existing lesson rather than scheduling the whole fleet at once.', 'Commencer sur la carte : examiner l’inventaire, le terrain et les produits. Suivre un site dans la leçon existante avant de planifier toute la flotte.')}</p>}
           {current === 1 && <><p>{progress.secured
             ? text('Timber rights are secured. Harvest authorization still needs attention; ownership alone does not authorize harvest.', 'Les droits sur le bois sont acquis. L’autorisation de récolte nécessite une intervention; la propriété seule n’autorise pas la récolte.')

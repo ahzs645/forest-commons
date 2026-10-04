@@ -12,6 +12,18 @@
 body {
   margin: 0;
 }
+/* One control scale for the whole app. Touch screens get a larger target;
+   pointer screens stay compact. Components size controls with these tokens. */
+:root {
+  --control-h: 32px;
+  --control-pad-x: 12px;
+}
+@media (pointer: coarse) {
+  :root {
+    --control-h: 40px;
+    --control-pad-x: 14px;
+  }
+}
 button,
 input,
 select {
@@ -28,8 +40,9 @@ button {
   border: 1px solid #dce3da;
   background: #fff;
   color: #315043;
-  border-radius: 8px;
-  padding: 10px 13px;
+  border-radius: 7px;
+  min-height: var(--control-h);
+  padding: 0 var(--control-pad-x);
   cursor: pointer;
   display: inline-flex;
   gap: 7px;
@@ -505,10 +518,10 @@ select {
   display: block;
   max-width: 100%;
   width: 100%;
-  min-height: 37px;
+  min-height: var(--control-h);
   border: 1px solid #dce3d7;
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: 0 10px;
   color: #2e4d39;
   background: #fff;
   font-size: 12px;
@@ -603,49 +616,6 @@ td select {
   padding: 18px;
   min-width: 0;
 }
-.queue-order {
-  display: flex;
-  align-items: end;
-  gap: 6px;
-  padding: 5px 0;
-}
-.queue-order > span {
-  font-size: 11px;
-  margin-bottom: 20px;
-  color: #91a184;
-}
-.queue-order > label {
-  flex: 1;
-  min-width: 0;
-}
-.queue-order > label:nth-of-type(2) {
-  max-width: 65px;
-}
-.queue-order > button {
-  margin-bottom: 10px;
-  padding: 9px;
-}
-.queue-order select {
-  padding: 8px 4px;
-}
-.haul-order {
-  padding: 10px 0 16px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #e8eddf;
-}
-.haul-order small {
-  color: #819075;
-  font-size: 10px;
-}
-.haul-order .form-row {
-  gap: 7px;
-}
-.haul-order .form-row > label {
-  min-width: 100px;
-}
-.haul-order button {
-  margin-bottom: 10px;
-}
 .two-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -686,7 +656,7 @@ details {
 }
 summary {
   cursor: pointer;
-  padding: 13px;
+  padding: 7px 12px;
   background: #f2f6ed;
   border-radius: 7px;
   color: #527044;
@@ -951,12 +921,6 @@ dialog::backdrop {
   .resource-card {
     padding: 14px 10px;
   }
-  .queue-order {
-    gap: 4px;
-  }
-  .queue-order label:first-of-type {
-    min-width: 90px;
-  }
   .form-row {
     gap: 5px;
   }
@@ -982,39 +946,19 @@ dialog::backdrop {
     outline: 2px solid #dceca8;
   }
 }
-.queue-order {
-  flex-wrap: wrap;
-}
-.queue-order > label:nth-of-type(2) {
-  max-width: none;
-}
-.queue-order > label:nth-of-type(3) {
-  max-width: 65px;
-}
-@media (max-width: 600px) {
-  .queue-order > label:first-of-type {
-    flex-basis: calc(100% - 24px);
-  }
-  .queue-order > label:nth-of-type(2) {
-    flex: 1;
-  }
-  .queue-order > label:nth-of-type(3) {
-    flex: 0 0 60px;
-  }
-}
 /* Touch controls remain usable independently of the compact desktop layout. */
 @media (pointer: coarse) {
   button,
   select,
   input:not([type="checkbox"]):not([type="range"]) {
-    min-height: 44px;
+    min-height:var(--control-h);
   }
   input[type="range"] {
-    min-height: 44px;
+    min-height:var(--control-h);
   }
   .geo-tools button,
   .geo-tools label {
-    min-height: 44px;
+    min-height:var(--control-h);
     padding: 9px 11px;
     font-size: 12px;
   }
@@ -1024,8 +968,7 @@ dialog::backdrop {
     height: 20px;
   }
   .maplibregl-ctrl-group button {
-    width: 44px;
-    height: 44px;
+    width:var(--control-h);height:var(--control-h);
   }
   .geo-tools {
     right: 64px;
@@ -1053,29 +996,6 @@ dialog::backdrop {
   }
   .rail nav::-webkit-scrollbar {
     display: none;
-  }
-  .queue-order {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 36px 36px;
-    align-items: end;
-  }
-  .queue-order > span {
-    display: none;
-  }
-  .queue-order > label:first-of-type,
-  .queue-order > label:nth-of-type(2) {
-    grid-column: 1/-1;
-    min-width: 0;
-    max-width: none;
-    width: 100%;
-  }
-  .queue-order > label:nth-of-type(3) {
-    grid-column: 1;
-    max-width: 100px;
-    width: 100%;
-  }
-  .queue-order > button {
-    width: 36px;
   }
 }
 .map-first .workspace {
@@ -1211,10 +1131,10 @@ dialog::backdrop {
   border-bottom: 1px solid #dfe6dc;
 }
 .unified-toolbar .sidebar-toggle {
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
-  padding: 8px;
+  flex: 0 0 var(--control-h);
+  width: var(--control-h);
+  height: var(--control-h);
+  padding: 0;
   border: 1px solid #dce5d9;
   background: #fff;
 }
@@ -1265,8 +1185,8 @@ dialog::backdrop {
   background: #fff;
   border: 1px solid #dae3d4;
   font-size: 12px;
-  padding: 10px 12px;
-  min-height: 38px;
+  padding: 0 12px;
+  min-height: var(--control-h);
 }
 .unified-toolbar .toolbar-actions > button.primary {
   background: #2d6848;
@@ -1281,9 +1201,9 @@ dialog::backdrop {
   margin-left: 3px;
 }
 .unified-toolbar .icon-action {
-  width: 36px;
-  min-height: 38px;
-  padding: 8px;
+  width: var(--control-h);
+  min-height: var(--control-h);
+  padding: 0;
   border: 0;
   background: transparent;
 }
@@ -1471,7 +1391,7 @@ dialog::backdrop {
   .unified-toolbar .sidebar-toggle {
     width: 36px;
     height: 40px;
-    min-height: 40px;
+    min-height:var(--control-h);
   }
   .unified-toolbar .toolbar-context {
     min-width: 0;
@@ -1495,7 +1415,7 @@ dialog::backdrop {
   }
   .unified-toolbar .toolbar-actions > button {
     flex: 1;
-    min-height: 42px;
+    min-height:var(--control-h);
     font-size: 12px;
   }
   .unified-toolbar .save-actions {
@@ -1504,7 +1424,7 @@ dialog::backdrop {
   }
   .unified-toolbar .icon-action {
     width: 34px;
-    min-height: 42px;
+    min-height:var(--control-h);
   }
   .map-first .workspace {
     padding: 10px;
@@ -1553,10 +1473,10 @@ dialog::backdrop {
   .unified-toolbar .icon-action,
   .unified-toolbar .sidebar-toggle,
   .rail-close {
-    min-height: 44px;
+    min-height:var(--control-h);
   }
   .unified-toolbar .icon-action {
-    width: 44px;
+    width: var(--control-h);
   }
 }
 
@@ -1564,14 +1484,14 @@ dialog::backdrop {
 .map-legend > summary { cursor: pointer; min-height: 28px; display: flex; align-items: center; padding: 6px 8px; background: #fffffff0; border-radius: 5px; box-shadow: 0 1px 5px #0001; font-size: 10px; }
 .map-legend[open] > div { position: absolute; top: 100%; left: 0; width: min(290px, 70vw); padding: 12px; background: white; border-radius: 8px; box-shadow: 0 4px 18px #173e3233; z-index: 10; }
 .map-inspector-jump { display: none; }
-@container game-main (max-width: 740px) { .map-inspector-jump { display: block; position: absolute; right: 12px; bottom: 64px; z-index: 3; min-height: 44px; box-shadow: 0 2px 8px #173e3233; } }
+@container game-main (max-width: 740px) { .map-inspector-jump { display: block; position: absolute; right: 12px; bottom: 64px; z-index: 3; min-height:var(--control-h); box-shadow: 0 2px 8px #173e3233; } }
 
 /* Explicit placement includes the language control in compact toolbars. */
 .unified-toolbar .sidebar-toggle { grid-area: menu; }
 .unified-toolbar .toolbar-context { grid-area: context; }
 .unified-toolbar .toolbar-actions { grid-area: actions; }
 .unified-toolbar .language-picker { grid-area: language; min-width: 0; }
-.unified-toolbar .language-picker select { width: 100%; min-height: 44px; font-size: 16px; }
+.unified-toolbar .language-picker select { width: 100%; min-height:var(--control-h); font-size: 16px; }
 @container game-main (max-width: 900px) {
   .unified-toolbar .toolbar-region { white-space: normal; overflow-wrap: anywhere; }
   .unified-toolbar .toolbar-progress { gap: 4px 8px; }
@@ -1582,7 +1502,7 @@ dialog::backdrop {
   .regional-app select,
   .regional-app textarea {
     font-size: 16px;
-    min-height: 44px;
+    min-height:var(--control-h);
   }
 }
 
@@ -1598,7 +1518,7 @@ dialog::backdrop {
 }
 @media (pointer: coarse), (max-width: 600px) {
   .advisor-acquisition-choice {
-    min-height: 44px;
+    min-height:var(--control-h);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1631,7 +1551,7 @@ dialog::backdrop {
   font-size: 12px;
 }
 .map-layer-menu > summary {
-  min-height: 44px;
+  min-height:var(--control-h);
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -1656,7 +1576,7 @@ dialog::backdrop {
 }
 .map-layer-options > button,
 .map-layer-options > label {
-  min-height: 44px;
+  min-height:var(--control-h);
   box-sizing: border-box;
   margin: 0;
   width: 100%;
@@ -1676,26 +1596,26 @@ dialog::backdrop {
 }
 
 @media (pointer: coarse), (max-width: 600px) {
-  .reservation-desk button, .reservation-desk select, .reservation-desk input { min-height: 44px; box-sizing: border-box; }
+  .reservation-desk button, .reservation-desk select, .reservation-desk input { min-height:var(--control-h); box-sizing: border-box; }
 }
 
 @media (pointer: coarse), (max-width: 600px) {
-  .preseason-desk button, .preseason-desk select, .preseason-desk summary { min-height: 44px; box-sizing: border-box; }
+  .preseason-desk button, .preseason-desk select, .preseason-desk summary { min-height:var(--control-h); box-sizing: border-box; }
   .preseason-desk summary { padding-block: 12px; }
 }
 
 @media (pointer: coarse), (max-width: 600px) {
- .processing-desk button, .processing-desk select, .processing-desk input:not([type="checkbox"]) { min-height: 44px; box-sizing: border-box; }
+ .processing-desk button, .processing-desk select, .processing-desk input:not([type="checkbox"]) { min-height:var(--control-h); box-sizing: border-box; }
 }
 
 @media (pointer: coarse), (max-width: 600px) {
- .classroom-workspace button, .classroom-workspace select, .classroom-workspace input:not([type="checkbox"]):not([type="file"]) { min-height: 44px; box-sizing: border-box; }
+ .classroom-workspace button, .classroom-workspace select, .classroom-workspace input:not([type="checkbox"]):not([type="file"]) { min-height:var(--control-h); box-sizing: border-box; }
 }
 
 @media (pointer: coarse), (max-width: 600px) {
- .common-value-experiment button, .common-value-experiment input { min-height: 44px; box-sizing: border-box; }
+ .common-value-experiment button, .common-value-experiment input { min-height:var(--control-h); box-sizing: border-box; }
 }
 
 @media (pointer: coarse), (max-width: 600px) {
- .procurement-study button, .procurement-study select, .procurement-study input { min-height: 44px; box-sizing: border-box; }
+ .procurement-study button, .procurement-study select, .procurement-study input { min-height:var(--control-h); box-sizing: border-box; }
 }

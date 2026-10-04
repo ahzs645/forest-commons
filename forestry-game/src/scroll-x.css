@@ -1,0 +1,14 @@
+/* Horizontal scroll container for wide tables and charts. Edge shadows appear
+   only on the side where content is scrolled out of view (local vs scroll
+   background attachment), giving touch users a visible cue to swipe. */
+.scroll-x {
+  overflow-x:auto; max-width:100%; min-width:0; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
+  background:
+    linear-gradient(90deg,var(--scroll-x-bg,#fff) 30%,#fff0) left center/32px 100% no-repeat local,
+    linear-gradient(270deg,var(--scroll-x-bg,#fff) 30%,#fff0) right center/32px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%,#173e3240,#173e3200) left center/12px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%,#173e3240,#173e3200) right center/12px 100% no-repeat scroll;
+}
+.scroll-x:focus-visible { outline:2px solid currentColor; outline-offset:2px; }
+.scroll-x-hint { display:none; margin:4px 0; font-size:12px; color:#5c7061; }
+@media (max-width:760px) { .scroll-x-hint { display:block; } }

@@ -1,16 +1,18 @@
 .workspace-single-resource .map-queue-amount { width:100%; }
 .workspace-single-resource .map-queue-amount input { width:100%; min-width:0; }
 @media(pointer:coarse), (max-width:600px) {
- .regional-app .workspace button,.regional-app dialog button { min-height:44px; min-width:44px; touch-action:manipulation; }
- .regional-app .workspace summary { min-height:44px; align-content:center; cursor:pointer; }
- .regional-app .workspace input[type=range] { min-height:44px; }
+ .regional-app .workspace button,.regional-app dialog button { min-height:var(--control-h); min-width:var(--control-h); touch-action:manipulation; }
+ .regional-app .workspace summary { min-height:var(--control-h); align-content:center; cursor:pointer; }
+ .regional-app .workspace input[type=range] { min-height:var(--control-h); }
  .regional-app input:not([type=checkbox]):not([type=radio]):not([type=range]),.regional-app select,.regional-app textarea { font-size:16px; }
- .topbar.unified-toolbar .toolbar-actions>button.primary { min-height:44px; }
- .topbar.unified-toolbar .sidebar-toggle { min-width:44px; width:44px; }
- .regional-app .maplibregl-ctrl-attrib-button { min-width:44px; min-height:44px; width:44px; height:44px; }
- .regional-app .maplibregl-ctrl-attrib.maplibregl-compact { min-width:44px; min-height:44px; padding-right:44px; }
+ .topbar.unified-toolbar .toolbar-actions>button.primary { min-height:var(--control-h); }
+ .topbar.unified-toolbar .sidebar-toggle { min-width:var(--control-h); width:var(--control-h); }
+ .regional-app .maplibregl-ctrl-attrib-button { min-width:var(--control-h); min-height:var(--control-h); width:var(--control-h);height:var(--control-h); }
+ .regional-app .maplibregl-ctrl-attrib.maplibregl-compact { min-width:var(--control-h); min-height:var(--control-h); padding-right:44px; }
  .regional-app .workspace-report-picker { flex-wrap:wrap; gap:8px; }
  .regional-app .workspace-report-picker select { max-width:100%; min-width:0; }
  .regional-app .workspace .panel { min-width:0; }
- .regional-app .queue-model-help { flex-direction:column; gap:4px; }
+ .regional-app .queue-model-help { gap:6px; }
+ .regional-app .queue-model-help>details:not([open]) { flex:none; }
+ .regional-app .queue-model-help>details[open] { flex-basis:100%; }
 }

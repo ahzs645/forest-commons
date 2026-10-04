@@ -8,9 +8,9 @@
 .geo-map .map-layer-menu {display:block}
 .geo-map .geo-tools .map-layer-menu[open] > .map-layer-options,
 .map-first .adaptive-map-workspace .geo-map .geo-tools .map-layer-menu[open] > .map-layer-options {position:absolute;top:calc(100% + 8px);bottom:auto;left:0;right:auto;width:min(300px,calc(100vw - 64px));max-height:min(58dvh,420px,calc(var(--map-visible-height,535px) - 80px));box-sizing:border-box;background:white}
-.geo-map .map-layer-options > button,.geo-map .map-layer-options > label {min-height:44px;font-size:14px;box-shadow:none;border-radius:6px}
+.geo-map .map-layer-options > button,.geo-map .map-layer-options > label {min-height:var(--control-h);font-size:14px;box-shadow:none;border-radius:6px}
 .geo-map .map-layer-options > details {margin-top:10px;border-top:1px solid #d8e0d8;padding-top:8px}
-.geo-map .map-layer-options > details > summary {min-height:44px;align-content:center;cursor:pointer;font-weight:600}
-.geo-map .map-layer-options > details label {display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px;box-shadow:none}
+.geo-map .map-layer-options > details > summary {min-height:var(--control-h);align-content:center;cursor:pointer;font-weight:600}
+.geo-map .map-layer-options > details label {display:flex;align-items:center;gap:10px;min-height:var(--control-h);font-size:14px;box-shadow:none}
 .geo-map .map-layer-options p {font-size:12px;line-height:1.5;color:#435c4b}
 .geo-map .map-detail-hint {margin:6px 0;padding:6px 0}

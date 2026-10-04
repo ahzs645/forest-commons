@@ -11,12 +11,17 @@ export default function NegotiationSavingsInput({ value, label, onCommit }: {
   value: number; label: string; onCommit: (value: number) => void;
 }) {
   const { t: tr, language } = useNegotiationLanguage();
-  const format = (amount: number) => language === 'fr' ? String(amount).replace('.', ',') : String(amount);
+  // Display two decimals (kSEK); untouched text never commits, so saved precision is kept.
+  const format = (amount: number) => {
+    const shown = String(Math.round(amount * 100) / 100 || 0);
+    return language === 'fr' ? shown.replace('.', ',') : shown;
+  };
   const [draft, setDraft] = useState(format(value));
   const [error, setError] = useState(false);
   const errorId = useId();
   useEffect(() => { setDraft(format(value)); setError(false); }, [value, language]);
   const commit = () => {
+    if (draft.trim() === format(value)) { setDraft(format(value)); setError(false); return; }
     const amount = parseNegotiationSavings(draft, language);
     if (amount === null) { setDraft(format(value)); setError(true); return; }
     setDraft(format(amount)); setError(false);

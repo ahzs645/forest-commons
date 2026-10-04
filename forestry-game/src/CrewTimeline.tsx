@@ -1,10 +1,12 @@
 import { useLanguage } from "./i18n";
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { scaleBand, scaleLinear } from 'd3';
 import type { CrewOrder, Game } from './simulation/types';
 import { scheduleCrew } from './simulation/scheduling';
+import './scroll-x.css';
 export default function CrewTimeline({game,onChange}:{game:Game;onChange?:(game:Game)=>void}) {
- const {t: tr}=useLanguage();
+ const {t: tr,language}=useLanguage();
+  const scroller=useRef<HTMLDivElement>(null);
   const [selection,setSelection]=useState({crew:game.region.crews[0].id,week:Math.min(game.week+1,game.region.weeks)});
   const [stand,setStand]=useState(game.region.stands.find(s=>game.stands.find(x=>x.id===s.id)?.owned)?.id??game.region.stands[0].id);
   const [hours,setHours]=useState(Math.min(40,game.region.crews[0].hours)),[treatment,setTreatment]=useState('final'),[bucking,setBucking]=useState('standard'),[error,setError]=useState('');
@@ -15,10 +17,13 @@ export default function CrewTimeline({game,onChange}:{game:Game;onChange?:(game:
   const weeks=Array.from({length:game.region.weeks},(_,i)=>i+1);
   const x=scaleBand<number>().domain(weeks).range([110,1070]).padding(.08);
   const y=scaleBand<string>().domain(game.region.crews.map(c=>c.id)).range([34,34+game.region.crews.length*35]).padding(.14);
+  // On narrow screens the season overflows; keep the current turn and the editable turns after it in view.
+  useEffect(()=>{const el=scroller.current;if(!el||el.scrollWidth<=el.clientWidth)return;const current=Math.min(Math.max(game.week,1),game.region.weeks);el.scrollLeft=Math.max(0,(x(current)??0)/1080*el.scrollWidth-el.clientWidth/3);},[game.week,game.region.weeks]);
   const save=(next:CrewOrder[]|null)=>{try{onChange?.(scheduleCrew(game,selection.week,crew.id,next));setError('');}catch(e){setError(String(e instanceof Error?e.message:e));}};
   return <section className="panel"><span className="eyebrow">{tr("PRODUCTION CALENDAR")}</span><h2>{tr("Crew assignments across the season")}</h2>
     <p>{tr("Choose a crew and future turn to save an ordered queue. A saved queue replaces that crew’s current queue when the turn begins. Empty queues reserve rest; unscheduled turns carry the previous queue after exhausted stands are removed. The forecast rehearsal follows saved assignments.")}</p>
-    <div style={{overflowX:'auto'}}><svg viewBox={`0 0 1080 ${45+game.region.crews.length*35}`} style={{minWidth:700,width:'100%'}} role="group" aria-label={tr("Interactive crew schedule by turn. Filled blue cells are saved future queues, green cells are recorded or current queues, outlined cells repeat the preceding plan.")}>
+    <p className="scroll-x-hint">{language==='fr'?'Balayez horizontalement pour voir toute la saison.':'Swipe sideways to see the whole season.'}</p>
+    <div className="scroll-x" ref={scroller}><svg viewBox={`0 0 1080 ${45+game.region.crews.length*35}`} style={{minWidth:700,width:'100%'}} role="group" aria-label={tr("Interactive crew schedule by turn. Filled blue cells are saved future queues, green cells are recorded or current queues, outlined cells repeat the preceding plan.")}>
       {weeks.map(w=><text key={w} x={x(w)!+x.bandwidth()/2} y={20} textAnchor="middle" fontSize={12}>{(game.region.turnDurationWeeks??1)===1?"W":"T"}{w}</text>)}
       {game.region.crews.map(c=><g key={c.id}><text x={0} y={y(c.id)!+20} fontSize={12}>{c.name}</text>{weeks.map(w=>{
         const q=w<game.week?game.history.find(h=>h.week===w)?.plan.crews[c.id]:w===game.week?game.plan.crews[c.id]:game.scheduledCrews?.[w]?.[c.id];
@@ -41,19 +46,21 @@ function ProductionIntervals({game,week}:{game:Game;week:number}) {
   const report=game.history.find(h=>h.week===week);
   if(!report?.production)return <p className="muted">{tr("This saved week has no exact production intervals. Its recorded orders are shown above; actual timing is unavailable.")}</p>;
   const records=report.production;
+  const heading=<h3>{tr((game.region.turnDurationWeeks??1)===1?"Week":"Turn")} {week}{tr(": recorded travel and production")}</h3>;
+  if(!records.length)return <section aria-label={`${tr("Recorded production intervals for turn")} ${week}`}>{heading}<p className="muted">{tr("No production intervals were recorded this turn.")}</p></section>;
   const width=960,left=110;
   const maxHours=Math.max(...game.region.crews.map(c=>c.hours),...records.map(p=>p.endHour));
   const x=scaleLinear().domain([0,maxHours]).range([left,width]);
   const y=scaleBand<string>().domain(game.region.crews.map(c=>c.id)).range([35,35+game.region.crews.length*29]).padding(.3);
   const hour=(n:number)=>n.toLocaleString('en-CA',{maximumFractionDigits:1});
   return <section aria-label={`${tr("Recorded production intervals for turn")} ${week}`}>
-    <h3>{tr((game.region.turnDurationWeeks??1)===1?"Week":"Turn")} {week}{tr(": recorded travel and production")}</h3>
+    {heading}
     <p>{tr("Amber shows relocation; green shows productive work. Blank time has no recorded production interval. Positions use elapsed hours in each crew’s week, including travel. The table provides the exact recorded values.")}</p>
-    <div style={{overflowX:'auto'}}><svg role="img" aria-label={`${tr("Turn")} ${week}. ${tr("Actual relocation and production intervals; full values in the following table.")}`} viewBox={`0 0 ${width+12} ${45+game.region.crews.length*29}`} style={{width:'100%',minWidth:650}}>
+    <div className="scroll-x"><svg role="img" aria-label={`${tr("Turn")} ${week}. ${tr("Actual relocation and production intervals; full values in the following table.")}`} viewBox={`0 0 ${width+12} ${45+game.region.crews.length*29}`} style={{width:'100%',minWidth:650}}>
       {x.ticks(8).map(t=><g key={t}><text x={x(t)} y={20} textAnchor="middle" fontSize={11}>{hour(t)} h</text><line x1={x(t)} x2={x(t)} y1={28} y2={35+game.region.crews.length*29} stroke="#d7e0db"/></g>)}
       {game.region.crews.map(c=><text key={c.id} x={0} y={y(c.id)!+15} fontSize={12}>{c.name}</text>)}
       {records.map((p,i)=><g key={i}><title>{`${p.crew} ${tr("at")} ${p.stand}${tr(": starts")} ${hour(p.startHour)} ${tr("h, relocation")} ${hour(p.relocationHours)} ${tr("h, ends")} ${hour(p.endHour)} h`}</title><rect x={x(p.startHour)} y={y(p.crew)} width={Math.max(0,x(p.startHour+p.relocationHours)-x(p.startHour))} height={y.bandwidth()} fill="#c18b35"/><rect x={x(p.startHour+p.relocationHours)} y={y(p.crew)} width={Math.max(0,x(p.endHour)-x(p.startHour+p.relocationHours))} height={y.bandwidth()} fill="#36886b"/></g>)}
     </svg></div>
-    {records.length===0?<p>{tr("No production intervals were recorded this turn.")}</p>:<div className="table-wrap"><table><caption>{tr("Recorded crew intervals — turn")} {week}{tr("; hours elapsed from turn start")}</caption><thead><tr><th scope="col">{tr("Crew")}</th><th scope="col">{tr("Stand")}</th><th scope="col">{tr("Treatment")}</th><th scope="col">{tr("Start h")}</th><th scope="col">{tr("Travel h")}</th><th scope="col">{tr("Work starts h")}</th><th scope="col">{tr("Ends h")}</th><th scope="col">{tr("Produced m³")}</th></tr></thead><tbody>{records.map((p,i)=><tr key={i}><th scope="row">{game.region.crews.find(c=>c.id===p.crew)?.name??p.crew}</th><td>{p.stand}</td><td>{game.region.treatments?.[p.treatment]?.name??p.treatment}</td><td>{hour(p.startHour)}</td><td>{hour(p.relocationHours)}</td><td>{hour(p.startHour+p.relocationHours)}</td><td>{hour(p.endHour)}</td><td>{hour(Object.values(p.products).reduce((n,v)=>n+v,0))}</td></tr>)}</tbody></table></div>}
+    <div className="table-wrap scroll-x"><table><caption>{tr("Recorded crew intervals — turn")} {week}{tr("; hours elapsed from turn start")}</caption><thead><tr><th scope="col">{tr("Crew")}</th><th scope="col">{tr("Stand")}</th><th scope="col">{tr("Treatment")}</th><th scope="col">{tr("Start h")}</th><th scope="col">{tr("Travel h")}</th><th scope="col">{tr("Work starts h")}</th><th scope="col">{tr("Ends h")}</th><th scope="col">{tr("Produced m³")}</th></tr></thead><tbody>{records.map((p,i)=><tr key={i}><th scope="row">{game.region.crews.find(c=>c.id===p.crew)?.name??p.crew}</th><td>{p.stand}</td><td>{game.region.treatments?.[p.treatment]?.name??p.treatment}</td><td>{hour(p.startHour)}</td><td>{hour(p.relocationHours)}</td><td>{hour(p.startHour+p.relocationHours)}</td><td>{hour(p.endHour)}</td><td>{hour(Object.values(p.products).reduce((n,v)=>n+v,0))}</td></tr>)}</tbody></table></div>
   </section>;
 }

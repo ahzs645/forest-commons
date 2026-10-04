@@ -1,6 +1,6 @@
 .selected-lot-status { margin: 12px 0; padding: 14px; border: 1px solid #d6e2d8; border-radius: 10px; background: #f7faf6; }
 .selected-lot-status-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.selected-lot-status-heading button { min-height: 44px; padding: 8px 12px; white-space: normal; }
+.selected-lot-status-heading button { min-height:var(--control-h); padding: 8px 12px; white-space: normal; }
 .selected-lot-status dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; margin: 12px 0; }
 .selected-lot-status dl > div { min-width: 0; border-left: 3px solid #759779; padding-left: 9px; }
 .selected-lot-status dl > div[data-status="blocked"] { border-color: #b77926; }

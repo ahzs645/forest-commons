@@ -107,7 +107,7 @@ export default function StandReadiness({ game, standId, selection = {}, onNaviga
         const warning = list.some(c => c.level === 'warning');
         return <span key={scope} data-level={blocked ? 'blocked' : compact && warning ? 'warning' : 'ready'}>
           {scope === 'harvest' ? text('Harvest', 'Récolte') : text('Haul', 'Transport')}:
-          {' '}{compact ? (!list.length ? text('Season ended', 'Saison terminée') : blocked ? `${blocked} ${text('issues', 'points à vérifier')}` : warning ? text('Review', 'À vérifier') : text('Ready', 'Prêt')) : !list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
+          {' '}{compact ? (!list.length ? text('Season ended', 'Saison terminée') : blocked ? `${blocked} ${blocked === 1 ? text('issue', 'point à vérifier') : text('issues', 'points à vérifier')}` : warning ? text('Review', 'À vérifier') : text('Ready', 'Prêt')) : !list.length ? text('Closed season', 'Saison terminée') : blocked ? `${blocked} ${blocked === 1 ? text('check needs attention', 'vérification à résoudre') : text('checks need attention', 'vérifications à résoudre')}` : text('Checks passed · rehearse', 'Vérifications réussies · simuler')}
         </span>;
       })}
     </div>

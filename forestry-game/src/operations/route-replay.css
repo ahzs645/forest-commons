@@ -3,19 +3,19 @@
 .route-replay-heading p,.route-replay-note {font-size:.9rem; color:#496054; line-height:1.5;}
 .route-replay-controls {display:flex; flex-wrap:wrap; align-items:end; gap:.75rem; padding:1rem; margin-block:.75rem; background:#edf3eb; border:1px solid #cbd8cb; border-radius:10px;}
 .route-replay-controls label {display:flex; flex-direction:column; gap:.3rem; font-weight:600; font-size:.85rem;}
-.route-replay-controls button,.route-replay-controls select {min-height:44px;}
+.route-replay-controls button,.route-replay-controls select {min-height:var(--control-h);}
 .route-replay-controls select {max-width:100%;}
 .route-replay-actions {display:flex; flex-wrap:wrap; gap:.5rem; align-items:end;}
 .route-replay-controls .route-replay-scrubber {flex:1 1 250px; min-width:0;}
 .route-replay-scrubber span {display:flex; justify-content:space-between; gap:1rem;}
-.route-replay-scrubber input {width:100%; margin:0; min-height:44px; accent-color:#236247;}
+.route-replay-scrubber input {width:100%; margin:0; min-height:var(--control-h); accent-color:#236247;}
 .route-replay-detail {display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; border-left:3px solid #236247; padding:.75rem 1rem; background:#f1f5ef;}
 .route-replay-empty {padding:1rem; border:1px dashed #aebfaf; border-radius:8px;}
 .route-tour,.map-viewpoints {min-width:0; padding:.75rem; border:1px solid #cbd8cb; border-radius:10px; margin-block:.75rem;}
 .route-tour-heading {display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;}
 .route-tour h4,.map-viewpoints h4 {margin:0;}
 .route-tour p,.map-viewpoints p {margin-block:.4rem; font-size:.85rem;}
-.route-follow {display:flex; align-items:center; gap:.4rem; min-height:44px; font-size:.85rem;}
+.route-follow {display:flex; align-items:center; gap:.4rem; min-height:var(--control-h); font-size:.85rem;}
 .route-follow input {width:20px; min-height:20px;}
 .route-tour ol {display:flex; gap:.5rem; overflow-x:auto; padding:.3rem .2rem .7rem; margin:.4rem 0 0; list-style:none; scroll-snap-type:x proximity;}
 .route-tour li {flex:0 0 240px; min-width:0; scroll-snap-align:start;}
@@ -24,8 +24,8 @@
 .route-tour small {color:#496054;}
 .map-viewpoint-save {display:flex; flex-wrap:wrap; align-items:end; gap:.5rem;}
 .map-viewpoint-save label {display:flex; flex-direction:column; gap:.3rem; flex:1 1 200px; min-width:0; font-size:.85rem;}
-.map-viewpoint-save input {width:100%; min-height:44px;}
-.map-viewpoints button {min-height:44px; min-width:44px;}
+.map-viewpoint-save input {width:100%; min-height:var(--control-h);}
+.map-viewpoints button {min-height:var(--control-h); min-width:var(--control-h);}
 .map-viewpoints ul {display:flex; flex-wrap:wrap; gap:.5rem; list-style:none; padding:0;}
 .map-viewpoints li {display:flex; gap:.25rem; max-width:100%;}
 .map-viewpoint-open {overflow-wrap:anywhere; white-space:normal; min-width:0; flex:1;}
@@ -40,3 +40,6 @@
   .map-viewpoint-save > button {width:100%;}
   .route-replay-controls select,.map-viewpoint-save input {font-size:16px;}
 }
+.route-viewpoints {margin-block:.75rem; font-size:inherit;}
+.route-viewpoints > summary {min-height:var(--control-h); align-content:center; font-weight:600;}
+.route-viewpoints > .map-viewpoints {border:0; padding:.5rem 0 0; margin:0;}

@@ -1,0 +1,7 @@
+/* Compact ledger rows: the evidence disclosure stays one line until opened. */
+.lot-profitability td, .lot-profitability tbody th { padding-block:8px; vertical-align:top; }
+.lot-profitability td { font-variant-numeric:tabular-nums; white-space:nowrap; }
+.lot-profitability td details { margin:0; }
+.lot-profitability td summary { padding:4px 8px; white-space:nowrap; }
+.lot-profitability td details p { margin:4px 0; white-space:normal; min-width:180px; }
+.lot-profitability caption { text-align:left; padding-bottom:6px; }

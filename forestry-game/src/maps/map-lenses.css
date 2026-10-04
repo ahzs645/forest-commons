@@ -1,5 +1,5 @@
 .map-lens-select {display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:12px;min-width:0}
-.map-lens-select select {width:100%;min-height:44px;font-size:16px;max-width:100%;box-sizing:border-box}
+.map-lens-select select {width:100%;min-height:var(--control-h);font-size:16px;max-width:100%;box-sizing:border-box}
 .map-lens-legend {font-size:12px;line-height:1.5;min-width:0}
 .map-lens-legend ul {list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:7px 12px;margin:8px 0}
 .map-lens-legend li {display:flex;gap:5px;align-items:center}
@@ -7,17 +7,17 @@
 .map-lens-legend p {margin:6px 0}
 .map-lens-values ul {list-style:none;padding:0;margin:0}
 .map-lens-values li {border-bottom:1px solid #dce4d9}
-.map-lens-values button {display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;width:100%;text-align:left;white-space:normal;max-width:100%;box-sizing:border-box;background:transparent;border:0;border-radius:0;padding:10px 5px}
+.map-lens-values button {display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:var(--control-h);width:100%;text-align:left;white-space:normal;max-width:100%;box-sizing:border-box;background:transparent;border:0;border-radius:0;padding:10px 5px}
 .map-lens-values button span {min-width:0;overflow-wrap:anywhere}
 .map-lens-values button strong {flex:none;max-width:48%;font-size:12px}
 .map-lens-values button[aria-pressed=true] {background:#edf3e9;box-shadow:inset 3px 0 #d09930}
-.map-lens-details>summary {min-height:44px;cursor:pointer;font-weight:650;align-content:center}
+.map-lens-details>summary {min-height:var(--control-h);cursor:pointer;font-weight:650;align-content:center}
 .map-lens-selected {font-size:12px;margin:8px 0;padding:8px;background:#edf3e9;border-radius:6px;line-height:1.5}
 .recorded-state-controls {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
 .recorded-state-controls label {display:flex;flex-direction:column;gap:5px;min-width:0}
-.recorded-state-controls select,.recorded-state-controls button {min-height:44px;max-width:100%;font-size:16px;box-sizing:border-box}
+.recorded-state-controls select,.recorded-state-controls button {min-height:var(--control-h);max-width:100%;font-size:16px;box-sizing:border-box}
 .recorded-state-toggle {display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
-.recorded-state-toggle button {min-height:44px;flex:1;font-weight:650}
+.recorded-state-toggle button {min-height:var(--control-h);flex:1;font-weight:650}
 .recorded-state-toggle button[aria-pressed=true] {background:#173e32;color:white}
 .recorded-state-comparison .geo-map {height:480px;min-height:320px}
 .recorded-state-comparison .map-layer-controls-desktop {display:none}

@@ -25,9 +25,16 @@ export default function PartnerComparison({ game }: { game: Game }) {
       g.improvedRoads,
     ),
     f = (n: number) => n.toLocaleString(language === "fr" ? "fr-CA" : "en-CA", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const fr = language === "fr";
+  const rows = (r.partnerJobs ?? []).map((j) => {
+    const trip = partnerTrip(g, j.id, g.truckPositions[t.id], s.node, w, t.payload),
+      a = trip && empty ? freightSettlement(trip, empty.km, t.costKm, g.cooperation.partnerShare) : null;
+    return { j, trip, a };
+  });
+  const available = rows.filter((row) => row.a && row.trip && empty);
+  const unavailable = rows.filter((row) => !(row.a && row.trip && empty));
   return (
-    <section className="panel">
-      <h3>{tr("Measure shared-route savings")}</h3>
+    <section className="partner-comparison">
       <p>{tr("Compare the same truck’s repositioning plus a partner’s independent out-and-back freight journey against one shared journey. Travel cost uses this truck’s rate. Handling also consumes fleet hours. These local trip comparisons do not optimize the entire network.")}{" "}</p>
       <div className="form-row">
         <label>
@@ -49,8 +56,9 @@ export default function PartnerComparison({ game }: { game: Game }) {
           </select>
         </label>
       </div>
-      <div className="table-wrap" tabIndex={0} role="region" aria-label={language==='fr'?'Tableau défilant des transports partenaires':'Scrollable partner freight comparison table'}>
-        <table>
+      <p className="muted" role="status">{fr ? `${available.length} sur ${rows.length} transports partenaires peuvent être comparés pour ce camion.` : `${available.length} of ${rows.length} partner jobs can be compared for this truck.`}</p>
+      <div className="table-wrap scroll-x" tabIndex={0} role="region" aria-label={language==='fr'?'Tableau défilant des transports partenaires':'Scrollable partner freight comparison table'}>
+        <table className="stack-table">
           <thead>
             <tr>
               <th>{tr("Partner job")}</th>
@@ -63,65 +71,48 @@ export default function PartnerComparison({ game }: { game: Game }) {
             </tr>
           </thead>
           <tbody>
-            {(r.partnerJobs ?? []).map((j) => {
-              const trip = partnerTrip(
-                  g,
-                  j.id,
-                  g.truckPositions[t.id],
-                  s.node,
-                  w,
-                  t.payload,
-                ),
-                a =
-                  trip && empty
-                    ? freightSettlement(
-                        trip,
-                        empty.km,
-                        t.costKm,
-                        g.cooperation.partnerShare,
-                      )
-                    : null;
-              return (
-                <tr key={j.id}>
-                  <td>
-                    {j.id} · {j.company}
-                    <small>
-                      {" "}
-                      {j.from} → {j.to}
-                    </small>
-                  </td>
-                  {a && trip && empty ? (
-                    <>
-                      <td>{f(trip.volume)} {tr("m³")}</td>
-                      <td>
-                        {f(empty.km + trip.standaloneKm)} / {f(trip.km)}
-                      </td>
-                      <td>
-                        {r.currency} {f(a.savings)}
-                      </td>
-                      <td>
-                        {a.feasible
-                          ? f(a.payment)
-                          : tr("No mutually beneficial quote")}
-                      </td>
-                      <td>
-                        {f(a.ownSaving)} / {f(a.partnerSaving)}
-                      </td>
-                      <td>
-                        {f(
-                          trip.hours -
-                            empty.hours +
-                            t.loadingHours +
-                            t.unloadingHours,
-                        )}
-                      </td>
-                    </>
-                  ) : (
-                    <td colSpan={6}>{tr("Unavailable, completed, outside its contract window, or no open route.")}{" "}</td>
+            {available.map(({ j, trip, a }) => (
+              <tr key={j.id}>
+                <td>
+                  {j.id} · {j.company}
+                  <small>
+                    {" "}
+                    {j.from} → {j.to}
+                  </small>
+                </td>
+                <td data-label={tr("Cargo")}>{f(trip!.volume)} {tr("m³")}</td>
+                <td data-label={tr("Independent / pooled km")}>
+                  {f(empty!.km + trip!.standaloneKm)} / {f(trip!.km)}
+                </td>
+                <td data-label={tr("Joint travel saving")}>
+                  {r.currency} {f(a!.savings)}
+                </td>
+                <td data-label={tr("Payment to us")}>
+                  {a!.feasible
+                    ? f(a!.payment)
+                    : tr("No mutually beneficial quote")}
+                </td>
+                <td data-label={tr("Our / partner saving")}>
+                  {f(a!.ownSaving)} / {f(a!.partnerSaving)}
+                </td>
+                <td data-label={tr("Added hours")}>
+                  {f(
+                    trip!.hours -
+                      empty!.hours +
+                      t.loadingHours +
+                      t.unloadingHours,
                   )}
-                </tr>
-              );
-            })}
+                </td>
+              </tr>
+            ))}
+            {unavailable.length > 0 && (
+              <tr>
+                <td colSpan={7}>
+                  {unavailable.map(({ j }) => j.id).join(", ")}
+                  <small>{tr("Unavailable, completed, outside its contract window, or no open route.")}</small>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

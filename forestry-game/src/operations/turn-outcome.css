@@ -4,9 +4,9 @@
 .turn-summary-metrics strong { display:block; margin:8px 0; font-size:20px; overflow-wrap:anywhere; }
 .turn-summary-findings { border-left:3px solid #c39b47; padding:12px 16px; background:#faf7eb; border-radius:0 9px 9px 0; margin-bottom:16px; }
 .turn-summary-findings p { margin:4px 0 12px; }
-.turn-summary>details>summary { min-height:44px; cursor:pointer; align-content:center; }
+.turn-summary>details>summary { min-height:var(--control-h); cursor:pointer; align-content:center; }
 .turn-summary .button-row { margin-top:16px; }
 .turn-outcome-dialog { width:min(850px,calc(100vw - 24px)); max-width:none; max-height:calc(100dvh - 24px); padding:0; overflow:auto; }
 .turn-outcome-dialog .turn-summary { padding:0; border:0; box-shadow:none; }
-.turn-outcome-dialog button { min-height:44px; }
+.turn-outcome-dialog button { min-height:var(--control-h); }
 @media(max-width:700px) { .turn-summary-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .turn-summary-metrics strong { font-size:18px; } }

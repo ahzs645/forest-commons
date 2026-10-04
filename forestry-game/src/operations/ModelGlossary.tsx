@@ -63,5 +63,6 @@ export function ModelGlossary() {
 export function ResourceLocation({ game, nodeId }: { game: Game; nodeId: string }) {
   const { language, t } = useLanguage();
   const named = game.region.stands.find(stand => stand.node === nodeId)?.name ?? game.region.mills.find(mill => mill.node === nodeId)?.name;
-  return <span className="resource-location">{named ? `${t(named)} (${nodeId})` : `${language === 'fr' ? 'Nœud routier' : 'Road node'} ${nodeId}`}</span>;
+  // A named site needs no scenario code; the code stays available as a tooltip.
+  return <span className="resource-location" title={nodeId}>{named ? t(named) : `${language === 'fr' ? 'Nœud routier' : 'Road node'} ${nodeId}`}</span>;
 }

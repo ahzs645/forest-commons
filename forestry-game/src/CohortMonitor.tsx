@@ -71,7 +71,7 @@ export default function CohortMonitor({ current }: { current?: { id: string; tok
     <div className="cohort-grid">{connections.map(connection => {
       const result = results[connection.id], data = result?.data;
       return <article className="cohort-card" key={connection.id}>
-        <div className="section-heading"><h3>{connection.label}</h3><button aria-label={`Remove ${connection.label}`} onClick={() => setConnections(previous => previous.filter(c => c.id !== connection.id))}>{tr("Remove")}</button></div>
+        <div className="section-heading"><h3>{connection.label}</h3><button aria-label={`${tr("Remove")} ${connection.label}`} onClick={() => setConnections(previous => previous.filter(c => c.id !== connection.id))}>{tr("Remove")}</button></div>
         <small>{tr("Room")} {connection.id}</small>
         {result?.error ? <p role="status">{data ? tr("Stale summary")+" — " : tr("Unavailable")+" — "}{tr(result.error)}{tr(". Check the room service or replace the instructor credential.")}</p> : <p role="status">{data ? tr("Live summary") : tr("Connecting…")}</p>}
         {data && <><SessionClock timer={data.timer} /><p>{data.region} · {data.complete ? tr("Campaign complete") : `${tr("Turn")} ${data.week} / ${data.weeks}`}</p>

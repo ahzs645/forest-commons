@@ -56,4 +56,4 @@ export function LanguageProvider({children}:{children:ReactNode}){
  return <Context.Provider value={{language,setLanguage,t:text=>translate(text,language)}}>{children}</Context.Provider>;
 }
 export const useLanguage=()=>useContext(Context);
-export function LanguageSelect(){const {language,setLanguage,t}=useLanguage();return <label className="language-picker">{t('Language')}<select aria-label={t('Language')} value={language} onChange={e=>setLanguage(e.target.value as Language)}><option value="en">English</option><option value="fr">Français</option></select></label>;}
+export function LanguageSelect(){const {language,setLanguage,t}=useLanguage();return <label className="language-picker"><span className="language-picker-label">{t('Language')}</span><select aria-label={t('Language')} value={language} onChange={e=>setLanguage(e.target.value as Language)}><option value="en">English</option><option value="fr">Français</option></select></label>;}

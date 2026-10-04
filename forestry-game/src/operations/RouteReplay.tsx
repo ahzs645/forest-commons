@@ -162,9 +162,10 @@ function ReplaySession({game, index, onSelect, campaignKey}: {game: Game; index:
         'Ce rapport ancien n’a pas d’état enregistré : les positions finales de la flotte sont masquées et le contexte du bois reflète l’état actuel.')}`}
       {!report.snapshot?.operationalRoadIds && ` ${text('Historical road access was not recorded; gray roads indicate unknown access.',
         'L’accès routier historique n’a pas été enregistré; les routes grises indiquent un accès inconnu.')}`}</p>
-    {campaignKey && <MapViewpoints campaignKey={campaignKey} regionId={game.region.id} camera={camera} onRecall={view => {
-      setPlaying(false); setFollow(false); followStart.current = null; setCameraRequest({id: `${Date.now()}-${Math.random()}`, camera: view});
-    }}/>}
+    {campaignKey && <details className="route-viewpoints"><summary>{text('Saved viewpoints', 'Points de vue enregistrés')}</summary>
+      <MapViewpoints campaignKey={campaignKey} regionId={game.region.id} camera={camera} onRecall={view => {
+        setPlaying(false); setFollow(false); followStart.current = null; setCameraRequest({id: `${Date.now()}-${Math.random()}`, camera: view});
+      }}/></details>}
     {frame && <div className="route-replay-detail" aria-label={text('Recorded movement details', 'Détails du déplacement enregistré')}>
       <strong>{name(resource)} · {text('Movement', 'Déplacement')} {frame.movementIndex + 1}/{frame.movementCount}</strong>
       <span>{nodeName(frame.movement.from)} → {nodeName(frame.movement.to)}</span>

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { Game } from '../simulation/types';
 import { useLanguage } from '../i18n';
 import PlanningDesk from '../PlanningDesk';
@@ -15,30 +16,35 @@ export default function AnalysisTools({ game, onChange, onNavigate, onRespond, v
 }) {
   const { language } = useLanguage();
   const text = (en: string, fr: string) => language === 'fr' ? fr : en;
-  const choices = [
+  // "This turn" holds tasks that inform the current decision; the rest is
+  // teaching and season-scale material. The current-plan forecast lives in
+  // This turn's review, so it is not repeated here.
+  const planning = (id: 'supply' | 'deliverability' | 'season' | 'benchmark' | 'strategy' | 'objectives') =>
+    <PlanningDesk game={game} view={id} onChange={onChange} onNavigate={onNavigate}/>;
+  const choices: { id: string; group: 'turn' | 'learn'; label: string; content: ReactNode }[] = [
+    { id: 'supply', group: 'turn', label: text('Supply gap', 'Écart d’approvisionnement'), content: planning('supply') },
+    { id: 'conditions', group: 'turn', label: text('Disruptions & recovery', 'Perturbations et rétablissement'), content: (game.region.disruptions ?? []).some(event => event.revealWeek <= game.week)
+      ? <DisruptionDesk game={game} onNavigate={onNavigate} onRespond={onRespond}/>
+      : <section className="panel"><h2>{text('Disruptions & recovery', 'Perturbations et rétablissement')}</h2><p>{text('No disruptions have been published for this turn. Continue planning with the forecast conditions.', 'Aucune perturbation n’a été publiée pour ce tour. Continuer la planification selon les conditions prévues.')}</p></section> },
     ...([
-      ['supply', 'Supply gap', 'Écart d’approvisionnement'],
-      ['forecast', 'Current plan forecast', 'Prévision du plan actuel'],
       ['deliverability', 'Can timber reach the mills?', 'Le bois peut-il atteindre les usines?'],
       ['season', 'Season supply outlook', 'Approvisionnement de la saison'],
       ['benchmark', 'Dispatch reference plan', 'Plan de référence du transport'],
       ['strategy', 'Harvest strategies', 'Stratégies de récolte'],
       ['objectives', 'Season challenges', 'Défis de la saison'],
-    ] as const).map(([id, en, fr]) => ({ id, label: text(en, fr), content: <PlanningDesk game={game} view={id} onChange={onChange} onNavigate={onNavigate}/> })),
-    { id: 'conditions', label: text('Disruptions & recovery', 'Perturbations et rétablissement'), content: (game.region.disruptions ?? []).some(event => event.revealWeek <= game.week)
-      ? <DisruptionDesk game={game} onNavigate={onNavigate} onRespond={onRespond}/>
-      : <section className="panel"><h2>{text('Disruptions & recovery', 'Perturbations et rétablissement')}</h2><p>{text('No disruptions have been published for this turn. Continue planning with the forecast conditions.', 'Aucune perturbation n’a été publiée pour ce tour. Continuer la planification selon les conditions prévues.')}</p></section> },
-    { id: 'rolling', label: text('Rolling plan', 'Planification glissante'), content: <RollingOptimizer game={game} onChange={onChange}/> },
-    { id: 'prepare', label: text('Prepare the season', 'Préparer la saison'), content: <PreSeasonDesk game={game} onChange={onChange}/> },
-    ...(game.region.bcTenure ? [{ id: 'permits', label: text('Rights & permits', 'Droits et permis'), content: <TenureDesk game={game} onChange={onChange}/> }] : []),
-    ...(game.region.bcMarket ? [{ id: 'market', label: text('Market assumptions', 'Hypothèses de marché'), content: <BCMarketDesk game={game}/> }] : []),
-    { id: 'landscape', label: text('Landscape lesson', 'Leçon de paysage'), content: <LandscapeLesson game={game} standId={standId}/> },
+    ] as const).map(([id, en, fr]) => ({ id, group: 'learn' as const, label: text(en, fr), content: planning(id) })),
+    { id: 'rolling', group: 'learn', label: text('Rolling plan', 'Planification glissante'), content: <RollingOptimizer game={game} onChange={onChange}/> },
+    { id: 'prepare', group: 'learn', label: text('Prepare the season', 'Préparer la saison'), content: <PreSeasonDesk game={game} onChange={onChange}/> },
+    ...(game.region.bcTenure ? [{ id: 'permits', group: 'learn' as const, label: text('Rights & permits', 'Droits et permis'), content: <TenureDesk game={game} onChange={onChange}/> }] : []),
+    ...(game.region.bcMarket ? [{ id: 'market', group: 'learn' as const, label: text('Market assumptions', 'Hypothèses de marché'), content: <BCMarketDesk game={game}/> }] : []),
+    { id: 'landscape', group: 'learn', label: text('Landscape lesson', 'Leçon de paysage'), content: <LandscapeLesson game={game} standId={standId}/> },
   ];
+  const groups = [['turn', text('This turn', 'Ce tour')], ['learn', text('Learning & season tools', 'Apprentissage et outils de saison')]] as const;
   const selected = choices.find(choice => choice.id === value) ?? choices[0];
   return <section className="analysis-tools" aria-label={text('Analysis tools', 'Outils d’analyse')}>
     <div className="panel analysis-task-picker">
       <label>{text('Analysis task', 'Tâche d’analyse')}
-        <select aria-label={text('Analysis task', 'Tâche d’analyse')} value={selected.id} onChange={event => onSelectTask(event.target.value)}>{choices.map(choice => <option key={choice.id} value={choice.id}>{choice.label}</option>)}</select>
+        <select aria-label={text('Analysis task', 'Tâche d’analyse')} value={selected.id} onChange={event => onSelectTask(event.target.value)}>{groups.map(([group, label]) => <optgroup key={group} label={label}>{choices.filter(choice => choice.group === group).map(choice => <option key={choice.id} value={choice.id}>{choice.label}</option>)}</optgroup>)}</select>
       </label>
       <p>{text('Choose one task. Your entered settings stay available when you switch tools. Forecasts do not advance the campaign.', 'Choisir une tâche. Les réglages saisis restent disponibles lors du changement d’outil. Les prévisions ne font pas avancer la campagne.')}</p>
     </div>

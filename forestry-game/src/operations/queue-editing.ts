@@ -39,6 +39,54 @@ export function editQueue(game: Game, kind: QueueKind, id: string, index: number
   return next;
 }
 
+const notReady = () => ({ purchase: false, production: false, transport: false });
+
+export type CrewOrderField = { stand?: string; treatment?: string };
+export type TruckOrderField = { stand?: string; mill?: string; product?: string; partnerJob?: string | undefined };
+
+/** Change a stop's site, treatment, mill, assortment or partner freight. A new
+ * mill that does not buy the current assortment switches to its first one. */
+export function setQueueField(game: Game, kind: 'crew', id: string, index: number, patch: CrewOrderField): Game;
+export function setQueueField(game: Game, kind: 'truck', id: string, index: number, patch: TruckOrderField): Game;
+export function setQueueField(game: Game, kind: QueueKind, id: string, index: number, patch: CrewOrderField | TruckOrderField): Game {
+  if (game.week > game.region.weeks) return game;
+  const source = kind === 'crew' ? game.plan.crews[id] : game.plan.trucks[id];
+  if (!source?.[index]) return game;
+  const next = structuredClone(game);
+  if (kind === 'crew') Object.assign(next.plan.crews[id][index], patch);
+  else {
+    const order = next.plan.trucks[id][index];
+    Object.assign(order, patch);
+    if ('mill' in patch) {
+      const mill = game.region.mills.find(m => m.id === order.mill);
+      if (mill && !(order.product in mill.prices)) order.product = Object.keys(mill.prices)[0];
+    }
+  }
+  next.plan.ready = notReady();
+  return next;
+}
+
+/** Append a stop at the preferred owned site (crews need remaining timber),
+ * else the first eligible owned site. Crews receive their unassigned hours. */
+export function appendQueueStop(game: Game, kind: QueueKind, id: string, preferredStand?: string): Game {
+  if (game.week > game.region.weeks) return game;
+  const eligible = (s: Game['stands'][number]) => s.owned && (kind === 'truck' || s.remaining > 0);
+  const stand = game.stands.find(s => s.id === preferredStand && eligible(s)) ?? game.stands.find(eligible);
+  if (!stand) return game;
+  const next = structuredClone(game);
+  if (kind === 'crew') {
+    const crew = game.region.crews.find(c => c.id === id);
+    if (!crew || !next.plan.crews[id]) return game;
+    next.plan.crews[id].push({ stand: stand.id, hours: Math.max(1, crew.hours - next.plan.crews[id].reduce((n, o) => n + o.hours, 0)) });
+  } else {
+    const mill = game.region.mills[0];
+    if (!mill || !next.plan.trucks[id]) return game;
+    next.plan.trucks[id].push({ stand: stand.id, mill: mill.id, product: Object.keys(mill.prices)[0], loads: 5 });
+  }
+  next.plan.ready = notReady();
+  return next;
+}
+
 const snapshot = (game: Game): QueueSnapshot => structuredClone({ crews: game.plan.crews, trucks: game.plan.trucks });
 const outsideQueues = (game: Game) => JSON.stringify({
   ...game, plan: { ...game.plan, crews: undefined, trucks: undefined, ready: undefined },

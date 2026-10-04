@@ -1,5 +1,5 @@
 .model-term-help{display:inline-block;position:relative;font-size:.8rem;max-width:100%;margin:4px 0}
-.model-term-help>summary,.model-glossary>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:8px;color:#315b41;font-weight:600;list-style:none;border-radius:7px;padding:6px 9px}
+.model-term-help>summary,.model-glossary>summary{cursor:pointer;min-height:var(--control-h);display:flex;align-items:center;gap:8px;color:#315b41;font-weight:600;list-style:none;border-radius:7px;padding:6px 9px}
 .model-term-help>summary:before,.model-glossary>summary:before{content:'?';display:grid;place-items:center;width:21px;height:21px;border:1px solid currentColor;border-radius:50%;flex-shrink:0}
 .model-term-help>summary:focus-visible,.model-glossary>summary:focus-visible{outline:3px solid #789767;outline-offset:2px}
 .model-term-definition{padding:10px 12px;max-width:68ch;background:#f2f6ef;border:1px solid #d7e2d1;border-radius:9px;color:#294432}
@@ -7,6 +7,6 @@
 .model-glossary{border:1px solid #d7e2d1;border-radius:10px;background:#fff;margin:12px 0;font-size:.86rem}
 .model-glossary>summary{padding:10px 14px}
 .model-glossary-content{padding:0 14px 14px}.model-glossary-content>p{line-height:1.5;font-size:.82rem}
-.model-glossary-content>label{display:block;font-weight:600;margin:8px 0 5px}.model-glossary-content>input{width:100%;min-height:44px;max-width:480px}
+.model-glossary-content>label{display:block;font-weight:600;margin:8px 0 5px}.model-glossary-content>input{width:100%;min-height:var(--control-h);max-width:480px}
 .model-glossary-results{max-height:420px;overflow-y:auto;margin-top:10px}.model-glossary-results article{padding:10px 0;border-bottom:1px solid #e5ebe0}.model-glossary-results h4{margin:0 0 5px;font-size:.9rem}.model-glossary-results p{line-height:1.6;margin:0;font-size:.84rem;max-width:90ch}
 .resource-location{overflow-wrap:anywhere}

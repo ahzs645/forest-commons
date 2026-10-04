@@ -2,6 +2,7 @@ import { useLanguage } from "./i18n";
 import ProcurementStudy from "./ProcurementStudy";
 import ProcurementCharts from "./ProcurementCharts";
 import { useState } from "react";
+import { weatherLabel } from "./weather-label";
 import type { Game, StandDefinition, Weather } from "./simulation/types";
 import { appraise, bidRisk, procurementWindows } from "./simulation/appraisal";
 
@@ -19,10 +20,117 @@ export default function ProcurementLab({
     [multiplier, setMultiplier] = useState(1),
     [exposure, setExposure] = useState(0.5),
     [weather, setWeather] = useState<Weather>("normal");
-  const bid = Math.round(stand.askingPrice * multiplier),
+  const text = (en: string, fr: string) => language === "fr" ? fr : en;
+  const owned = !!game.stands.find((s) => s.id === standId)?.owned,
+    protectedLot = stand.supply === "protected";
+  // A secured lot's purchase is sunk, so its appraisal shows remaining value only.
+  const bid = owned ? 0 : Math.round(stand.askingPrice * multiplier),
     a = appraise(game, standId, bid);
+  const conditionsSelect = <label>{" "}{tr("Risk comparison conditions")}{" "}<select
+      value={weather}
+      onChange={(e) => setWeather(e.target.value as Weather)}
+    >
+      {["frozen", "normal", "wet", "thaw"].map((w) => (
+        <option key={w} value={w}>{weatherLabel(w, language)}</option>
+      ))}
+    </select>
+  </label>;
+  const marginTable = <div className="table-wrap" tabIndex={0} role="region" aria-label={tr("Conditions")}>
+    <table>
+      <thead>
+        <tr>
+          <th>{tr("Conditions")}</th>
+          <th>{tr("Terrain")}</th>
+          <th>{tr("Uncapped net margin")}</th>
+          <th>{tr("Demand-capped net margin")}</th>
+          <th>{tr("Unsold / unharvested volume")}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {a.cases.map((c) => (
+          <tr key={c.weather}>
+            <td>{weatherLabel(c.weather, language)}</td>
+            <td>{c.terrain ? tr("Open") : tr("Closed")}</td>
+            <td>{f(c.unlimited)}</td>
+            <td>{f(c.capped)}</td>
+            <td>{f(c.unsold)} m³</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>;
+  const regionCharts = <details className="procurement-deep-dive">
+    <summary>{text("Region-wide appraisal charts", "Graphiques d’évaluation régionale")}</summary>
+    {!protectedLot && <details>
+      <summary>{tr("Assortment appraisal in")}{" "}{weatherLabel(weather, language)}{" "}{tr("conditions")}</summary>
+      <div className="table-wrap" tabIndex={0} role="region" aria-label={tr("Product")}>
+        <table>
+          <thead>
+            <tr>
+              <th>{tr("Product")}</th>
+              <th>{tr("Eligible")}</th>
+              <th>{tr("Saleable")}</th>
+              <th>{tr("Margin before purchase")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {a.cases
+              .find((c) => c.weather === weather)!
+              .products.map((p) => (
+                <tr key={p.id}>
+                  <td>{tr(p.name)}</td>
+                  <td>{f(p.volume)}</td>
+                  <td>{f(p.sold)}</td>
+                  <td>{f(p.capped)}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </details>}
+    <ProcurementCharts game={game} standId={standId} />
+    <h3>{tr("Forecast operating windows")}</h3>
+    <p className="muted">{" "}{tr("Known closures, forecast terrain and routes to mills with demand. An auction lot is available only after its settlement week. Open access does not reserve crew, truck or demand capacity.")}{" "}</p>
+    <div className="table-wrap" tabIndex={0} role="region" aria-label={tr("Forecast operating windows")}>
+      <table>
+        <thead>
+          <tr>
+            <th>{tr("Week")}</th>
+            <th>{tr("Forecast")}</th>
+            <th>{tr("Terrain")}</th>
+            <th>{tr("Reachable destinations")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {procurementWindows(game, standId).map((w) => (
+            <tr key={w.week}>
+              <td>{w.week}</td>
+              <td>{weatherLabel(w.weather, language)}</td>
+              <td>{w.terrain ? tr("Open") : tr("Closed")}</td>
+              <td>{w.destinations.join(", ") || tr("No route to demand")}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <ProcurementStudy game={game} standId={standId} onBid={onBid}/>
+  </details>;
+  if (owned || protectedLot)
+    return (
+      <section className="panel">
+        <h2>{tr("Lot appraisal ·")}{" "}{stand.id}</h2>
+        {owned ? <>
+          <p className="notice">{text("Already secured — the appraisal shows its remaining value. No bid is needed.", "Déjà acquis — l’évaluation indique sa valeur restante. Aucune mise n’est nécessaire.")}</p>
+          <p>{f(a.eligible)}{" "}{tr("m³ eligible at current retention.")}</p>
+          {game.region.bcTenure && <p>{tr("BC appraisal includes current stumpage")}: {game.region.currency} {f(a.stumpage)} · {tr("operator provisions")}: {game.region.currency} {f(a.obligations)}. {tr("Future resets and market changes can alter realized margins.")}{a.authorizationProblem && <> {tr("Harvest block")}: {a.authorizationProblem}.</>}</p>}
+          <div className="form-row">{conditionsSelect}</div>
+          {marginTable}
+        </> : <p className="notice">{text("Protected — this lot cannot be bid on or harvested.", "Protégé — ce lot ne peut être ni mis aux enchères ni récolté.")}</p>}
+        {regionCharts}
+      </section>
+    );
   return (
-    <> <section className="panel">
+    <section className="panel">
       <h2>{tr("Lot appraisal ·")}{" "}{stand.id}</h2>
       <p>{" "}{tr("Compare the source guide’s margin without demand limits against remaining campaign demand. Estimates include retention, seasonal productivity, crew wages and round-trip haul costs. They exclude fixed fleet costs, relocation, storage, delivery deadlines and competition for demand; this is a screening estimate, not an optimal bid.")}{" "}</p>
       <div className="form-row">
@@ -48,97 +156,16 @@ export default function ProcurementLab({
             onChange={(e) => setExposure(Number(e.target.value))}
           />
         </label>
-        <label>{" "}{tr("Risk comparison conditions")}{" "}<select
-            value={weather}
-            onChange={(e) => setWeather(e.target.value as Weather)}
-          >
-            {["frozen", "normal", "wet", "thaw"].map((w) => (
-              <option key={w} value={w}>{tr(w)}</option>
-            ))}
-          </select>
-        </label>
+        {conditionsSelect}
       </div>
       <p>
         {game.region.currency} {f(bid)}{" "}{tr("offered ·")}{" "}{f(a.eligible)}{" "}{tr("m³ eligible at current retention.")}{" "}</p>
       {stand.priceBasis && <PriceBasisNote stand={stand} currency={game.region.currency} />}
       {game.region.bcTenure && <p>{tr("BC appraisal includes current stumpage")}: {game.region.currency} {f(a.stumpage)} · {tr("operator provisions")}: {game.region.currency} {f(a.obligations)}. {tr("Future resets and market changes can alter realized margins.")}{a.authorizationProblem && <> {tr("Harvest block")}: {a.authorizationProblem}.</>}</p>}
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>{tr("Conditions")}</th>
-              <th>{tr("Terrain")}</th>
-              <th>{tr("Uncapped net margin")}</th>
-              <th>{tr("Demand-capped net margin")}</th>
-              <th>{tr("Unsold / unharvested volume")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {a.cases.map((c) => (
-              <tr key={c.weather}>
-                <td>{tr(c.weather)}</td>
-                <td>{c.terrain ? tr("Open") : tr("Closed")}</td>
-                <td>{f(c.unlimited)}</td>
-                <td>{f(c.capped)}</td>
-                <td>{f(c.unsold)} m³</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <details>
-        <summary>{tr("Assortment appraisal in")}{" "}{tr(weather)}{" "}{tr("conditions")}</summary>
-        <table>
-          <thead>
-            <tr>
-              <th>{tr("Product")}</th>
-              <th>{tr("Eligible")}</th>
-              <th>{tr("Saleable")}</th>
-              <th>{tr("Margin before purchase")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {a.cases
-              .find((c) => c.weather === weather)!
-              .products.map((p) => (
-                <tr key={p.id}>
-                  <td>{tr(p.name)}</td>
-                  <td>{f(p.volume)}</td>
-                  <td>{f(p.sold)}</td>
-                  <td>{f(p.capped)}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </details>
-      <ProcurementCharts game={game} standId={standId} />
-      <h3>{tr("Forecast operating windows")}</h3>
-      <p className="muted">{" "}{tr("Known closures, forecast terrain and routes to mills with demand. An auction lot is available only after its settlement week. Open access does not reserve crew, truck or demand capacity.")}{" "}</p>
-      <div className="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>{tr("Week")}</th>
-              <th>{tr("Forecast")}</th>
-              <th>{tr("Terrain")}</th>
-              <th>{tr("Reachable destinations")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {procurementWindows(game, standId).map((w) => (
-              <tr key={w.week}>
-                <td>{w.week}</td>
-                <td>{tr(w.weather)}</td>
-                <td>{w.terrain ? tr("Open") : tr("Closed")}</td>
-                <td>{w.destinations.join(", ") || tr("No route to demand")}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {marginTable}
       <h3>{tr("Bid exposure comparison")}</h3>
       <p className="muted">{" "}{tr("101 equally weighted rival-bid scenarios over the game’s published rival range. This does not inspect the campaign seed or reveal the actual rival bid. Score = expected net margin − downside weight × worst loss.")}{" "}</p>
-      <div className="table-wrap">
+      <div className="table-wrap" tabIndex={0} role="region" aria-label={tr("Bid exposure comparison")}>
         <table>
           <thead>
             <tr>
@@ -172,12 +199,12 @@ export default function ProcurementLab({
       <button
         disabled={
           stand.supply !=="auction" ||
-          stand.auctionWeek !== game.week ||
-          game.stands.find((s) => s.id === standId)?.owned
+          stand.auctionWeek !== game.week
         }
         onClick={() => onBid(bid)}
       >{" "}{tr("Use")}{" "}{f(bid)}{" "}{tr("as this week’s sealed bid")}{" "}</button>
-    </section><ProcurementStudy game={game} standId={standId} onBid={onBid}/></>
+      {regionCharts}
+    </section>
   );
 }
 

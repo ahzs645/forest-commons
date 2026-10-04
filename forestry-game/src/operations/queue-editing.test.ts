@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createGame, advance, purchase } from '../simulation/engine';
 import { quebec } from '../scenarios/quebec';
-import { editQueue, MapQueueHistory, parseQueueAmount } from './queue-editing';
+import { appendQueueStop, editQueue, MapQueueHistory, parseQueueAmount, setQueueField } from './queue-editing';
 
 const plannedGame = () => {
   const game = createGame(quebec);
@@ -97,5 +97,35 @@ describe('map queue undo boundary', () => {
     const purchased = purchase(mixed, privateStand.id); history.record(mixed, purchased);
     expect(history.count).toBe(0);
     expect(history.undo(purchased)).toBe(purchased);
+  });
+});
+
+describe('desk stop fields and appending', () => {
+  it('changes site, treatment, mill and partner freight, keeping metadata and clearing readiness', () => {
+    const game = plannedGame(), truck = game.region.trucks[0].id;
+    const crew = setQueueField(game, 'crew', 'C1', 0, { stand: 'Q03', treatment: 'thinning' });
+    expect(crew.plan.crews.C1[0]).toEqual({ stand: 'Q03', hours: 8, treatment: 'thinning', bucking: 'standard' });
+    expect(crew.plan.ready).toEqual({ purchase: false, production: false, transport: false });
+    const sold = game.region.mills.find(m => !('hard-saw' in m.prices))!;
+    const hard = structuredClone(game); hard.plan.trucks[truck][0].product = 'hard-saw';
+    const moved = setQueueField(hard, 'truck', truck, 0, { mill: sold.id });
+    expect(moved.plan.trucks[truck][0]).toMatchObject({ mill: sold.id, product: Object.keys(sold.prices)[0], spot: true, partnerJob: 'kept' });
+    expect(setQueueField(game, 'truck', truck, 0, { partnerJob: undefined }).plan.trucks[truck][0].partnerJob).toBeUndefined();
+    expect(setQueueField(game, 'crew', 'C1', 5, { stand: 'Q03' })).toBe(game);
+    const finished = structuredClone(game); finished.week = finished.region.weeks + 1;
+    expect(setQueueField(finished, 'crew', 'C1', 0, { stand: 'Q03' })).toBe(finished);
+  });
+
+  it('appends at the preferred owned site with unassigned crew hours or a default haul', () => {
+    const game = plannedGame(), truck = game.region.trucks[0].id;
+    const owned = game.stands.filter(s => s.owned).map(s => s.id);
+    const capacity = game.region.crews.find(c => c.id === 'C1')!.hours;
+    const crew = appendQueueStop(game, 'crew', 'C1', owned[1]);
+    expect(crew.plan.crews.C1.at(-1)).toEqual({ stand: owned[1], hours: capacity - 12 });
+    expect(crew.plan.ready.production).toBe(false);
+    expect(appendQueueStop(game, 'crew', 'C1', 'missing').plan.crews.C1.at(-1)!.stand).toBe(owned[0]);
+    const mill = game.region.mills[0];
+    expect(appendQueueStop(game, 'truck', truck, owned[2]).plan.trucks[truck].at(-1))
+      .toEqual({ stand: owned[2], mill: mill.id, product: Object.keys(mill.prices)[0], loads: 5 });
   });
 });
